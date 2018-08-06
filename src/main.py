@@ -1,9 +1,10 @@
-#!/usr/bin/python3
+#!/u r/bin/python3
 """Max Cut Evolutionary Algorithm"""
 
 import networkx as nx
 import random
 import math
+import cProfile
 
 class Solution:
     def __init__(self, array):
@@ -48,10 +49,11 @@ def readMTX(filename):
     return graph
 
 def initialSolution(graph):
-    return Solution([False for x in range(nx.number_of_nodes(graph))])
+    node_count = max(graph.nodes())
+    return Solution([False for x in range(node_count)])
 
 def main():
-    ITERATION_COUNT = 1000
+    ITERATION_COUNT = 100000
     POWER_LAW_BETA = 1.5
     filename = "data/test.mtx"
 
@@ -76,4 +78,5 @@ def main():
     print("Score: " + str(solution.score) + "\n")
     print("Iteration: " + str(solution.iteration) + "\n")
 
+# cProfile.run('main()')
 main()
