@@ -7,7 +7,7 @@ import math
 import cProfile
 
 def node_count_of(graph):
-    return max(graph.nodes())
+    return len(graph.nodes())
 
 class Solution:
     def __init__(self, array):
@@ -70,7 +70,7 @@ class PMUTActivityMutator:
     def __init__(self, beta, graph):
         self.beta = beta
         self.n = node_count_of(graph)
-        self.activity = [(x,0) for x in range(self.n)]
+        self.activity = [[x,0] for x in range(self.n)]
         self.graph = graph
         self.DECAY_FACTOR = 0.9
     
@@ -86,7 +86,7 @@ class PMUTActivityMutator:
             node = self.activity[i][0]
             mutated_array[node] = mutated_array[node] ^ True
             if mutated_array[node]:
-                for neighbor in self.graph.neighbors_iter(node):
+                for neighbor in self.graph.neighbors(node):
                     if mutated_array[neighbor]:
                         modifier = 1
                     else:
@@ -101,7 +101,7 @@ class PMUTActivityMutator:
         return Solution(mutated_array)
     
     def __str__(self):
-        return "pmut_" + str(self.beta)
+        return "pmut_activity_" + str(self.beta)
 
 
 class MaxCutEvaluator:
@@ -143,6 +143,7 @@ def main():
 
     # read graph
     graph = readMTX(filename)
+    graph = nx.convert_node_labels_to_integers(graph)
 
     # set iteration amount
     iterations = ITERATION_COUNT
@@ -155,5 +156,5 @@ def main():
         print(str(solution))
     
 
-cProfile.run('main()')
-#main()
+#cProfile.run('main()')
+main()
