@@ -9,6 +9,10 @@ import cProfile
 class Solution:
     def __init__(self, array):
         self.array = array
+        self.iteration = -1
+
+    def __str__(self):
+        return "Score: " + str(self.score) + "\n" + "Iteration: " + str(self.iteration) + "\n"
 
 # https://stackoverflow.com/questions/918736/random-number-generator-that-produces-a-power-law-distribution
 def randomPowerLawNumber(n, x0, x1):
@@ -16,22 +20,48 @@ def randomPowerLawNumber(n, x0, x1):
     x = ((x1**(n+1) - x0**(n+1))*y + x0**(n+1))**(1/(n+1))
     return math.floor(x)
 
+class FMUTMutator:
+    def __init__(self, beta):
+        self.beta = beta
+    
+    def mutate(self, solution):
+        mutated_array = solution.array.copy()
+        n = len(mutated_array)
+        # choose a from power law distribution
+        a = randomPowerLawNumber(self.beta, 1, n)
+        
+        # flip each bit with probability a/n
+
+        for i in range(n):
+            r = random.randint(1, n)
+            if r <= a:
+                mutated_array[i] = mutated_array[i] ^ True
+
+        return Solution(mutated_array)
+
+    def __str__(self):
+        return "fmut_" + str(self.beta)
+
 class PMUTMutator:
     def __init__(self, beta):
         self.beta = beta
     
     def mutate(self, solution):
         mutated_array = solution.array.copy()
+        n = len(mutated_array)
         # choose k from power law distribution
-        k = randomPowerLawNumber(self.beta, 0, len(mutated_array))
+        k = randomPowerLawNumber(self.beta, 1, n)
         
         # flip k bits chosen uniformly at random
-        nodes_to_flip = random.sample(range(len(mutated_array)),k)
+        nodes_to_flip = random.sample(range(n),k)
 
         for i in nodes_to_flip:
-            mutated_array[i] = mutated_array[i] ^ 1
+            mutated_array[i] = mutated_array[i] ^ True
 
         return Solution(mutated_array)
+    
+    def __str__(self):
+        return "pmut_" + str(self.beta)
 
 class MaxCutEvaluator:
     def __init__(self, graph):
@@ -52,21 +82,9 @@ def initialSolution(graph):
     node_count = max(graph.nodes())
     return Solution([False for x in range(node_count)])
 
-def main():
-    ITERATION_COUNT = 100000
-    POWER_LAW_BETA = 1.5
-    filename = "data/test.mtx"
-
-    # read graph
-    graph = readMTX(filename)
-
-    # set iteration amount
-    iterations = ITERATION_COUNT
-    mutator = PMUTMutator(POWER_LAW_BETA)
-    evaluator = MaxCutEvaluator(graph)
+def runEA(graph, mutator, evaluator, iterations):
     solution = initialSolution(graph)
     solution.score = evaluator.evaluate(solution)
-    solution.iteration = -1
 
     for i in range(iterations):
         mutation = mutator.mutate(solution)
@@ -74,9 +92,27 @@ def main():
         if mutation.score > solution.score:
             solution = mutation
             solution.iteration = i
-    
-    print("Score: " + str(solution.score) + "\n")
-    print("Iteration: " + str(solution.iteration) + "\n")
 
-# cProfile.run('main()')
-main()
+    return solution
+
+def main():
+    ITERATION_COUNT = 1000
+    POWER_LAW_BETAS = [-1.5, -2.5, -3.5]
+    filename = "data/test.mtx"
+
+    # read graph
+    graph = readMTX(filename)
+
+    # set iteration amount
+    iterations = ITERATION_COUNT
+    evaluator = MaxCutEvaluator(graph)
+    mutators = [f(x) for f in [FMUTMutator, PMUTMutator] for x in POWER_LAW_BETAS]
+
+    for mutator in mutators:
+        solution = runEA(graph, mutator, evaluator, iterations)
+        print(str(mutator) + "\n")
+        print(str(solution))
+    
+
+cProfile.run('main()')
+#main()
