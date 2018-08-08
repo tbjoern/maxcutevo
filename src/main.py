@@ -6,6 +6,9 @@ import random
 import math
 import cProfile
 
+def node_count_of(graph):
+    return max(graph.nodes())
+
 class Solution:
     def __init__(self, array):
         self.array = array
@@ -21,7 +24,7 @@ def randomPowerLawNumber(n, x0, x1):
     return math.floor(x)
 
 class FMUTMutator:
-    def __init__(self, beta):
+    def __init__(self, beta, graph):
         self.beta = beta
     
     def mutate(self, solution):
@@ -43,7 +46,7 @@ class FMUTMutator:
         return "fmut_" + str(self.beta)
 
 class PMUTMutator:
-    def __init__(self, beta):
+    def __init__(self, beta, graph):
         self.beta = beta
     
     def mutate(self, solution):
@@ -63,6 +66,44 @@ class PMUTMutator:
     def __str__(self):
         return "pmut_" + str(self.beta)
 
+class PMUTActivityMutator:
+    def __init__(self, beta, graph):
+        self.beta = beta
+        self.n = node_count_of(graph)
+        self.activity = [(x,0) for x in range(self.n)]
+        self.graph = graph
+        self.DECAY_FACTOR = 0.9
+    
+    def mutate(self, solution):
+        mutated_array = solution.array.copy()
+        # choose k from power law distribution
+        k = randomPowerLawNumber(self.beta, 1, self.n)
+        
+        # flip k bits with highest activity
+        self.activity.sort(reverse=True, key=lambda item: item[1])
+
+        for i in range(k):
+            node = self.activity[i][0]
+            mutated_array[node] = mutated_array[node] ^ True
+            if mutated_array[node]:
+                for neighbor in self.graph.neighbors_iter(node):
+                    if mutated_array[neighbor]:
+                        modifier = 1
+                    else:
+                        modifier = -1
+                    for j in range(self.n):
+                        if self.activity[j][0] == neighbor:
+                            self.activity[j][1] += modifier
+
+        for i in range(self.n):
+            self.activity[i][1] *= self.DECAY_FACTOR
+
+        return Solution(mutated_array)
+    
+    def __str__(self):
+        return "pmut_" + str(self.beta)
+
+
 class MaxCutEvaluator:
     def __init__(self, graph):
         self.graph = graph
@@ -79,7 +120,7 @@ def readMTX(filename):
     return graph
 
 def initialSolution(graph):
-    node_count = max(graph.nodes())
+    node_count = node_count_of(graph)
     return Solution([False for x in range(node_count)])
 
 def runEA(graph, mutator, evaluator, iterations):
@@ -106,7 +147,7 @@ def main():
     # set iteration amount
     iterations = ITERATION_COUNT
     evaluator = MaxCutEvaluator(graph)
-    mutators = [f(x) for f in [FMUTMutator, PMUTMutator] for x in POWER_LAW_BETAS]
+    mutators = [f(x, graph) for f in [FMUTMutator, PMUTMutator, PMUTActivityMutator] for x in POWER_LAW_BETAS]
 
     for mutator in mutators:
         solution = runEA(graph, mutator, evaluator, iterations)
