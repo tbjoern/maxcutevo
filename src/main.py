@@ -70,9 +70,9 @@ class PMUTActivityMutator:
     def __init__(self, beta, graph):
         self.beta = beta
         self.n = node_count_of(graph)
-        self.activity = [[x,0] for x in range(self.n)]
+        self.activity = [[x,0.0] for x in range(self.n)]
         self.graph = graph
-        self.DECAY_FACTOR = 0.9
+        self.DECAY_FACTOR = 0.2
     
     def mutate(self, solution):
         mutated_array = solution.array.copy()
@@ -84,7 +84,9 @@ class PMUTActivityMutator:
 
         for i in range(k):
             node = self.activity[i][0]
-            mutated_array[node] = mutated_array[node] ^ True
+            mutated_array[node] = mutated_array[node] ^ True # flip
+            # for all neighbours in A - increase activity by 1
+            # for all neighbours not in A - decrease activity by 1
             if mutated_array[node]:
                 for neighbor in self.graph.neighbors(node):
                     if mutated_array[neighbor]:
@@ -137,9 +139,9 @@ def runEA(graph, mutator, evaluator, iterations):
     return solution
 
 def main():
-    ITERATION_COUNT = 1000
+    ITERATION_COUNT = 10000
     POWER_LAW_BETAS = [-1.5, -2.5, -3.5]
-    filename = "data/test.mtx"
+    filename = "data/test01.mtx"
 
     # read graph
     graph = readMTX(filename)
