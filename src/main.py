@@ -192,10 +192,10 @@ class Logger:
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: main.py <path_to_graph_dir> <logfile>")
+        print("Usage: main.py <path_to_graph_dir> <number_of_iterations>")
         exit(127)
 
-    ITERATION_COUNT = 10
+    ITERATION_COUNT = int(sys.argv[2])
     POWER_LAW_BETAS = [-1.5, -2.5, -3.5]
     MUTATOR_CLASSES = [FMUTMutator, PMUTMutator, PMUTActivityMutator]
     EVALUATOR_CLASS = MaxCutEvaluator
@@ -215,7 +215,7 @@ def main():
             mutator_mapping.write(str(MUTATOR_ID_MAP[m]) + "," + m.__name__ + "\n")
 
 
-    LOGFILE = sys.argv[2]
+    LOGFILE = "output.csv"
     logger = Logger(LOGFILE)
 
     for filename in FILENAMES:
