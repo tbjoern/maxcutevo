@@ -5,9 +5,28 @@ import networkx as nx
 import random
 import math
 import cProfile
+import sys
+import os
 
 def node_count_of(graph):
     return len(graph.nodes())
+
+def choose_k_unique(population, weights, k):
+    population = list(population)
+    weights = list(weights)
+    result = []
+    total_weight = sum(weights)
+    node_chosen = [False for i in range(len(population))]
+    for i in range(k):
+        r = random.random() * total_weight
+        cum_weight = 0
+        for i in range(len(population)):
+            cum_weight += weights[i]
+            if r <= cum_weight and not node_chosen[i]:
+                result.append(population[i])
+                node_chosen[i] = True
+                break
+    return result
 
 class Solution:
     def __init__(self, array):
@@ -70,7 +89,7 @@ class PMUTActivityMutator:
     def __init__(self, beta, graph):
         self.beta = beta
         self.n = node_count_of(graph)
-        self.activity = [[x,0.0] for x in range(self.n)]
+        self.activity = dict([(x,1) for x in range(self.n)])
         self.graph = graph
         self.DECAY_FACTOR = 0.2
     
@@ -79,26 +98,26 @@ class PMUTActivityMutator:
         # choose k from power law distribution
         k = randomPowerLawNumber(self.beta, 1, self.n)
         
-        # flip k bits with highest activity
-        self.activity.sort(reverse=True, key=lambda item: item[1])
-
-        for i in range(k):
-            node = self.activity[i][0]
+        chosen_nodes = choose_k_unique(self.graph.nodes(), self.activity.values(), k)
+        for node in chosen_nodes:
+            # choose node with probability proportional to its activity
+            self.activity[node] = 1
             mutated_array[node] = mutated_array[node] ^ True # flip
-            # for all neighbours in A - increase activity by 1
-            # for all neighbours not in A - decrease activity by 1
             if mutated_array[node]:
-                for neighbor in self.graph.neighbors(node):
-                    if mutated_array[neighbor]:
-                        modifier = 1
-                    else:
-                        modifier = -1
-                    for j in range(self.n):
-                        if self.activity[j][0] == neighbor:
-                            self.activity[j][1] += modifier
+                # for all neighbours in A - increase activity by 1
+                # for all neighbours not in A - decrease activity by 1
+                activity_modifier = 1
+            else:
+                # for all neighbours in A - decrease activity by 1
+                # for all neighbours not in A - increase activity by 1
+                activity_modifier = -1
+            for neighbor in self.graph.neighbors(node):
+                if not mutated_array[neighbor]:
+                    activity_modifier *= -1
+                self.activity[neighbor] = max(1, self.activity[neighbor] + activity_modifier)
 
-        for i in range(self.n):
-            self.activity[i][1] *= self.DECAY_FACTOR
+        for node, activity in self.activity.items():
+            activity = activity * self.DECAY_FACTOR
 
         return Solution(mutated_array)
     
@@ -117,45 +136,97 @@ class MaxCutEvaluator:
         score = len(edges)
         return score
 
-def readMTX(filename):
-    graph = nx.read_edgelist(filename, create_using=nx.DiGraph(), nodetype=int)
-    return graph
+class EvolutionaryAlgorithm:
+    def __init__(self, filename, mutator_classes, power_law_betas, evaluator_class, iterations):
+        self.iterations = iterations
+        self.filename = filename
+        self.readMTX()
+        self.evaluator = evaluator_class(self.graph)
+        self.mutators = [f(x, self.graph) for f in mutator_classes for x in power_law_betas]
+        self.solutions = list()
 
-def initialSolution(graph):
-    node_count = node_count_of(graph)
-    return Solution([False for x in range(node_count)])
+    def readMTX(self):
+        graph = nx.read_edgelist(self.filename, create_using=nx.DiGraph(), nodetype=int)
+        self.graph = nx.convert_node_labels_to_integers(graph)
 
-def runEA(graph, mutator, evaluator, iterations):
-    solution = initialSolution(graph)
-    solution.score = evaluator.evaluate(solution)
+    def getInitialSolution(self):
+        node_count = node_count_of(self.graph)
+        return Solution([False for x in range(node_count)])
 
-    for i in range(iterations):
-        mutation = mutator.mutate(solution)
-        mutation.score = evaluator.evaluate(mutation)
-        if mutation.score > solution.score:
-            solution = mutation
-            solution.iteration = i
+    def runMutator(self, mutator):
+        solution = self.getInitialSolution()
+        solution.score = self.evaluator.evaluate(solution)
+        for i in range(self.iterations):
+            mutation = mutator.mutate(solution)
+            mutation.score = self.evaluator.evaluate(mutation)
+            if mutation.score > solution.score:
+                solution = mutation
+                solution.iteration = i
+        return solution
+    
+    def runAllMutators(self):
+        for mutator in self.mutators:
+            self.solutions.append(self.runMutator(mutator))
+            # print(str(mutator) + "\n")
+            # print(str(self.solutions[-1]))
 
-    return solution
+    def getSolutions(self):
+        return [(self.mutators[i], self.solutions[i]) for i in range(len(self.solutions))]
+
+class Logger:
+    def __init__(self, filename):
+        self.file = open(filename, "w")
+
+    def log_console(self, string):
+        print(string)
+
+    def log_csv(self, values):
+        line = ""
+        for value in values:
+            line += str(value)
+            line += ','
+        line = line[:-1]
+        line += "\n"
+        self.file.write(line)
+
 
 def main():
-    ITERATION_COUNT = 10000
+    if len(sys.argv) != 3:
+        print("Usage: main.py <path_to_graph_dir> <logfile>")
+        exit(127)
+
+    ITERATION_COUNT = 10
     POWER_LAW_BETAS = [-1.5, -2.5, -3.5]
-    filename = "data/test01.mtx"
+    MUTATOR_CLASSES = [FMUTMutator, PMUTMutator, PMUTActivityMutator]
+    EVALUATOR_CLASS = MaxCutEvaluator
 
-    # read graph
-    graph = readMTX(filename)
-    graph = nx.convert_node_labels_to_integers(graph)
+    DIR = sys.argv[1]
+    FILESIZE_THRESHOLD = 1024*1024*1 # 1 MB
+    FILENAMES = [os.path.join(DIR, file) for file in os.listdir(DIR) if os.path.getsize(os.path.join(DIR, file)) < FILESIZE_THRESHOLD]
 
-    # set iteration amount
-    iterations = ITERATION_COUNT
-    evaluator = MaxCutEvaluator(graph)
-    mutators = [f(x, graph) for f in [FMUTMutator, PMUTMutator, PMUTActivityMutator] for x in POWER_LAW_BETAS]
+    FILENAME_ID_MAP = dict([(FILENAMES[i], i) for i in range(len(FILENAMES))])
+    MUTATOR_ID_MAP = dict([(MUTATOR_CLASSES[i], i) for i in range(len(MUTATOR_CLASSES))])
 
-    for mutator in mutators:
-        solution = runEA(graph, mutator, evaluator, iterations)
-        print(str(mutator) + "\n")
-        print(str(solution))
+    with open("file_mapping.csv", "w") as file_mapping:
+        for f in FILENAMES:
+            file_mapping.write(str(FILENAME_ID_MAP[f]) + "," + f + "\n")
+    with open("mutator_mapping.csv", "w") as mutator_mapping:
+        for m in MUTATOR_CLASSES:
+            mutator_mapping.write(str(MUTATOR_ID_MAP[m]) + "," + m.__name__ + "\n")
+
+
+    LOGFILE = sys.argv[2]
+    logger = Logger(LOGFILE)
+
+    for filename in FILENAMES:
+        print(filename)
+        id = FILENAME_ID_MAP[filename]
+        ea = EvolutionaryAlgorithm(filename, MUTATOR_CLASSES, POWER_LAW_BETAS, EVALUATOR_CLASS, ITERATION_COUNT)
+
+        ea.runAllMutators()
+
+        for mutator, solution in ea.getSolutions():
+            logger.log_csv([id, MUTATOR_ID_MAP[type(mutator)], mutator.beta , solution.score, solution.iteration])
     
 
 #cProfile.run('main()')
