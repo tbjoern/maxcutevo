@@ -1,7 +1,0 @@
-choose proportional to activity (activity / total activity) -> python random lib function? (weights)
-also update activity for nodes that are kicked out
-initialize activity with 1
-try initial set A that contains half of all nodes
-flip -> reset to 1
-
-fmut with f(a) , f is sigmoid function
