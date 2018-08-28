@@ -5,6 +5,7 @@ set(sources
     Benchmark.cpp
     Runner.cpp
     main.cpp
+    UnifAlgorithm.cpp
 )
 
 set(includes
@@ -12,6 +13,7 @@ set(includes
     Batch.hpp
     Benchmark.hpp
     Runner.hpp
+    UnifAlgorithm.hpp
     types.hpp
 )
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <vector>
 
 #include "Algorithm.hpp"
@@ -7,12 +8,13 @@
 namespace maxcut {
 class Batch {
 public:
-  Batch(AdjList &&adj_list, std::vector<Algorithm> &algorithms);
+  Batch(AdjList &&adj_list,
+        std::vector<std::unique_ptr<Algorithm>> &algorithms);
 
-  std::vector<RunResult> &&run() const;
+  std::vector<RunResult> run() const;
 
 private:
   AdjList _adj_list;
-  std::vector<Algorithm> &_algorithms;
+  std::vector<std::unique_ptr<Algorithm>> &_algorithms;
 };
 } // namespace maxcut
