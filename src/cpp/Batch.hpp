@@ -1,16 +1,18 @@
+#pragma once
 #include <vector>
 
-#include "types.h"
-#include "AlgorithmFactory.h"
+#include "Algorithm.hpp"
+#include "types.hpp"
 
 namespace maxcut {
 class Batch {
-    public:
-    Batch(AdjList adj_list, std::vector<AlgorithmFactory> algorithm_factories);
+public:
+  Batch(AdjList &&adj_list, std::vector<Algorithm> &algorithms);
 
-    std::vector<RunResult> run() const;
-    private:
-    AdjList& _adj_list;
-    std::vector<AlgorithmFactory>& _algorithm_factories;
+  std::vector<RunResult> &&run() const;
+
+private:
+  AdjList _adj_list;
+  std::vector<Algorithm> &_algorithms;
 };
-}
+} // namespace maxcut

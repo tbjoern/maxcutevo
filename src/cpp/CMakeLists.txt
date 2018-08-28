@@ -1,13 +1,20 @@
 set(target maxcut-benchmark)
 
+set(sources
+    Batch.cpp
+    Benchmark.cpp
+    Runner.cpp
+    main.cpp
+)
+
 set(includes
-    AlgorithmFactory.hpp
     Algorithm.hpp
     Batch.hpp
     Benchmark.hpp
-    CMakeLists.txt
     Runner.hpp
     types.hpp
 )
+
+set(libraries)
 
 create_executable(${project} ${target} "${sources}" "${includes}" "${libraries}")

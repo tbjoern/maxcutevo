@@ -1,19 +1,21 @@
-#include <vector>
+#pragma once
+#include "Algorithm.hpp"
+#include "types.hpp"
 #include <string>
-#include "AlgorithmFactory.h"
-#include "types.h"
+#include <vector>
 
 namespace maxcut {
 
 class Benchmark {
-  public:
-    Benchmark(std::string _filename, std::vector<AlgorithmFactory>& _algorithm_factories);
+public:
+  Benchmark(std::vector<std::string> &filenames,
+            std::vector<Algorithm> &algorithms);
 
-    std::vector<RunResult> run(std::string filename) const;
+  std::vector<std::vector<RunResult>> &&run() const;
 
-  private:
-    std::vector<AlgorithmFactory>& algorithm_factories;
-    AdjList adj_list;
+private:
+  std::vector<Algorithm> &_algorithms;
+  const std::vector<std::string> _filenames;
 };
 
-}
+} // namespace maxcut

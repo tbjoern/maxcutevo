@@ -49,3 +49,4 @@ endif()
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
+add_subdirectory(src)
