@@ -6,6 +6,10 @@
 #include "types.hpp"
 
 namespace maxcut {
+
+/**
+ *  runs a set of algorithms on a graph
+ */
 class Batch {
 public:
   Batch(AdjList &&adj_list,

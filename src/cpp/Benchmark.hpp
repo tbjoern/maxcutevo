@@ -7,6 +7,9 @@
 
 namespace maxcut {
 
+/**
+ *  runs a set of algorithms on a set of graphs
+ */
 class Benchmark {
 public:
   Benchmark(std::vector<std::string> &filenames,

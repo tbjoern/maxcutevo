@@ -4,6 +4,9 @@
 
 namespace maxcut {
 
+/** 
+ * runs an algorithm on a graph
+ */
 class Runner {
 public:
   static RunResult runAlgorithm(const AdjList &adj_list, Algorithm &algorithm);
