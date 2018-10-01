@@ -5,10 +5,11 @@
 namespace maxcut {
 
 /**
- * Algorithm from "Solving maximum cut problems by simulated annealing" by TOR MYKLEBUST
+ * Algorithm from "Solving maximum cut problems by simulated annealing" by TOR
+ * MYKLEBUST
  */
 class AnnealingAlgorithm : public Algorithm {
-    int run(const AdjList &) override;
+  int run(const AdjList &) override;
 };
 
-}
+} // namespace maxcut

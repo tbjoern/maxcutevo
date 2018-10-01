@@ -6,6 +6,8 @@ set(sources
     Runner.cpp
     main.cpp
     UnifAlgorithm.cpp
+    AnnealingAlgorithm.cpp
+    PMUTAlgorithm.cpp
 )
 
 set(includes
@@ -15,6 +17,8 @@ set(includes
     Runner.hpp
     UnifAlgorithm.hpp
     types.hpp
+    AnnealingAlgorithm.hpp
+    PMUTAlgorithm.hpp
 )
 
 set(libraries)

@@ -4,7 +4,7 @@
 
 namespace maxcut {
 
-/** 
+/**
  * runs an algorithm on a graph
  */
 class Runner {

@@ -17,6 +17,7 @@ std::vector<std::vector<RunResult>> Benchmark::run() const {
   for (int fileID = 0; fileID < _filenames.size(); ++fileID) {
 
     std::cout << "Reading file " << _filenames[fileID];
+    std::cout.flush();
 
     std::ifstream input_file(_filenames[fileID]);
     input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -29,14 +30,18 @@ std::vector<std::vector<RunResult>> Benchmark::run() const {
       input_file >> source >> dest; // TODO weight
       --source, --dest;
       adj_list[source].push_back({dest, 1});
+      adj_list[dest].push_back({source, 1});
     }
 
     std::cout << " ...done" << std::endl;
 
-    std::cout << "Starting batch" << std::endl;
+    std::cout << "Starting batch";
+    std::cout.flush();
 
     Batch batch(std::move(adj_list), _algorithms);
     results[fileID] = batch.run();
+
+    std::cout << "...done" << std::endl;
   }
   return results;
 }
