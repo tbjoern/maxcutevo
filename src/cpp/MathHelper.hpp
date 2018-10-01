@@ -40,7 +40,6 @@ public:
         for(auto& v : weights) {
             total_weight += v;
         }
-        setUniformRange(0, total_weight);
         std::vector<unsigned int> node_chosen(population.size(), false);
         for(int i = 0; i < k; ++i) {
             int r = _unif(_engine);

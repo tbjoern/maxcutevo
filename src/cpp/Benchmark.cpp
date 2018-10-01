@@ -23,12 +23,12 @@ std::vector<std::vector<RunResult>> Benchmark::run() const {
     input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     int nodes, edges;
     input_file >> nodes >> nodes >> edges;
+    ++nodes; // some start at 0, others at 1 ...
     AdjList adj_list(nodes);
 
     for (uint i = 0; i < edges; ++i) {
       int source, dest, weight;
       input_file >> source >> dest; // TODO weight
-      --source, --dest;
       adj_list[source].push_back({dest, 1});
       adj_list[dest].push_back({source, 1});
     }

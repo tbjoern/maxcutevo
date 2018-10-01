@@ -16,7 +16,8 @@ using namespace std;
 int main() {
   vector<string> filenames{"mtx/mvccographsbip.n100m30p0.03.1.mtx",
                            "mtx/mvccographsbip.n100m30p1.0.1.mtx",
-                           "mtx/ca-citeseer.mtx"};
+                           "mtx/ca-citeseer.mtx", "ca-dblp-2010.mtx",
+                           "web-edu.mtx"};
   vector<unique_ptr<Algorithm>> algorithms;
 
   algorithms.push_back(make_unique<UnifAlgorithm>());
