@@ -30,7 +30,7 @@ public:
     int getIntFromPowerLawDistribution(int max) {
         double rand = _exp(_engine);
         rand = rand > max ? max : rand;
-        return floor(rand);
+        return ceil(rand);
     }
 
     std::vector<int> chooseKUnique(std::vector<int> population, std::vector<int> weights, int k) {

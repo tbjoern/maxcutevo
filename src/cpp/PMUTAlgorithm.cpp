@@ -39,10 +39,10 @@ int PMUTAlgorithm::run(const AdjList &adj_list) {
     }
     if (obj > best) {
       best = obj;
-    } else {
-      // could add annealing here
-      side = std::move(tmp_side);
-      chg = std::move(tmp_chg);
+      } else {
+        // could add annealing here
+        side = std::move(tmp_side);
+        chg = std::move(tmp_chg);
     }
   }
   return best;
