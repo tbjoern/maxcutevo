@@ -27,6 +27,14 @@ public:
         _unif.param(std::uniform_int_distribution<>::param_type(a, b));
     }
 
+    void setRealRange(int a, int b) {
+        _real.param(std::uniform_real_distribution<>::param_type(a, b));
+    }
+
+    int getInt() {
+        return _unif(_engine);
+    }
+
     int getIntFromPowerLawDistribution(int max) {
         double rand = _exp(_engine);
         rand = rand > max ? max : rand;
@@ -60,6 +68,7 @@ private:
     std::mt19937 _engine;
     std::exponential_distribution<> _exp;
     std::uniform_int_distribution<> _unif;
+    std::uniform_real_distribution<> _real;
 };
 
 }

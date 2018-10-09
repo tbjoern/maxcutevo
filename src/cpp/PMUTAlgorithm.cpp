@@ -16,7 +16,6 @@ void PMUTAlgorithm::run() {
   helper.setPowerLawParam(2);
   helper.setUniformRange(0, _node_count);
 
-  int obj = 0, best = 0;
   double iterations = 10000;
   for (double it = 0; it < iterations; it++) {
     auto k = helper.getIntFromPowerLawDistribution(_node_count);

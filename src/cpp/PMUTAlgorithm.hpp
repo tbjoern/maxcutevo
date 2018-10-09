@@ -11,6 +11,8 @@ namespace maxcut {
 class PMUTAlgorithm : public Algorithm {
 public:
   void run() override;
+
+  std::string name() override { return "pmut"; }
 };
 
 } // namespace maxcut

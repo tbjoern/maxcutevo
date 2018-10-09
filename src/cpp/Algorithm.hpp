@@ -47,6 +47,8 @@ public:
    * @returns the maximum found cut weight
    */
   int calcSolution(const AdjList &);
+
+  virtual std::string name() = 0;
 };
 
 } // namespace maxcut

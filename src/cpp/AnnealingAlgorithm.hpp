@@ -10,6 +10,8 @@ namespace maxcut {
  */
 class AnnealingAlgorithm : public Algorithm {
   void run() override;
+
+  std::string name() override { return "annealing"; }
 };
 
 } // namespace maxcut

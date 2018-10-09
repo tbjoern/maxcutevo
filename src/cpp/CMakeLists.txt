@@ -9,6 +9,7 @@ set(sources
     UnifAlgorithm.cpp
     AnnealingAlgorithm.cpp
     PMUTAlgorithm.cpp
+    FMUTAlgorithm.cpp
 )
 
 set(includes
@@ -20,6 +21,7 @@ set(includes
     types.hpp
     AnnealingAlgorithm.hpp
     PMUTAlgorithm.hpp
+    FMUTAlgorithm.hpp
 )
 
 set(libraries

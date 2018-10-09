@@ -1,19 +1,25 @@
 #include "UnifAlgorithm.hpp"
-#include <random>
+#include "MathHelper.hpp"
 
 using namespace std;
 
 namespace maxcut {
 
 void UnifAlgorithm::run() {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(0, _node_count - 1);
+  auto &helper = MathHelper::getInstance();
+  helper.setUniformRange(0, _node_count);
 
   double iterations = 10000;
   for (double it = 0; it < iterations; it++) {
-    int k = dis(gen);
-    flipNodesIfBetterCut({k});
+    vector<int> nodes_to_flip;
+    for (int node = 0; node < _node_count; ++node) {
+      if (helper.getInt() == 1) {
+        nodes_to_flip.push_back(node);
+      }
+    }
+    if (nodes_to_flip.size()) {
+      flipNodesIfBetterCut(nodes_to_flip);
+    }
   }
 }
 } // namespace maxcut
