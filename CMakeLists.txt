@@ -43,6 +43,10 @@ if (CMAKE_BUILD_TYPE STREQUAL Release)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wl,--gc-sections -Wl,--as-needed -ffunction-sections -fdata-sections -flto")
 endif()
 
+# Multithreading 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 

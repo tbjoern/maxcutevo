@@ -67,7 +67,7 @@ public:
 };
 
 Benchmark::Benchmark(std::vector<std::string> &filename,
-                     std::vector<std::unique_ptr<Algorithm>> &algorithms)
+                     std::vector<std::shared_ptr<Algorithm>> &algorithms)
     : _algorithms(algorithms), _filenames(filename) {}
 
 std::vector<std::vector<RunResult>> Benchmark::run() const {

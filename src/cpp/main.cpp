@@ -38,12 +38,12 @@ vector<string> read_directory(const std::string &name) {
 
 int main() {
   string dirname = R"(/home/tbjoern/development/maxcut/maxcutevo/build/graphs)";
-  vector<unique_ptr<Algorithm>> algorithms;
+  vector<shared_ptr<Algorithm>> algorithms;
 
-  algorithms.push_back(make_unique<UnifAlgorithm>());
-  algorithms.push_back(make_unique<AnnealingAlgorithm>());
-  algorithms.push_back(make_unique<PMUTAlgorithm>());
-  algorithms.push_back(make_unique<FMUTAlgorithm>());
+  algorithms.push_back(make_shared<UnifAlgorithm>());
+  algorithms.push_back(make_shared<AnnealingAlgorithm>());
+  algorithms.push_back(make_shared<PMUTAlgorithm>());
+  algorithms.push_back(make_shared<FMUTAlgorithm>());
 
   auto filenames = read_directory(dirname);
   Benchmark benchmark(filenames, algorithms);

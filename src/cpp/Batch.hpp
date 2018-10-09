@@ -12,13 +12,14 @@ namespace maxcut {
  */
 class Batch {
 public:
+  constexpr static int ALGORITHM_RUN_DURATION = 1;
   Batch(AdjList &&adj_list,
-        std::vector<std::unique_ptr<Algorithm>> &algorithms);
+        std::vector<std::shared_ptr<Algorithm>> &algorithms);
 
   std::vector<RunResult> run() const;
 
 private:
   AdjList _adj_list;
-  std::vector<std::unique_ptr<Algorithm>> &_algorithms;
+  std::vector<std::shared_ptr<Algorithm>> &_algorithms;
 };
 } // namespace maxcut

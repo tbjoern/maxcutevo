@@ -13,12 +13,12 @@ namespace maxcut {
 class Benchmark {
 public:
   Benchmark(std::vector<std::string> &filenames,
-            std::vector<std::unique_ptr<Algorithm>> &algorithms);
+            std::vector<std::shared_ptr<Algorithm>> &algorithms);
 
   std::vector<std::vector<RunResult>> run() const;
 
 private:
-  std::vector<std::unique_ptr<Algorithm>> &_algorithms;
+  std::vector<std::shared_ptr<Algorithm>> &_algorithms;
   const std::vector<std::string> _filenames;
 };
 

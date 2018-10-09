@@ -26,6 +26,7 @@ set(includes
 
 set(libraries
     stdc++fs
+    Threads::Threads
 )
 
 create_executable(${project} ${target} "${sources}" "${includes}" "${libraries}")
