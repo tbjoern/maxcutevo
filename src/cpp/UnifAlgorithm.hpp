@@ -10,7 +10,7 @@ namespace maxcut {
  */
 class UnifAlgorithm : public Algorithm {
 public:
-  int run(const AdjList &) override;
+  void run() override;
 };
 
 } // namespace maxcut

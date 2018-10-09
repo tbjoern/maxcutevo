@@ -9,7 +9,7 @@ namespace maxcut {
  * MYKLEBUST
  */
 class AnnealingAlgorithm : public Algorithm {
-  int run(const AdjList &) override;
+  void run() override;
 };
 
 } // namespace maxcut

@@ -10,7 +10,7 @@ namespace maxcut {
  */
 class PMUTAlgorithm : public Algorithm {
 public:
-  int run(const AdjList &) override;
+  void run() override;
 };
 
 } // namespace maxcut

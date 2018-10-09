@@ -38,7 +38,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wfloat-equal -Wold-style-cast -Wno-sign-compare")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wfloat-equal -Wold-style-cast -Wno-sign-compare -lstdc++fs")
 if (CMAKE_BUILD_TYPE STREQUAL Release)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wl,--gc-sections -Wl,--as-needed -ffunction-sections -fdata-sections -flto")
 endif()

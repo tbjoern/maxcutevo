@@ -1,6 +1,7 @@
 set(target maxcut-benchmark)
 
 set(sources
+    Algorithm.cpp
     Batch.cpp
     Benchmark.cpp
     Runner.cpp
@@ -21,6 +22,8 @@ set(includes
     PMUTAlgorithm.hpp
 )
 
-set(libraries)
+set(libraries
+    stdc++fs
+)
 
 create_executable(${project} ${target} "${sources}" "${includes}" "${libraries}")
