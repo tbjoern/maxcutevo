@@ -41,7 +41,7 @@ int main() {
   vector<unique_ptr<Algorithm>> algorithms;
 
   algorithms.push_back(make_unique<UnifAlgorithm>());
-  // algorithms.push_back(make_unique<AnnealingAlgorithm>());
+  algorithms.push_back(make_unique<AnnealingAlgorithm>());
   algorithms.push_back(make_unique<PMUTAlgorithm>());
   algorithms.push_back(make_unique<FMUTAlgorithm>());
 

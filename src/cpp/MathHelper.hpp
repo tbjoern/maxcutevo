@@ -41,6 +41,10 @@ public:
         return ceil(rand);
     }
 
+    double getReal() {
+        return _real(_engine);
+    }
+
     std::vector<int> chooseKUnique(std::vector<int> population, std::vector<int> weights, int k) {
         std::vector<int> result;
         assert(population.size() == weights.size());

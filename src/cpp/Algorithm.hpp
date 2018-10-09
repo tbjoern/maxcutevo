@@ -1,6 +1,8 @@
 #pragma once
 #include "types.hpp"
 
+#include <csignal>
+
 namespace maxcut {
 
 class Algorithm {
@@ -8,8 +10,9 @@ private:
   /**
    * initializes the tracking of the cut state, e.g. _change, _part and
    * _cut_weight
+   * resets helper variables to default
    */
-  void initCutTracking();
+  void init();
 
 protected:
   /**
@@ -40,6 +43,8 @@ protected:
   virtual void run() = 0;
 
 public:
+  std::sig_atomic_t volatile stop = 0;
+
   Algorithm() : _change(), _part(), _cut_weight(0), _node_count(0){};
   /**
    * runs the algorithm contained in Algorithm::run

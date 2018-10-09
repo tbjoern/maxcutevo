@@ -5,8 +5,9 @@
 
 namespace maxcut {
 
-void Algorithm::initCutTracking() {
+void Algorithm::init() {
   const AdjList &adj_list = *_adj_list;
+  stop = 0;
   _change = std::vector(_node_count, 0);
   _part = std::vector(_node_count, 1);
   _cut_weight = 0;
@@ -78,7 +79,7 @@ bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
 int Algorithm::calcSolution(const AdjList &adj_list) {
   _adj_list = &adj_list;
   _node_count = adj_list.size();
-  this->initCutTracking();
+  this->init();
   this->run();
   return _max_cut_weight;
 }
