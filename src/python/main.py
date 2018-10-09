@@ -171,7 +171,7 @@ class EvolutionaryAlgorithm:
             # print(str(self.solutions[-1]))
 
     def getSolutions(self):
-        return [(self.mutators[i], self.solutions[i]) for i in range(len(self.solutions))]
+        return zip(self.mutators, self.solutions)
 
 class Logger:
     def __init__(self, filename):
@@ -181,13 +181,7 @@ class Logger:
         print(string)
 
     def log_csv(self, values):
-        line = ""
-        for value in values:
-            line += str(value)
-            line += ','
-        line = line[:-1]
-        line += "\n"
-        self.file.write(line)
+        self.file.write(",".join(str(x) for x in values))
 
 
 def main():
