@@ -64,11 +64,11 @@ int main(int argc, char *argv[]) {
   algorithms.push_back(make_shared<AnnealingAlgorithm>());
   algorithms.push_back(make_shared<PMUTAlgorithm>());
   algorithms.push_back(make_shared<FMUTAlgorithm>());
-  algorithms.push_back(make_shared<ActivityAlgorithm>());
+  algorithms.push_back(make_shared<ActivityAlgorithm>(false));
+  algorithms.push_back(make_shared<ActivityAlgorithm>(true));
 
   auto filenames = read_directory(dirname);
-  sort(filenames.begin(), filenames.end(),
-       [](const auto &f1, const auto &f2) { return f1 < f2; });
+  sort(filenames.begin(), filenames.end());
   Benchmark benchmark(filenames, algorithms);
   auto results = benchmark.run();
 

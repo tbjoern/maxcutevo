@@ -10,7 +10,6 @@ namespace maxcut {
 
 void AnnealingAlgorithm::run() {
   AdjList adj_list = *_adj_list;
-  auto &helper = MathHelper::getInstance();
   helper.setRealRange(0, 1);
 
   for (double heat = 0; !stop; heat += 2e-6) {

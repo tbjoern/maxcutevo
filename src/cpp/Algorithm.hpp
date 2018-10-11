@@ -1,4 +1,5 @@
 #pragma once
+#include "MathHelper.hpp"
 #include "types.hpp"
 
 #include <csignal>
@@ -25,6 +26,7 @@ protected:
   int _cut_weight, _max_cut_weight;
   const AdjList *_adj_list;
   int _node_count;
+  MathHelper helper;
 
   /**
    * In the MaxCut problem, the graph is divided into two parts. All edges that

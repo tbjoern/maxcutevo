@@ -6,7 +6,6 @@ using namespace std;
 namespace maxcut {
 
 void UnifAlgorithm::run() {
-  auto &helper = MathHelper::getInstance();
   helper.setUniformRange(0, _node_count);
 
   while (!stop) {

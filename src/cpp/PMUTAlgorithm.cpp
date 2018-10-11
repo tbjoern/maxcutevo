@@ -12,7 +12,6 @@ void PMUTAlgorithm::run() {
     pop[node] = node;
   }
 
-  auto &helper = MathHelper::getInstance();
   helper.setPowerLawParam(2);
   helper.setUniformRange(0, _node_count);
 

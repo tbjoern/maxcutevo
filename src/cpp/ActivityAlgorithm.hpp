@@ -9,9 +9,16 @@ namespace maxcut {
  * ;)
  */
 class ActivityAlgorithm : public Algorithm {
+  bool _reverse;
+
+public:
   void run() override;
 
-  std::string name() override { return "activity"; }
+  std::string name() override {
+    return _reverse ? "reverse activity" : "activity";
+  }
+
+  ActivityAlgorithm(bool reverse) : _reverse(reverse) {}
 };
 
 } // namespace maxcut

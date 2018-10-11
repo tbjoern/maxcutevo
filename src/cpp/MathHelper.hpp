@@ -9,11 +9,11 @@ namespace maxcut {
 class MathHelper
 {
 public:
-    static MathHelper& getInstance()
-    {
-        static MathHelper instance;
-        return instance;
-    }
+    // static MathHelper& getInstance()
+    // {
+    //     static MathHelper instance;
+    //     return instance;
+    // }
     
     MathHelper() : _engine(std::random_device{}()), _exp(1), _unif() {}
 
@@ -55,14 +55,18 @@ public:
         }
         std::vector<unsigned int> node_chosen(population.size(), false);
         for(int i = 0; i < k; ++i) {
+            setUniformRange(0, total_weight);
             int r = _unif(_engine);
             int cumulative_weight = 0;
             for(int j = 0; j < population.size(); ++j) {
-                cumulative_weight += weights[j];
-                if(cumulative_weight >= r && !node_chosen[j]) {
-                    result.push_back(population[j]);
-                    node_chosen[j] = true;
-                    break;
+                if(!node_chosen[j]) {
+                    cumulative_weight += weights[j];
+                    if(cumulative_weight >= r) {
+                        result.push_back(population[j]);
+                        node_chosen[j] = true;
+                        total_weight -= weights[j];
+                        break;
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 #include "ActivityAlgorithm.hpp"
 #include "MathHelper.hpp"
+#include <iostream>
 
 using namespace std;
 
@@ -12,9 +13,10 @@ void ActivityAlgorithm::run() {
     pop[node] = node;
   }
 
-  auto &helper = MathHelper::getInstance();
   helper.setPowerLawParam(2);
   helper.setUniformRange(0, _node_count);
+
+  const int activity_weight = _reverse ? -1 : 1;
 
   while (!stop) {
     auto k = helper.getIntFromPowerLawDistribution(_node_count);
@@ -30,9 +32,12 @@ void ActivityAlgorithm::run() {
       for (const auto edge : neighbours) {
         auto &neighbour = edge.first;
         if (_part[neighbour] == node_part) {
-          weights[neighbour]++;
+          weights[neighbour] -= activity_weight;
         } else {
-          weights[neighbour]--;
+          weights[neighbour] += activity_weight;
+        }
+        if (weights[neighbour] < 1) {
+          weights[neighbour] = 1;
         }
       }
     }
