@@ -10,6 +10,7 @@ set(sources
     AnnealingAlgorithm.cpp
     PMUTAlgorithm.cpp
     FMUTAlgorithm.cpp
+    ActivityAlgorithm.cpp
 )
 
 set(includes
@@ -22,6 +23,7 @@ set(includes
     AnnealingAlgorithm.hpp
     PMUTAlgorithm.hpp
     FMUTAlgorithm.hpp
+    ActivityAlgorithm.hpp
 )
 
 set(libraries

@@ -1,6 +1,7 @@
 #include "Algorithm.hpp"
 #include "Benchmark.hpp"
 
+#include "ActivityAlgorithm.hpp"
 #include "AnnealingAlgorithm.hpp"
 #include "FMUTAlgorithm.hpp"
 #include "PMUTAlgorithm.hpp"
@@ -36,18 +37,47 @@ vector<string> read_directory(const std::string &name) {
 
 } // namespace
 
-int main() {
-  string dirname = R"(/home/tbjoern/development/maxcut/maxcutevo/build/graphs)";
+int main(int argc, char *argv[]) {
+  string dirname;
+  switch (argc) {
+  case 1:
+    dirname = R"(/home/tbjoern/development/maxcut/maxcutevo/build/graphs)";
+    break;
+  case 2:
+    if (std::filesystem::exists(argv[1])) {
+      dirname = argv[1];
+    } else {
+      cout << "Could not find directory " << argv[1] << endl;
+      exit(127);
+    }
+    break;
+  default:
+    cout << "Wrong number of arguments. Usage: maxcut-benchmark <graph "
+            "directory>"
+         << endl;
+    exit(1);
+  }
+
   vector<shared_ptr<Algorithm>> algorithms;
 
   algorithms.push_back(make_shared<UnifAlgorithm>());
   algorithms.push_back(make_shared<AnnealingAlgorithm>());
   algorithms.push_back(make_shared<PMUTAlgorithm>());
   algorithms.push_back(make_shared<FMUTAlgorithm>());
+  algorithms.push_back(make_shared<ActivityAlgorithm>());
 
   auto filenames = read_directory(dirname);
+  sort(filenames.begin(), filenames.end(),
+       [](const auto &f1, const auto &f2) { return f1 < f2; });
   Benchmark benchmark(filenames, algorithms);
   auto results = benchmark.run();
+
+  for_each(results.begin(), results.end(), [](auto &v) {
+    sort(v.begin(), v.end(), [](const auto &r1, const auto &r2) {
+      return r1.algorithmName < r2.algorithmName;
+    });
+  });
+
   for (int i = 0; i < results.size(); ++i) {
     const auto &results_for_file = results[i];
     cout << filenames[i] << endl;

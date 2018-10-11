@@ -29,14 +29,15 @@ public:
   AdjList readFile(std::string filename) override {
     std::ifstream input_file(filename);
     int nodes, edges;
-    input_file >> nodes >> nodes >> edges;
+    input_file >> nodes >> edges;
     AdjList adj_list(nodes);
 
     for (uint i = 0; i < edges; ++i) {
       int source, dest, weight;
       input_file >> source >> dest >> weight;
-      adj_list[source].push_back({dest, 1});
-      adj_list[dest].push_back({source, 1});
+      source--, dest--;
+      adj_list[source].push_back({dest, weight});
+      adj_list[dest].push_back({source, weight});
     }
     return adj_list;
   }
