@@ -12,8 +12,8 @@ namespace maxcut {
 
 enum FileExtension { EDGELIST, MTXREADER };
 
-static std::map<std::string, FileExtension> filename_map = {{".mtx", MTXREADER},
-                                                            {".rud", EDGELIST}};
+static std::map<std::string, FileExtension> filename_map = {
+    {".mtx", MTXREADER}, {".rud", EDGELIST}, {".mc", EDGELIST}};
 
 class FileReader {
 public:
@@ -61,7 +61,6 @@ public:
       int source, dest;
       input_file >> source >> dest;
       adj_list[source].push_back({dest, 1});
-      adj_list[dest].push_back({source, 1});
     }
     return adj_list;
   }
