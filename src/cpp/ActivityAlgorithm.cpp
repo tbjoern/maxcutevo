@@ -1,14 +1,20 @@
 #include "ActivityAlgorithm.hpp"
 #include "MathHelper.hpp"
+#include "types.hpp"
 #include <iostream>
 
 using namespace std;
+
+namespace {}
 
 namespace maxcut {
 
 void ActivityAlgorithm::run() {
   const auto &adj_list = *_adj_list;
-  vector<int> pop(_node_count), weights(_node_count, 1);
+  constexpr int START_ACTIVITY = 10;
+  constexpr int ACT_INC = 5;
+  constexpr int ACT_DEC = 1;
+  vector<int> pop(_node_count), weights(_node_count, START_ACTIVITY);
   for (int node = 0; node < _node_count; ++node) {
     pop[node] = node;
   }
@@ -16,25 +22,34 @@ void ActivityAlgorithm::run() {
   helper.setPowerLawParam(2);
   helper.setUniformRange(0, _node_count);
 
-  const int activity_weight = _reverse ? -1 : 1;
+  const int activity_mod = _reverse ? -1 : 1;
 
   while (!stop) {
     auto k = helper.getIntFromPowerLawDistribution(_node_count);
     auto nodes_to_flip = helper.chooseKUnique(pop, weights, k);
 
     for (const auto node : nodes_to_flip) {
-      weights[node] = 1;
+      weights[node] = START_ACTIVITY;
     }
 
     for (const auto node : nodes_to_flip) {
-      const auto &neighbours = adj_list[node];
-      const auto node_part = _part[node];
-      for (const auto edge : neighbours) {
-        auto &neighbour = edge.first;
-        if (_part[neighbour] == node_part) {
-          weights[neighbour] -= activity_weight;
+      for (const auto &edge : adj_list.in_edges[node]) {
+        auto &neighbour = edge.neighbour;
+        if (_part[neighbour] == _part[node]) {
+          weights[neighbour] -= ACT_DEC * activity_mod;
         } else {
-          weights[neighbour] += activity_weight;
+          weights[neighbour] += ACT_INC * activity_mod;
+        }
+        if (weights[neighbour] < 1) {
+          weights[neighbour] = 1;
+        }
+      }
+      for (const auto &edge : adj_list.out_edges[node]) {
+        auto &neighbour = edge.neighbour;
+        if (_part[neighbour] == _part[node]) {
+          weights[neighbour] -= ACT_DEC * activity_mod;
+        } else {
+          weights[neighbour] += ACT_INC * activity_mod;
         }
         if (weights[neighbour] < 1) {
           weights[neighbour] = 1;

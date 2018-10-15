@@ -11,6 +11,7 @@ set(sources
     PMUTAlgorithm.cpp
     FMUTAlgorithm.cpp
     ActivityAlgorithm.cpp
+    MathHelper.hpp
 )
 
 set(includes
@@ -24,6 +25,7 @@ set(includes
     PMUTAlgorithm.hpp
     FMUTAlgorithm.hpp
     ActivityAlgorithm.hpp
+    MathHelper.hpp
 )
 
 set(libraries

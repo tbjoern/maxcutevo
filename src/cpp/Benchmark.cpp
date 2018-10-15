@@ -10,10 +10,13 @@
 
 namespace maxcut {
 
-enum FileExtension { EDGELIST, MTXREADER };
+enum FileExtension { EDGELIST, MTXREADER, CNFREADER };
 
 static std::map<std::string, FileExtension> filename_map = {
-    {".mtx", MTXREADER}, {".rud", EDGELIST}, {".mc", EDGELIST}};
+    {".mtx", MTXREADER},
+    {".rud", EDGELIST},
+    {".mc", EDGELIST},
+    {".cnf", CNFREADER}};
 
 class FileReader {
 public:
@@ -23,9 +26,6 @@ public:
 
 class EdgeListReader : public FileReader {
 public:
-  ~EdgeListReader(){};
-  EdgeListReader() {}
-
   AdjList readFile(std::string filename) override {
     std::ifstream input_file(filename);
     int nodes, edges;
@@ -36,8 +36,8 @@ public:
       int source, dest, weight;
       input_file >> source >> dest >> weight;
       source--, dest--;
-      adj_list[source].push_back({dest, weight});
-      adj_list[dest].push_back({source, weight});
+      adj_list.out_edges[source].push_back({dest, weight});
+      adj_list.in_edges[dest].push_back({source, weight});
     }
     return adj_list;
   }
@@ -45,9 +45,6 @@ public:
 
 class MTXReader : public FileReader {
 public:
-  ~MTXReader() {}
-  MTXReader() {}
-
   AdjList readFile(std::string filename) override {
     std::ifstream input_file(filename);
     // first line is always a comment
@@ -60,7 +57,44 @@ public:
     for (uint i = 0; i < edges; ++i) {
       int source, dest;
       input_file >> source >> dest;
-      adj_list[source].push_back({dest, 1});
+      adj_list.out_edges[source].push_back({dest, 1});
+      adj_list.in_edges[dest].push_back({source, 1});
+    }
+    return adj_list;
+  }
+};
+
+class CNFReader : public FileReader {
+public:
+  AdjList readFile(std::string filename) override {
+    std::ifstream input_file(filename);
+    // first line is a comment
+    input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::string dummy;
+    int nodes, edges;
+    // format is
+    // p cnf <nodes> <edges>
+    input_file >> dummy >> dummy >> nodes >> edges;
+    // every vertex (literal) occurs twice, negative ones are negated
+    AdjList adj_list(nodes * 2);
+
+    for (uint i = 0; i < edges; ++i) {
+      int source, dest, weight;
+      input_file >> source >> dest;
+      // some lines aparrently have only one vertex and a zero - ignore those
+      if (dest == 0) {
+        continue;
+      }
+      input_file >> weight;
+      // map negative vertices to positive ones
+      if (source < 0) {
+        source = source * -1 + nodes;
+      }
+      if (dest < 0) {
+        dest = dest * -1 + nodes;
+      }
+      adj_list.out_edges[source].push_back({dest, 1});
+      adj_list.in_edges[dest].push_back({source, 1});
     }
     return adj_list;
   }
@@ -87,6 +121,9 @@ std::vector<std::vector<RunResult>> Benchmark::run() const {
         break;
       case FileExtension::MTXREADER:
         reader = new MTXReader();
+        break;
+      case FileExtension::CNFREADER:
+        reader = new CNFReader();
         break;
       }
     } catch (const std::out_of_range &e) {

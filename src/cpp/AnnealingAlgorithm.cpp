@@ -14,7 +14,7 @@ void AnnealingAlgorithm::run() {
 
   for (double heat = 0; !stop; heat += 2e-6) {
     int k = rand() % _node_count;
-    if (!(helper.getReal() > exp(heat * _change[k] / _max_cut_weight))) {
+    if (!(helper.getReal() > exp(heat * changeByFlip(k) / _max_cut_weight))) {
       flipNode(k);
     }
   }

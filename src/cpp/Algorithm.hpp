@@ -21,11 +21,11 @@ protected:
    * cut_weight if the node is flipped. _part keeps track of each nodes part (1
    * or -1)
    */
-  std::vector<int> _change, _part;
+  std::vector<int> _part;
   // total current weight of the cut
   int _cut_weight, _max_cut_weight;
-  const AdjList *_adj_list;
   int _node_count;
+  const AdjList *_adj_list;
   MathHelper helper;
 
   /**
@@ -39,21 +39,26 @@ protected:
 
   bool flipNodesIfBetterCut(std::vector<int> nodeIDs);
 
+  int changeByFlip(int nodeID);
+
   /**
    * Implement MaxCut solving algorithms by overriding this method
    */
   virtual void run() = 0;
 
+  Cut calcCutSizes();
+
 public:
   std::sig_atomic_t volatile stop = 0;
 
-  Algorithm() : _change(), _part(), _cut_weight(0), _node_count(0){};
+  Algorithm() : _part(), _cut_weight(0), _max_cut_weight(0), _node_count(0){};
+  virtual ~Algorithm(){};
   /**
    * runs the algorithm contained in Algorithm::run
    * runs initCutTracking before run
    * @returns the maximum found cut weight
    */
-  int calcSolution(const AdjList &);
+  Cut calcSolution(const AdjList &);
 
   virtual std::string name() = 0;
 };

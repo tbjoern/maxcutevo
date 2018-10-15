@@ -1,9 +1,9 @@
-#include "Algorithm.hpp"
-#include "Benchmark.hpp"
-
 #include "ActivityAlgorithm.hpp"
+#include "Algorithm.hpp"
 #include "AnnealingAlgorithm.hpp"
+#include "Benchmark.hpp"
 #include "FMUTAlgorithm.hpp"
+#include "MathHelper.hpp"
 #include "PMUTAlgorithm.hpp"
 #include "UnifAlgorithm.hpp"
 
@@ -58,10 +58,12 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
+  RANDOM_SEED = std::random_device{}();
+
   vector<shared_ptr<Algorithm>> algorithms;
 
   algorithms.push_back(make_shared<UnifAlgorithm>());
-  algorithms.push_back(make_shared<AnnealingAlgorithm>());
+  // algorithms.push_back(make_shared<AnnealingAlgorithm>());
   algorithms.push_back(make_shared<PMUTAlgorithm>());
   algorithms.push_back(make_shared<FMUTAlgorithm>());
   algorithms.push_back(make_shared<ActivityAlgorithm>(false));
@@ -82,10 +84,11 @@ int main(int argc, char *argv[]) {
     const auto &results_for_file = results[i];
     cout << filenames[i] << endl;
     for (const auto run : results_for_file) {
-      cout << run.algorithmName << ": " << run.cutSize << " in " << run.time
-           << "ms" << endl;
+      cout << run.algorithmName << ": " << run.cut.size << "|"
+           << run.cut.inverse_size << " in " << run.time << "ms" << endl;
     }
     cout << endl;
   }
+  cout << "Random seed was: " << RANDOM_SEED << endl;
   return 0;
 }

@@ -12,7 +12,7 @@ namespace maxcut {
  */
 class Batch {
 public:
-  constexpr static int ALGORITHM_RUN_DURATION = 1;
+  constexpr static int ALGORITHM_RUN_DURATION = 5;
   Batch(AdjList &&adj_list,
         std::vector<std::shared_ptr<Algorithm>> &algorithms);
 
