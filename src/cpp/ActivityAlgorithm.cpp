@@ -11,9 +11,11 @@ namespace maxcut {
 
 void ActivityAlgorithm::run() {
   const auto &adj_list = *_adj_list;
-  constexpr int START_ACTIVITY = 10;
-  constexpr int ACT_INC = 5;
-  constexpr int ACT_DEC = 1;
+  constexpr int START_ACTIVITY = 100;
+  constexpr int ACT_INC = 200;
+  constexpr int ACT_DEC = 30;
+  constexpr int DECAY_TIME = 10000;
+  constexpr double DECAY_RATE = 0.8;
   vector<int> pop(_node_count), weights(_node_count, START_ACTIVITY);
   for (int node = 0; node < _node_count; ++node) {
     pop[node] = node;
@@ -23,6 +25,8 @@ void ActivityAlgorithm::run() {
   helper.setUniformRange(0, _node_count);
 
   const int activity_mod = _reverse ? -1 : 1;
+
+  int decay_timer = 0;
 
   while (!stop) {
     auto k = helper.getIntFromPowerLawDistribution(_node_count);
@@ -58,6 +62,13 @@ void ActivityAlgorithm::run() {
     }
 
     flipNodesIfBetterCut(nodes_to_flip);
+
+    ++decay_timer;
+    if (decay_timer == DECAY_TIME) {
+      for (auto &weight : weights) {
+        weight = ceil(weight * DECAY_RATE);
+      }
+    }
   }
 }
 
