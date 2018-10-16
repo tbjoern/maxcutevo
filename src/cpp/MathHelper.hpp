@@ -71,6 +71,17 @@ public:
     return result;
   }
 
+  double sigmoid(double x) {
+    constexpr double upperbound = 2;
+    constexpr double stretch = 2;
+    return 1 / (upperbound * (1 + exp(-1 * x / stretch)));
+  }
+
+  bool sampleProbability(double probabilty) {
+    setRealRange(0, 1);
+    return getReal() >= probabilty;
+  }
+
 private:
   std::mt19937 _engine;
   std::exponential_distribution<> _exp;

@@ -5,6 +5,7 @@
 #include "FMUTAlgorithm.hpp"
 #include "MathHelper.hpp"
 #include "PMUTAlgorithm.hpp"
+#include "UnifActivityAlgorithm.hpp"
 #include "UnifAlgorithm.hpp"
 
 #include <algorithm>
@@ -63,11 +64,13 @@ int main(int argc, char *argv[]) {
   vector<shared_ptr<Algorithm>> algorithms;
 
   algorithms.push_back(make_shared<UnifAlgorithm>());
-  // algorithms.push_back(make_shared<AnnealingAlgorithm>());
+  algorithms.push_back(make_shared<AnnealingAlgorithm>());
   algorithms.push_back(make_shared<PMUTAlgorithm>());
   algorithms.push_back(make_shared<FMUTAlgorithm>());
   algorithms.push_back(make_shared<ActivityAlgorithm>(false));
   algorithms.push_back(make_shared<ActivityAlgorithm>(true));
+  algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
+  algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
 
   auto filenames = read_directory(dirname);
   sort(filenames.begin(), filenames.end());

@@ -14,7 +14,7 @@ void ActivityAlgorithm::run() {
   constexpr int START_ACTIVITY = 100;
   constexpr int ACT_INC = 200;
   constexpr int ACT_DEC = 30;
-  constexpr int DECAY_TIME = 10000;
+  // constexpr int DECAY_TIME = 10000;
   constexpr double DECAY_RATE = 0.95;
   vector<int> pop(_node_count), weights(_node_count, START_ACTIVITY);
   for (int node = 0; node < _node_count; ++node) {

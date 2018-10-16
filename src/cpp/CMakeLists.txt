@@ -12,6 +12,7 @@ set(sources
     FMUTAlgorithm.cpp
     ActivityAlgorithm.cpp
     MathHelper.hpp
+    UnifActivityAlgorithm.cpp
 )
 
 set(includes
@@ -26,6 +27,7 @@ set(includes
     FMUTAlgorithm.hpp
     ActivityAlgorithm.hpp
     MathHelper.hpp
+    UnifActivityAlgorithm.hpp
 )
 
 set(libraries

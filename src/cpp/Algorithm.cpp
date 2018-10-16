@@ -54,12 +54,13 @@ int Algorithm::changeByFlip(int nodeID) {
         change += edge.weight;
       }
     }
-    // all outgoing edges to nodes that are in CUT_SET do not count anymore
+    // all outgoing edges to nodes that are in NOT_CUT_SET do not count anymore
     for (const auto &edge : adj_list.out_edges[nodeID]) {
       if (_part[edge.neighbour] == NOT_CUT_SET) {
         change -= edge.weight;
       }
     }
+    break;
   }
   _part[nodeID] = -_part[nodeID];
   return change;
@@ -81,12 +82,10 @@ void Algorithm::flipNodes(std::vector<int> nodeIDs) {
 
 bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
   auto tmp_part = _part;
-  auto tmp_max_weight = _max_cut_weight;
   auto tmp_cut_weight = _cut_weight;
   flipNodes(nodeIDs);
-  if (tmp_max_weight >= _max_cut_weight) {
+  if (tmp_cut_weight >= _cut_weight) {
     _part = std::move(tmp_part);
-    _max_cut_weight = tmp_cut_weight;
     _cut_weight = tmp_cut_weight;
     return false;
   }
@@ -98,7 +97,7 @@ Cut Algorithm::calcCutSizes() {
   for (int node = 0; node < _node_count; ++node) {
     for (const auto &edge : _adj_list->out_edges[node]) {
       if (_part[node] != _part[edge.neighbour]) {
-        if (_part[node] == 1) {
+        if (_part[node] == CUT_SET) {
           cut.size += edge.weight;
         } else {
           cut.inverse_size += edge.weight;
