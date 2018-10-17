@@ -6,9 +6,9 @@ using namespace std;
 namespace maxcut {
 
 void UnifActivityAlgorithm::run() {
-  constexpr int START_ACTIVITY = 5;
-  constexpr int ACT_MIN = -10;
-  constexpr int ACT_MAX = 10;
+  constexpr int START_ACTIVITY = 50;
+  constexpr int ACT_MIN = -100;
+  constexpr int ACT_MAX = 100;
   constexpr int ACT_INC = 1;
   constexpr int ACT_DEC = 1;
   constexpr double DECAY_RATE = 0.95;

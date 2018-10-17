@@ -11,9 +11,10 @@ namespace maxcut {
 void AnnealingAlgorithm::run() {
   AdjList adj_list = *_adj_list;
   helper.setRealRange(0, 1);
+  helper.setUniformRange(0, _adj_list->node_count - 1);
 
   for (double heat = 0; !stop; heat += 2e-6) {
-    int k = rand() % _node_count;
+    int k = helper.getInt() % _node_count;
     if (!(helper.getReal() > exp(heat * changeByFlip(k) / _max_cut_weight))) {
       flipNode(k);
     }

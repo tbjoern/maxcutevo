@@ -22,6 +22,9 @@ private:
   void init();
 
 protected:
+  void calculateChange();
+
+  std::pair<int, int> calculateCurrentCutSize();
   /**
    *  _change[k] says how much weight will be added or subtracted from the
    * cut_weight if the node is flipped. _part keeps track of each nodes part (1

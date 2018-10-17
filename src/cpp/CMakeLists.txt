@@ -13,6 +13,8 @@ set(sources
     ActivityAlgorithm.cpp
     MathHelper.hpp
     UnifActivityAlgorithm.cpp
+    GreedyAlgorithm.cpp
+    ActivityDeterministicAlgorithm.cpp
 )
 
 set(includes
@@ -28,6 +30,8 @@ set(includes
     ActivityAlgorithm.hpp
     MathHelper.hpp
     UnifActivityAlgorithm.hpp
+    GreedyAlgorithm.hpp
+    ActivityDeterministicAlgorithm.hpp
 )
 
 set(libraries

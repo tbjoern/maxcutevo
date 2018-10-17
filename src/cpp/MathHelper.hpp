@@ -73,7 +73,7 @@ public:
 
   double sigmoid(double x) {
     constexpr double upperbound = 2;
-    constexpr double stretch = 2;
+    constexpr double stretch = 4;
     return 1 / (upperbound * (1 + exp(-1 * x / stretch)));
   }
 

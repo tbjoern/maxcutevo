@@ -8,6 +8,37 @@ namespace maxcut {
 
 using maxcut::side;
 
+void Algorithm::calculateChange() {
+  for (int node = 0; node < _adj_list->node_count; ++node) {
+    for (const auto &edge : _adj_list->out_edges[node]) {
+      _change[node] += edge.weight * _part[node] * _part[edge.neighbour];
+      _change[edge.neighbour] -=
+          edge.weight * _part[node] * _part[edge.neighbour];
+    }
+    for (const auto &edge : _adj_list->in_edges[node]) {
+      _change[node] -= edge.weight * _part[node] * _part[edge.neighbour];
+      _change[edge.neighbour] +=
+          edge.weight * _part[node] * _part[edge.neighbour];
+    }
+  }
+}
+
+std::pair<int, int> Algorithm::calculateCurrentCutSize() {
+  std::pair<int, int> cut;
+  for (int node = 0; node < _node_count; ++node) {
+    for (const auto &edge : _adj_list->out_edges[node]) {
+      if (_part[node] != _part[edge.neighbour]) {
+        if (_part[node] == CUT_SET) {
+          cut.first += edge.weight;
+        } else {
+          cut.second += edge.weight;
+        }
+      }
+    }
+  }
+  return cut;
+}
+
 void Algorithm::init() {
   const AdjList &adj_list = *_adj_list;
   stop = 0;
@@ -18,6 +49,7 @@ void Algorithm::init() {
       _change[node] += edge.weight;
     }
   }
+  // calculateChange();
   _node_count = adj_list.node_count;
   _cut_weight = 0;
   _max_cut_weight = 0;
@@ -96,16 +128,23 @@ void Algorithm::flipNodes(std::vector<int> nodeIDs) {
 }
 
 bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
-  auto tmp_part = _part;
-  auto tmp_change = _change;
-  auto tmp_max_weight = _max_cut_weight;
-  auto tmp_cut_weight = _cut_weight;
+  // auto tmp_part = _part;
+  // auto tmp_change = _change;
+  // auto tmp_max_weight = _max_cut_weight;
+  // auto tmp_cut_weight = _cut_weight;
+  // flipNodes(nodeIDs);
+  // if (tmp_cut_weight > _cut_weight) {
+  //   _part = std::move(tmp_part);
+  //   _change = std::move(tmp_change);
+  //   _cut_weight = tmp_cut_weight;
+  //   _max_cut_weight = tmp_max_weight;
+  //   return false;
+  // }
+  // return true;
+  auto prev_cut_weight = _cut_weight;
   flipNodes(nodeIDs);
-  if (tmp_cut_weight > _cut_weight) {
-    _part = std::move(tmp_part);
-    _change = std::move(tmp_change);
-    _cut_weight = tmp_cut_weight;
-    _max_cut_weight = tmp_max_weight;
+  if (prev_cut_weight > _cut_weight) {
+    flipNodes(nodeIDs);
     return false;
   }
   return true;
@@ -113,17 +152,9 @@ bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
 
 Cut Algorithm::calcCutSizes() {
   Cut cut{0, 0, _max_cut_weight};
-  for (int node = 0; node < _node_count; ++node) {
-    for (const auto &edge : _adj_list->out_edges[node]) {
-      if (_part[node] != _part[edge.neighbour]) {
-        if (_part[node] == CUT_SET) {
-          cut.size += edge.weight;
-        } else {
-          cut.inverse_size += edge.weight;
-        }
-      }
-    }
-  }
+  auto sizes = calculateCurrentCutSize();
+  cut.size = sizes.first;
+  cut.inverse_size = sizes.second;
   if (_cut_weight != cut.inverse_size && _cut_weight != cut.size) {
     std::cout << "Actual cut weight and tracked cut weight do not match. "
               << this->name() << " actual:" << cut.size << "|"

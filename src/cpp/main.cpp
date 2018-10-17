@@ -1,8 +1,10 @@
 #include "ActivityAlgorithm.hpp"
+#include "ActivityDeterministicAlgorithm.hpp"
 #include "Algorithm.hpp"
 #include "AnnealingAlgorithm.hpp"
 #include "Benchmark.hpp"
 #include "FMUTAlgorithm.hpp"
+#include "GreedyAlgorithm.hpp"
 #include "MathHelper.hpp"
 #include "PMUTAlgorithm.hpp"
 #include "UnifActivityAlgorithm.hpp"
@@ -69,9 +71,12 @@ int main(int argc, char *argv[]) {
   algorithms.push_back(make_shared<PMUTAlgorithm>());
   algorithms.push_back(make_shared<FMUTAlgorithm>());
   algorithms.push_back(make_shared<ActivityAlgorithm>(false));
-  algorithms.push_back(make_shared<ActivityAlgorithm>(true));
+  // algorithms.push_back(make_shared<ActivityAlgorithm>(true));
   algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
-  algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
+  // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
+  algorithms.push_back(make_shared<GreedyAlgorithm>());
+  algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
+  // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(true));
 
   auto filenames = read_directory(dirname);
   sort(filenames.begin(), filenames.end());
