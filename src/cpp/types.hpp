@@ -20,7 +20,7 @@ struct AdjList {
 };
 
 struct Cut {
-  int size, inverse_size;
+  int size, inverse_size, max_size;
 };
 
 struct RunResult {

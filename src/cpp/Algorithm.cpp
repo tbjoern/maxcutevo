@@ -12,57 +12,78 @@ void Algorithm::init() {
   const AdjList &adj_list = *_adj_list;
   stop = 0;
   _part = std::vector<int>(adj_list.node_count, int(NOT_CUT_SET));
+  _change = std::vector<int>(adj_list.node_count, 0);
+  for (int node = 0; node < adj_list.node_count; ++node) {
+    for (const auto &edge : adj_list.out_edges[node]) {
+      _change[node] += edge.weight;
+    }
+  }
   _node_count = adj_list.node_count;
   _cut_weight = 0;
   _max_cut_weight = 0;
 }
 
-int Algorithm::changeByFlip(int nodeID) {
-  _part[nodeID] = -_part[nodeID];
-  const AdjList &adj_list = *_adj_list;
-  int change = 0;
-
-  switch (_part[nodeID]) {
-  case CUT_SET:
-    // node moved from NOT_CUT_SET to CUT_SET
-    // all incoming edges from nodes that are in CUT_SET
-    // do not count towards the cut size anymore
-    for (const auto &edge : adj_list.in_edges[nodeID]) {
-      if (_part[edge.neighbour] == CUT_SET) {
-        change -= edge.weight;
-      }
-    }
-    // all outgoing edges to nodes that are not in CUT_SET do now count
-    for (const auto &edge : adj_list.out_edges[nodeID]) {
-      if (_part[edge.neighbour] == NOT_CUT_SET) {
-        change += edge.weight;
-      }
-    }
-    break;
-  case NOT_CUT_SET:
-    // node moved from CUT_SET to NOT_CUT_SET
-    // all incoming edges from nodes that are in CUT_SET
-    // do now count towards the cut size
-    for (const auto &edge : adj_list.in_edges[nodeID]) {
-      if (_part[edge.neighbour] == CUT_SET) {
-        change += edge.weight;
-      }
-    }
-    // all outgoing edges to nodes that are in NOT_CUT_SET do not count anymore
-    for (const auto &edge : adj_list.out_edges[nodeID]) {
-      if (_part[edge.neighbour] == NOT_CUT_SET) {
-        change -= edge.weight;
-      }
-    }
-    break;
-  }
-  _part[nodeID] = -_part[nodeID];
-  return change;
-}
+int Algorithm::changeByFlip(int nodeID) { return _change[nodeID]; }
 
 void Algorithm::flipNode(int nodeID) {
   _cut_weight += changeByFlip(nodeID);
   _part[nodeID] = -_part[nodeID];
+  _change[nodeID] = -_change[nodeID];
+
+  for (const auto &edge : _adj_list->in_edges[nodeID]) {
+    _change[edge.neighbour] +=
+        edge.weight * _part[nodeID] * _part[edge.neighbour];
+  }
+  for (const auto &edge : _adj_list->out_edges[nodeID]) {
+    _change[edge.neighbour] +=
+        edge.weight * _part[nodeID] * _part[edge.neighbour];
+  }
+
+  // switch (_part[nodeID]) {
+  // case CUT_SET:
+  //   // node moved from NOT_CUT_SET to CUT_SET
+  //   // all incoming edges from nodes that are in NOT_CUT_SET
+  //   // do not increase cut size when flipping
+  //   // all incoming edges from nodes that are in CUT_SET
+  //   // do not reduce cut size when flipping
+  //   for (const auto &edge : _adj_list->in_edges[nodeID]) {
+  //     if (_part[edge.neighbour] == NOT_CUT_SET) {
+  //       _change[edge.neighbour] -= edge.weight;
+  //     } else {
+  //       _change[edge.neighbour] += edge.weight;
+  //     }
+  //   }
+  //   for (const auto &edge : _adj_list->out_edges[nodeID]) {
+  //     if (_part[edge.neighbour] == NOT_CUT_SET) {
+  //       _change[edge.neighbour] -= edge.weight;
+  //     } else {
+  //       _change[edge.neighbour] += edge.weight;
+  //     }
+  //   }
+  //   break;
+  // case NOT_CUT_SET:
+  //   // node moved from CUT_SET to NOT_CUT_SET
+  //   // all incoming edges from nodes that are in NOT_CUT_SET
+  //   // increase cut size when flipping
+  //   // all incoming edges from nodes that are in CUT_SET
+  //   // reduce cut size when flipping
+  //   for (const auto &edge : _adj_list->in_edges[nodeID]) {
+  //     if (_part[edge.neighbour] == CUT_SET) {
+  //       _change[edge.neighbour] -= edge.weight;
+  //     } else {
+  //       _change[edge.neighbour] += edge.weight;
+  //     }
+  //   }
+  //   for (const auto &edge : _adj_list->out_edges[nodeID]) {
+  //     if (_part[edge.neighbour] == NOT_CUT_SET) {
+  //       _change[edge.neighbour] += edge.weight;
+  //     } else {
+  //       _change[edge.neighbour] -= edge.weight;
+  //     }
+  //   }
+  //   break;
+  // }
+
   if (_cut_weight > _max_cut_weight) {
     _max_cut_weight = _cut_weight;
   }
@@ -76,11 +97,13 @@ void Algorithm::flipNodes(std::vector<int> nodeIDs) {
 
 bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
   auto tmp_part = _part;
+  auto tmp_change = _change;
   auto tmp_max_weight = _max_cut_weight;
   auto tmp_cut_weight = _cut_weight;
   flipNodes(nodeIDs);
   if (tmp_cut_weight > _cut_weight) {
     _part = std::move(tmp_part);
+    _change = std::move(tmp_change);
     _cut_weight = tmp_cut_weight;
     _max_cut_weight = tmp_max_weight;
     return false;
@@ -89,7 +112,7 @@ bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
 }
 
 Cut Algorithm::calcCutSizes() {
-  Cut cut{0, 0};
+  Cut cut{0, 0, _max_cut_weight};
   for (int node = 0; node < _node_count; ++node) {
     for (const auto &edge : _adj_list->out_edges[node]) {
       if (_part[node] != _part[edge.neighbour]) {

@@ -7,12 +7,11 @@ namespace maxcut {
 
 void UnifActivityAlgorithm::run() {
   constexpr int START_ACTIVITY = 5;
-  constexpr int ACT_MAX = -10;
-  constexpr int ACT_MIN = 10;
+  constexpr int ACT_MIN = -10;
+  constexpr int ACT_MAX = 10;
   constexpr int ACT_INC = 1;
   constexpr int ACT_DEC = 1;
   constexpr double DECAY_RATE = 0.95;
-  auto &adj_list = *_adj_list;
   helper.setUniformRange(0, _node_count);
 
   vector<double> weights(_node_count, START_ACTIVITY);

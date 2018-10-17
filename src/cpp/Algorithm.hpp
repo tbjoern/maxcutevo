@@ -27,7 +27,7 @@ protected:
    * cut_weight if the node is flipped. _part keeps track of each nodes part (1
    * or -1)
    */
-  std::vector<int> _part;
+  std::vector<int> _part, _change;
   // total current weight of the cut
   int _cut_weight, _max_cut_weight;
   int _node_count;

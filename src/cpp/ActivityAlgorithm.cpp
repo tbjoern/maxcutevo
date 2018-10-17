@@ -12,9 +12,9 @@ namespace maxcut {
 
 void ActivityAlgorithm::run() {
   constexpr int START_ACTIVITY = 10;
-  constexpr int ACT_INC = 1;
+  constexpr int ACT_INC = 5;
   constexpr int ACT_DEC = 1;
-  constexpr int ACT_MAX = 20;
+  constexpr int ACT_MAX = 100;
   constexpr int ACT_MIN = 1;
   // constexpr int DECAY_TIME = 10000;
   constexpr double DECAY_RATE = 0.95;
@@ -85,9 +85,6 @@ void ActivityAlgorithm::run() {
     for (auto &weight : weights) {
       weight = ceil(weight * DECAY_RATE);
     }
-    // ++decay_timer;
-    // if (decay_timer == DECAY_TIME) {
-    // }
   }
 }
 

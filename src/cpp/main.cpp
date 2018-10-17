@@ -11,6 +11,7 @@
 #include <algorithm>
 //#include <experimental/filesystem>
 #include <filesystem>
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -87,8 +88,9 @@ int main(int argc, char *argv[]) {
     const auto &results_for_file = results[i];
     cout << filenames[i] << endl;
     for (const auto run : results_for_file) {
-      cout << run.algorithmName << ": " << run.cut.size << "|"
-           << run.cut.inverse_size << " in " << run.time << "ms" << endl;
+      cout << setw(25) << run.algorithmName << ": " << setw(7)
+           << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
+           << run.cut.inverse_size << setw(9) << run.time << "ms" << endl;
     }
     cout << endl;
   }
