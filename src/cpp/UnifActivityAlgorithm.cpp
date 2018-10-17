@@ -18,7 +18,7 @@ void UnifActivityAlgorithm::run() {
 
   const int activity_mod = _reverse ? -1 : 1;
 
-  while (evaluation_count < 3000) {
+  while (!stop) {
     vector<int> nodes_to_flip;
     for (int node = 0; node < _node_count; ++node) {
       if (helper.sampleProbability(helper.sigmoid(weights[node]))) {
