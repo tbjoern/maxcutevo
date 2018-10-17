@@ -4,15 +4,9 @@
 #include <iostream>
 #include <unordered_set>
 
-namespace {
-/**
- * for every node that is part of the CUT_SET the weight of the outgoing edges
- * that have an endpoint in the NOT_CUT_SET is counted towards the cut size.
- */
-enum side { CUT_SET = -1, NOT_CUT_SET = 1 };
-} // namespace
-
 namespace maxcut {
+
+using maxcut::side;
 
 void Algorithm::init() {
   const AdjList &adj_list = *_adj_list;
@@ -82,11 +76,13 @@ void Algorithm::flipNodes(std::vector<int> nodeIDs) {
 
 bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
   auto tmp_part = _part;
+  auto tmp_max_weight = _max_cut_weight;
   auto tmp_cut_weight = _cut_weight;
   flipNodes(nodeIDs);
-  if (tmp_cut_weight >= _cut_weight) {
+  if (tmp_cut_weight > _cut_weight) {
     _part = std::move(tmp_part);
     _cut_weight = tmp_cut_weight;
+    _max_cut_weight = tmp_max_weight;
     return false;
   }
   return true;
@@ -105,7 +101,7 @@ Cut Algorithm::calcCutSizes() {
       }
     }
   }
-  if (_max_cut_weight != cut.inverse_size && _max_cut_weight != cut.size) {
+  if (_cut_weight != cut.inverse_size && _cut_weight != cut.size) {
     std::cout << "Actual cut weight and tracked cut weight do not match. "
               << this->name() << " actual:" << cut.size << "|"
               << cut.inverse_size << " tracked:" << _max_cut_weight

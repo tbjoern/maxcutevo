@@ -6,6 +6,12 @@
 
 namespace maxcut {
 
+/**
+ * for every node that is part of the CUT_SET the weight of the outgoing edges
+ * that have an endpoint in the NOT_CUT_SET is counted towards the cut size.
+ */
+enum side { CUT_SET = -1, NOT_CUT_SET = 1 };
+
 class Algorithm {
 private:
   /**

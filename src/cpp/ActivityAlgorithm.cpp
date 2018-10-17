@@ -1,4 +1,5 @@
 #include "ActivityAlgorithm.hpp"
+#include "Algorithm.hpp"
 #include "MathHelper.hpp"
 #include "types.hpp"
 #include <iostream>
@@ -10,10 +11,11 @@ namespace {}
 namespace maxcut {
 
 void ActivityAlgorithm::run() {
-  const auto &adj_list = *_adj_list;
-  constexpr int START_ACTIVITY = 100;
-  constexpr int ACT_INC = 200;
-  constexpr int ACT_DEC = 30;
+  constexpr int START_ACTIVITY = 10;
+  constexpr int ACT_INC = 1;
+  constexpr int ACT_DEC = 1;
+  constexpr int ACT_MAX = 20;
+  constexpr int ACT_MIN = 1;
   // constexpr int DECAY_TIME = 10000;
   constexpr double DECAY_RATE = 0.95;
   vector<int> pop(_node_count), weights(_node_count, START_ACTIVITY);
@@ -39,27 +41,43 @@ void ActivityAlgorithm::run() {
       }
 
       for (const auto node : nodes_to_flip) {
-        for (const auto &edge : adj_list.in_edges[node]) {
-          auto &neighbour = edge.neighbour;
-          if (_part[neighbour] == _part[node]) {
-            weights[neighbour] -= ACT_DEC * activity_mod;
-          } else {
-            weights[neighbour] += ACT_INC * activity_mod;
+        switch (_part[node]) {
+        case CUT_SET:
+          for (const auto &edge : _adj_list->out_edges[node]) {
+            switch (_part[edge.neighbour]) {
+            case CUT_SET:
+              weights[edge.neighbour] += ACT_INC * activity_mod;
+              break;
+            case NOT_CUT_SET:
+              weights[edge.neighbour] -= ACT_DEC * activity_mod;
+              break;
+            }
+            if (weights[edge.neighbour] > ACT_MAX) {
+              weights[edge.neighbour] = ACT_MAX;
+            }
+            if (weights[edge.neighbour] < ACT_MIN) {
+              weights[edge.neighbour] = ACT_MIN;
+            }
           }
-          if (weights[neighbour] < 1) {
-            weights[neighbour] = 1;
+          break;
+        case NOT_CUT_SET:
+          for (const auto &edge : _adj_list->in_edges[node]) {
+            switch (_part[edge.neighbour]) {
+            case CUT_SET:
+              weights[edge.neighbour] -= ACT_DEC * activity_mod;
+              break;
+            case NOT_CUT_SET:
+              weights[edge.neighbour] += ACT_INC * activity_mod;
+              break;
+            }
+            if (weights[edge.neighbour] > ACT_MAX) {
+              weights[edge.neighbour] = ACT_MAX;
+            }
+            if (weights[edge.neighbour] < ACT_MIN) {
+              weights[edge.neighbour] = ACT_MIN;
+            }
           }
-        }
-        for (const auto &edge : adj_list.out_edges[node]) {
-          auto &neighbour = edge.neighbour;
-          if (_part[neighbour] == _part[node]) {
-            weights[neighbour] -= ACT_DEC * activity_mod;
-          } else {
-            weights[neighbour] += ACT_INC * activity_mod;
-          }
-          if (weights[neighbour] < 1) {
-            weights[neighbour] = 1;
-          }
+          break;
         }
       }
     }
