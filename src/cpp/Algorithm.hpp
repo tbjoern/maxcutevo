@@ -70,6 +70,8 @@ public:
   Cut calcSolution(const AdjList &);
 
   virtual std::string name() = 0;
+
+  int evaluation_count;
 };
 
 } // namespace maxcut

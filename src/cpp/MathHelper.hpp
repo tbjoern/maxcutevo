@@ -71,11 +71,7 @@ public:
     return result;
   }
 
-  double sigmoid(double x) {
-    constexpr double upperbound = 2;
-    constexpr double stretch = 4;
-    return 1 / (upperbound * (1 + exp(-1 * x / stretch)));
-  }
+  double sigmoid(double x) { return (x / 8) / ((abs(x / 2) + 1)) + 1 / 4; }
 
   bool sampleProbability(double probabilty) {
     setRealRange(0, 1);

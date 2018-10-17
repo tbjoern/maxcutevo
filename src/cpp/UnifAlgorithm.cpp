@@ -8,7 +8,7 @@ namespace maxcut {
 void UnifAlgorithm::run() {
   helper.setUniformRange(0, _node_count);
 
-  while (!stop) {
+  while (evaluation_count < 3000) {
     vector<int> nodes_to_flip;
     for (int node = 0; node < _node_count; ++node) {
       if (helper.getInt() == 1) {
@@ -18,6 +18,7 @@ void UnifAlgorithm::run() {
     if (nodes_to_flip.size()) {
       flipNodesIfBetterCut(nodes_to_flip);
     }
+    evaluation_count++;
   }
 }
 } // namespace maxcut

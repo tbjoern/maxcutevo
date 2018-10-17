@@ -27,6 +27,7 @@ struct RunResult {
   std::string algorithmName;
   Cut cut;
   double time;
+  int evaluation_count;
 };
 
 } // namespace maxcut

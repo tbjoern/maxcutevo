@@ -19,6 +19,7 @@ void PMUTAlgorithm::run() {
     auto k = helper.getIntFromPowerLawDistribution(_node_count);
     auto nodes_to_flip = helper.chooseKUnique(pop, weights, k);
     flipNodesIfBetterCut(nodes_to_flip);
+    evaluation_count++;
   }
 }
 

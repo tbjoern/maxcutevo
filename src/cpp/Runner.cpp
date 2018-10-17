@@ -13,7 +13,7 @@ RunResult Runner::runAlgorithm(const AdjList &adj_list, Algorithm &algorithm) {
                           stop_time - start_time)
                           .count();
 
-  return {algorithm.name(), cut_size, total_time};
+  return {algorithm.name(), cut_size, total_time, algorithm.evaluation_count};
 }
 
 } // namespace maxcut

@@ -29,6 +29,7 @@ void GreedyAlgorithm::run() {
       flipNode(best_node);
       improved = true;
     }
+    evaluation_count++;
   } while (improved && !stop);
   //   }
 }

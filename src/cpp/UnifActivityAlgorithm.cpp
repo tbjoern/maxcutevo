@@ -18,7 +18,7 @@ void UnifActivityAlgorithm::run() {
 
   const int activity_mod = _reverse ? -1 : 1;
 
-  while (!stop) {
+  while (evaluation_count < 3000) {
     vector<int> nodes_to_flip;
     for (int node = 0; node < _node_count; ++node) {
       if (helper.sampleProbability(helper.sigmoid(weights[node]))) {
@@ -78,6 +78,7 @@ void UnifActivityAlgorithm::run() {
     for (auto &weight : weights) {
       weight = weight * DECAY_RATE;
     }
+    evaluation_count++;
   }
 }
 } // namespace maxcut

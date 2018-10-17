@@ -85,6 +85,7 @@ void ActivityAlgorithm::run() {
     for (auto &weight : weights) {
       weight = ceil(weight * DECAY_RATE);
     }
+    evaluation_count++;
   }
 }
 

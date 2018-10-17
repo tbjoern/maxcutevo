@@ -93,6 +93,7 @@ void ActivityDeterministicAlgorithm::run() {
         }
       }
     }
+    evaluation_count++;
   }
 }
 

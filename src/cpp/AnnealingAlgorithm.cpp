@@ -18,6 +18,7 @@ void AnnealingAlgorithm::run() {
     if (!(helper.getReal() > exp(heat * changeByFlip(k) / _max_cut_weight))) {
       flipNode(k);
     }
+    evaluation_count++;
   }
 }
 

@@ -53,6 +53,7 @@ void Algorithm::init() {
   _node_count = adj_list.node_count;
   _cut_weight = 0;
   _max_cut_weight = 0;
+  evaluation_count = 0;
 }
 
 int Algorithm::changeByFlip(int nodeID) { return _change[nodeID]; }

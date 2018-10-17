@@ -67,15 +67,15 @@ int main(int argc, char *argv[]) {
   vector<shared_ptr<Algorithm>> algorithms;
 
   algorithms.push_back(make_shared<UnifAlgorithm>());
-  algorithms.push_back(make_shared<AnnealingAlgorithm>());
-  algorithms.push_back(make_shared<PMUTAlgorithm>());
-  algorithms.push_back(make_shared<FMUTAlgorithm>());
-  algorithms.push_back(make_shared<ActivityAlgorithm>(false));
+  // algorithms.push_back(make_shared<AnnealingAlgorithm>());
+  // algorithms.push_back(make_shared<PMUTAlgorithm>());
+  // algorithms.push_back(make_shared<FMUTAlgorithm>());
+  // algorithms.push_back(make_shared<ActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityAlgorithm>(true));
   algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
-  algorithms.push_back(make_shared<GreedyAlgorithm>());
-  algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
+  // algorithms.push_back(make_shared<GreedyAlgorithm>());
+  // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(true));
 
   auto filenames = read_directory(dirname);
@@ -95,7 +95,8 @@ int main(int argc, char *argv[]) {
     for (const auto run : results_for_file) {
       cout << setw(25) << run.algorithmName << ": " << setw(7)
            << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
-           << run.cut.inverse_size << setw(9) << run.time << "ms" << endl;
+           << run.cut.inverse_size << setw(9) << run.time << "ms " << setw(10)
+           << run.evaluation_count << endl;
     }
     cout << endl;
   }
