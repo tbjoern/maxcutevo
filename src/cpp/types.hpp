@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,7 +13,10 @@ struct Edge {
 
 struct AdjList {
   AdjList(int nodes) : in_edges(nodes), out_edges(nodes), node_count(nodes) {}
-  ~AdjList() {}
+  ~AdjList() = default;
+
+  AdjList(const AdjList &) = delete;
+  AdjList(AdjList &&) = default;
 
   std::vector<std::vector<Edge>> in_edges;
   std::vector<std::vector<Edge>> out_edges;

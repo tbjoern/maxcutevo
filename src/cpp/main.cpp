@@ -68,9 +68,9 @@ int main(int argc, char *argv[]) {
 
   vector<shared_ptr<Algorithm>> algorithms;
 
-  algorithms.push_back(make_shared<UnifAlgorithm>());
+  // algorithms.push_back(make_shared<UnifAlgorithm>());
   // algorithms.push_back(make_shared<AnnealingAlgorithm>());
-  algorithms.push_back(make_shared<PMUTAlgorithm>());
+  // algorithms.push_back(make_shared<PMUTAlgorithm>());
   // algorithms.push_back(make_shared<FMUTAlgorithm>());
   // algorithms.push_back(make_shared<ActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityAlgorithm>(true));

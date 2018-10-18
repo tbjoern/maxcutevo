@@ -9,7 +9,6 @@ using namespace std;
 namespace maxcut {
 
 void AnnealingAlgorithm::run() {
-  AdjList adj_list = *_adj_list;
   helper.setRealRange(0, 1);
   helper.setUniformRange(0, _adj_list->node_count - 1);
 

@@ -72,51 +72,6 @@ void Algorithm::flipNode(int nodeID) {
         edge.weight * _part[nodeID] * _part[edge.neighbour];
   }
 
-  // switch (_part[nodeID]) {
-  // case CUT_SET:
-  //   // node moved from NOT_CUT_SET to CUT_SET
-  //   // all incoming edges from nodes that are in NOT_CUT_SET
-  //   // do not increase cut size when flipping
-  //   // all incoming edges from nodes that are in CUT_SET
-  //   // do not reduce cut size when flipping
-  //   for (const auto &edge : _adj_list->in_edges[nodeID]) {
-  //     if (_part[edge.neighbour] == NOT_CUT_SET) {
-  //       _change[edge.neighbour] -= edge.weight;
-  //     } else {
-  //       _change[edge.neighbour] += edge.weight;
-  //     }
-  //   }
-  //   for (const auto &edge : _adj_list->out_edges[nodeID]) {
-  //     if (_part[edge.neighbour] == NOT_CUT_SET) {
-  //       _change[edge.neighbour] -= edge.weight;
-  //     } else {
-  //       _change[edge.neighbour] += edge.weight;
-  //     }
-  //   }
-  //   break;
-  // case NOT_CUT_SET:
-  //   // node moved from CUT_SET to NOT_CUT_SET
-  //   // all incoming edges from nodes that are in NOT_CUT_SET
-  //   // increase cut size when flipping
-  //   // all incoming edges from nodes that are in CUT_SET
-  //   // reduce cut size when flipping
-  //   for (const auto &edge : _adj_list->in_edges[nodeID]) {
-  //     if (_part[edge.neighbour] == CUT_SET) {
-  //       _change[edge.neighbour] -= edge.weight;
-  //     } else {
-  //       _change[edge.neighbour] += edge.weight;
-  //     }
-  //   }
-  //   for (const auto &edge : _adj_list->out_edges[nodeID]) {
-  //     if (_part[edge.neighbour] == NOT_CUT_SET) {
-  //       _change[edge.neighbour] += edge.weight;
-  //     } else {
-  //       _change[edge.neighbour] -= edge.weight;
-  //     }
-  //   }
-  //   break;
-  // }
-
   if (_cut_weight > _max_cut_weight) {
     _max_cut_weight = _cut_weight;
   }
@@ -129,19 +84,6 @@ void Algorithm::flipNodes(std::vector<int> nodeIDs) {
 }
 
 bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
-  // auto tmp_part = _part;
-  // auto tmp_change = _change;
-  // auto tmp_max_weight = _max_cut_weight;
-  // auto tmp_cut_weight = _cut_weight;
-  // flipNodes(nodeIDs);
-  // if (tmp_cut_weight > _cut_weight) {
-  //   _part = std::move(tmp_part);
-  //   _change = std::move(tmp_change);
-  //   _cut_weight = tmp_cut_weight;
-  //   _max_cut_weight = tmp_max_weight;
-  //   return false;
-  // }
-  // return true;
   auto prev_cut_weight = _cut_weight;
   flipNodes(nodeIDs);
   if (prev_cut_weight > _cut_weight) {

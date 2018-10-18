@@ -26,7 +26,7 @@ void runner_thread(const AdjList &adj_list,
 void test() {}
 Batch::Batch(AdjList &&adj_list,
              std::vector<std::shared_ptr<Algorithm>> &algorithms)
-    : _adj_list(adj_list), _algorithms(algorithms) {}
+    : _adj_list(std::move(adj_list)), _algorithms(algorithms) {}
 
 std::vector<RunResult> Batch::run() const {
 
