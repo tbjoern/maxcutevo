@@ -7,7 +7,7 @@ namespace maxcut {
 /**
  * Always chooses the vertex with the highest cut weight gain.
  */
-class GreedyAlgorithm : public Algorithm {
+class GreedyAlgorithm : public virtual Algorithm {
 public:
   void run() override;
 

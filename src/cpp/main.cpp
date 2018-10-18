@@ -6,6 +6,7 @@
 #include "FMUTAlgorithm.hpp"
 #include "GreedyActivityAlgorithm.hpp"
 #include "GreedyAlgorithm.hpp"
+#include "GreedyPMUTAlgorithm.hpp"
 #include "MathHelper.hpp"
 #include "PMUTAlgorithm.hpp"
 #include "UnifActivityAlgorithm.hpp"
@@ -79,6 +80,7 @@ int main(int argc, char *argv[]) {
   algorithms.push_back(make_shared<GreedyActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(true));
+  algorithms.push_back(make_shared<GreedyPMUTAlgorithm>());
 
   auto filenames = read_directory(dirname);
   sort(filenames.begin(), filenames.end());

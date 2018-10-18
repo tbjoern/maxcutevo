@@ -8,7 +8,7 @@ namespace maxcut {
  * Evolutionary Algorithm for MaxCut that chooses k nodes to flip.
  * k is chosen from a power law distribution.
  */
-class PMUTAlgorithm : public Algorithm {
+class PMUTAlgorithm : public virtual Algorithm {
 public:
   void run() override;
 

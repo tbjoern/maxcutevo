@@ -16,6 +16,7 @@ set(sources
     GreedyAlgorithm.cpp
     ActivityDeterministicAlgorithm.cpp
     GreedyActivityAlgorithm.cpp
+    GreedyPMUTAlgorithm.cpp
 )
 
 set(includes
@@ -34,6 +35,7 @@ set(includes
     GreedyAlgorithm.hpp
     ActivityDeterministicAlgorithm.hpp
     GreedyActivityAlgorithm.hpp
+    GreedyPMUTAlgorithm.hpp
 )
 
 set(libraries
