@@ -4,6 +4,7 @@
 #include "AnnealingAlgorithm.hpp"
 #include "Benchmark.hpp"
 #include "FMUTAlgorithm.hpp"
+#include "GreedyActivityAlgorithm.hpp"
 #include "GreedyAlgorithm.hpp"
 #include "MathHelper.hpp"
 #include "PMUTAlgorithm.hpp"
@@ -68,13 +69,14 @@ int main(int argc, char *argv[]) {
 
   algorithms.push_back(make_shared<UnifAlgorithm>());
   // algorithms.push_back(make_shared<AnnealingAlgorithm>());
-  // algorithms.push_back(make_shared<PMUTAlgorithm>());
+  algorithms.push_back(make_shared<PMUTAlgorithm>());
   // algorithms.push_back(make_shared<FMUTAlgorithm>());
   // algorithms.push_back(make_shared<ActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityAlgorithm>(true));
-  algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
+  // algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
-  // algorithms.push_back(make_shared<GreedyAlgorithm>());
+  algorithms.push_back(make_shared<GreedyAlgorithm>());
+  algorithms.push_back(make_shared<GreedyActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(true));
 
@@ -100,6 +102,6 @@ int main(int argc, char *argv[]) {
     }
     cout << endl;
   }
-  cout << "Random seed was: " << RANDOM_SEED << endl;
+  cout << "Random seed is: " << RANDOM_SEED << endl;
   return 0;
 }

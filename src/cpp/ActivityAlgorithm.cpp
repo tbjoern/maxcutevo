@@ -10,15 +10,69 @@ namespace {}
 
 namespace maxcut {
 
+void ActivityAlgorithm::updateActivity(const std::vector<int> &flipped_nodes) {
+  for (const auto node : flipped_nodes) {
+    _activity[node] = START_ACTIVITY;
+  }
+  for (const auto node : flipped_nodes) {
+    switch (_part[node]) {
+    case CUT_SET:
+      for (const auto &edge : _adj_list->out_edges[node]) {
+        switch (_part[edge.neighbour]) {
+        case CUT_SET:
+          _activity[edge.neighbour] += ACT_INC * _reverse;
+          break;
+        case NOT_CUT_SET:
+          _activity[edge.neighbour] -= ACT_DEC * _reverse;
+          break;
+        }
+        if (_activity[edge.neighbour] > ACT_MAX) {
+          _activity[edge.neighbour] = ACT_MAX;
+        }
+        if (_activity[edge.neighbour] < ACT_MIN) {
+          _activity[edge.neighbour] = ACT_MIN;
+        }
+      }
+      break;
+    case NOT_CUT_SET:
+      for (const auto &edge : _adj_list->in_edges[node]) {
+        switch (_part[edge.neighbour]) {
+        case CUT_SET:
+          _activity[edge.neighbour] -= ACT_DEC * _reverse;
+          break;
+        case NOT_CUT_SET:
+          _activity[edge.neighbour] += ACT_INC * _reverse;
+          break;
+        }
+        if (_activity[edge.neighbour] > ACT_MAX) {
+          _activity[edge.neighbour] = ACT_MAX;
+        }
+        if (_activity[edge.neighbour] < ACT_MIN) {
+          _activity[edge.neighbour] = ACT_MIN;
+        }
+      }
+      break;
+    }
+  }
+}
+
+void ActivityAlgorithm::decayActivity() {
+  for (auto &weight : _activity) {
+    weight = ceil(weight * DECAY_RATE);
+  }
+}
+
+void ActivityAlgorithm::init() {
+  Algorithm::init();
+  initActivity();
+}
+
+void ActivityAlgorithm::initActivity() {
+  _activity = std::vector<double>(_node_count, START_ACTIVITY);
+}
+
 void ActivityAlgorithm::run() {
-  constexpr int START_ACTIVITY = 10;
-  constexpr int ACT_INC = 5;
-  constexpr int ACT_DEC = 1;
-  constexpr int ACT_MAX = 100;
-  constexpr int ACT_MIN = 1;
-  // constexpr int DECAY_TIME = 10000;
-  constexpr double DECAY_RATE = 0.95;
-  vector<int> pop(_node_count), weights(_node_count, START_ACTIVITY);
+  vector<int> pop(_node_count);
   for (int node = 0; node < _node_count; ++node) {
     pop[node] = node;
   }
@@ -26,66 +80,17 @@ void ActivityAlgorithm::run() {
   helper.setPowerLawParam(2);
   helper.setUniformRange(0, _node_count);
 
-  const int activity_mod = _reverse ? -1 : 1;
-
-  // int decay_timer = 0;
-
   while (!stop) {
     auto k = helper.getIntFromPowerLawDistribution(_node_count);
-    auto nodes_to_flip = helper.chooseKUnique(pop, weights, k);
+    auto nodes_to_flip = helper.chooseKUnique(pop, _activity, k);
     bool flipped = flipNodesIfBetterCut(nodes_to_flip);
 
     if (flipped) {
-      for (const auto node : nodes_to_flip) {
-        weights[node] = START_ACTIVITY;
-      }
+      updateActivity(nodes_to_flip);
+      decayActivity();
 
-      for (const auto node : nodes_to_flip) {
-        switch (_part[node]) {
-        case CUT_SET:
-          for (const auto &edge : _adj_list->out_edges[node]) {
-            switch (_part[edge.neighbour]) {
-            case CUT_SET:
-              weights[edge.neighbour] += ACT_INC * activity_mod;
-              break;
-            case NOT_CUT_SET:
-              weights[edge.neighbour] -= ACT_DEC * activity_mod;
-              break;
-            }
-            if (weights[edge.neighbour] > ACT_MAX) {
-              weights[edge.neighbour] = ACT_MAX;
-            }
-            if (weights[edge.neighbour] < ACT_MIN) {
-              weights[edge.neighbour] = ACT_MIN;
-            }
-          }
-          break;
-        case NOT_CUT_SET:
-          for (const auto &edge : _adj_list->in_edges[node]) {
-            switch (_part[edge.neighbour]) {
-            case CUT_SET:
-              weights[edge.neighbour] -= ACT_DEC * activity_mod;
-              break;
-            case NOT_CUT_SET:
-              weights[edge.neighbour] += ACT_INC * activity_mod;
-              break;
-            }
-            if (weights[edge.neighbour] > ACT_MAX) {
-              weights[edge.neighbour] = ACT_MAX;
-            }
-            if (weights[edge.neighbour] < ACT_MIN) {
-              weights[edge.neighbour] = ACT_MIN;
-            }
-          }
-          break;
-        }
-      }
+      evaluation_count++;
     }
-
-    for (auto &weight : weights) {
-      weight = ceil(weight * DECAY_RATE);
-    }
-    evaluation_count++;
   }
 }
 

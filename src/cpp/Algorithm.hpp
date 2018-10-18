@@ -13,15 +13,14 @@ namespace maxcut {
 enum side { CUT_SET = -1, NOT_CUT_SET = 1 };
 
 class Algorithm {
-private:
+protected:
   /**
    * initializes the tracking of the cut state, e.g. _change, _part and
    * _cut_weight
    * resets helper variables to default
    */
-  void init();
+  virtual void init();
 
-protected:
   void calculateChange();
 
   std::pair<int, int> calculateCurrentCutSize();
