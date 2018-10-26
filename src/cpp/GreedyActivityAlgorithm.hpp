@@ -18,7 +18,9 @@ public:
 
   GreedyActivityAlgorithm(bool reverse) : ActivityAlgorithm(reverse) {}
 
-  std::string name() override { return "greedy activity"; }
+  std::string name() override {
+    return _reverse == -1 ? "greedy activity rev" : "greedy activity";
+  }
 };
 
 } // namespace maxcut

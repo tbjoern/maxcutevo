@@ -16,6 +16,7 @@ static std::map<std::string, FileExtension> filename_map = {
     {".mtx", MTXREADER},
     {".rud", EDGELIST},
     {".mc", EDGELIST},
+    {".txt", EDGELIST},
     {".cnf", CNFREADER}};
 
 class FileReader {
