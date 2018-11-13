@@ -1,4 +1,7 @@
 import random
+from collections import namedtuple
+
+IterationData = namedtuple('IterationData', 'iteration cut_weight')
 
 """MaxCut Algoritm Framework Class"""
 class Algorithm:
@@ -11,7 +14,7 @@ class Algorithm:
         for node in graph.in_edges:
             self.change[node] = 0
             self.side[node] = -1
-        for node, edges in graph.out_edges:
+        for node, edges in graph.out_edges.items():
             self.change[node] = 0
             for edge in edges:
                 self.change[node] += edge.weight
@@ -32,16 +35,21 @@ class Algorithm:
     
     def iterate(self):
         self.iteration += 1
-        return (self.iteration, self.cut_weight)
+        return IterationData(self.iteration, self.cut_weight)
 
 class UnifAlgorithm(Algorithm):
+    def __str__(self):
+        return "UnifAlgorithm"
+
     def iterate(self):
         chosen_nodes = []
+        sample_threshold = 1/len(self.graph.nodes)
         while not chosen_nodes:
             for node in self.graph.nodes:
                 # sample with probabilty 1/n
-                sample = random.randrange(len(self.graph.nodes))
-                if sample == 0:
+                # sample = random.randrange(len(self.graph.nodes))
+                sample = random.random()
+                if sample <= sample_threshold:
                     chosen_nodes.append(node)
         old_cut_weight = self.cut_weight
         self.flip_nodes(chosen_nodes)
