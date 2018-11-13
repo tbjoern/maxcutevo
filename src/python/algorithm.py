@@ -71,13 +71,14 @@ class unifAlgorithm(Algorithm):
 class pmutAlgorithm(Algorithm):
     def __init__(self, graph, power_law_beta):
         self.power_law_beta = power_law_beta
+        self.node_list = list(graph.nodes)
         super().__init__(graph)
 
     def __str__(self):
         return "pmut"
 
     def iterate(self):
-        k = randomPowerLawNumber(self.power_law_beta, 0, len(self.graph.nodes))
-        chosen_nodes = random.choices(self.graph.nodes, k=k)
+        k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
+        chosen_nodes = random.choices(self.node_list, k=k)
         self.flip_nodes_if_improvement(chosen_nodes)
         return super().iterate()

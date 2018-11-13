@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
         c = class_for_name('algorithm', sys.argv[3])
 
-        runner.run_algorithm(c)
+        runner.run_algorithm(c, *[int(x) for x in sys.argv[4:]])
     import cProfile
     cProfile.run('main()')
 
