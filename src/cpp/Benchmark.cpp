@@ -110,8 +110,8 @@ std::vector<std::vector<RunResult>> Benchmark::run() const {
   FileReader *reader;
   for (int fileID = 0; fileID < _filenames.size(); ++fileID) {
 
-    std::cout << "Reading file " << _filenames[fileID];
-    std::cout.flush();
+    // std::cout << "Reading file " << _filenames[fileID];
+    // std::cout.flush();
 
     std::string fileextension;
     try {
@@ -135,15 +135,15 @@ std::vector<std::vector<RunResult>> Benchmark::run() const {
 
     AdjList adj_list = reader->readFile(_filenames[fileID]);
 
-    std::cout << " ...done" << std::endl;
+    // std::cout << " ...done" << std::endl;
 
-    std::cout << "Starting batch";
-    std::cout.flush();
+    // std::cout << "Starting batch";
+    // std::cout.flush();
 
     Batch batch(std::move(adj_list), _algorithms);
     results[fileID] = batch.run();
 
-    std::cout << "...done" << std::endl;
+    // std::cout << "...done" << std::endl;
     delete reader;
   }
   return results;

@@ -78,6 +78,7 @@ int main(int argc, char *argv[]) {
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
   algorithms.push_back(make_shared<GreedyAlgorithm>());
   algorithms.push_back(make_shared<GreedyActivityAlgorithm>(false));
+  algorithms.push_back(make_shared<GreedyActivityAlgorithm>(true));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(true));
   algorithms.push_back(make_shared<GreedyPMUTAlgorithm>());
@@ -93,17 +94,32 @@ int main(int argc, char *argv[]) {
     });
   });
 
+  std::vector<std::vector<int>> output_per_algorithm(algorithms.size());
+
   for (int i = 0; i < results.size(); ++i) {
     const auto &results_for_file = results[i];
-    cout << filenames[i] << endl;
-    for (const auto run : results_for_file) {
-      cout << setw(25) << run.algorithmName << ": " << setw(7)
-           << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
-           << run.cut.inverse_size << setw(9) << run.time << "ms " << setw(10)
-           << run.evaluation_count << endl;
+    // cout << filenames[i] << endl;
+    // for (const auto run : results_for_file) {
+    //   cout << setw(25) << run.algorithmName << ": " << setw(7)
+    //        << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
+    //        << run.cut.inverse_size << setw(9) << run.time << "ms " <<
+    //        setw(10)
+    //        << run.evaluation_count << endl;
+    // }
+    for (int j = 0; j < results_for_file.size(); ++j) {
+      output_per_algorithm[j].push_back(results_for_file[j].cut.max_size);
+    }
+    // cout << endl;
+  }
+
+  for (int i = 0; i < output_per_algorithm.size(); ++i) {
+    cout << results[0][i].algorithmName;
+    for (auto number : output_per_algorithm[i]) {
+      cout << "," << number;
     }
     cout << endl;
   }
-  cout << "Random seed is: " << RANDOM_SEED << endl;
+
+  // cout << "Random seed is: " << RANDOM_SEED << endl;
   return 0;
 }
