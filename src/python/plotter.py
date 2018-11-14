@@ -1,21 +1,34 @@
 import csv
 import matplotlib.pyplot as plt
 
-class DataIt():
-    def __init__(self, data, pos):
-        self.index = 0
-        self.pos = pos
-        self.data = data
+class Plotter:
+    def __init__(self, csv_name, mapping_name=None):
+        self.colors = ['b','g','r','m','c','y','k']
+        self.data = {}
+        self.labels = {}
+        if mapping_name is None:
+            mapping_name = csv_name + '_mapping'
+        with open(mapping_name, "r") as f:
+            csvreader = csv.DictReader(f, delimiter=',')
+            for row in csvreader:
+                algo_id = int(row["id"])
+                self.labels[algo_id] = row["name"]
+                self.data[algo_id] = { 'iteration':[], 'cut_weight':[] }
+        with open(csv_name, "r") as f:
+            csvreader = csv.DictReader(f, delimiter=',')
+            for row in csvreader:
+                algo_id = int(row["algorithm"])
+                self.data[algo_id]['iteration'].append(int(row['iteration']))
+                self.data[algo_id]['cut_weight'].append(int(row['cut_weight']))
 
-    def __iter__(self):
-        return self
+    def prepare_plot(self):
+        for algo_id, data in self.data.items():
+            plt.plot(data['iteration'], data['cut_weight'], self.colors[algo_id%len(self.colors)] + '-', label=self.labels[algo_id])
+        plt.legend(loc='lower right')
 
-    def __next__(self):
-        if self.index >= len(self.data):
-            raise StopIteration()
-        value = self.data[self.index][self.pos]
-        self.index += 1
-        return value
+    def show_plot(self):
+        plt.show()
+
 
 if __name__ == "__main__":
     import sys
@@ -25,29 +38,9 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         mapping_filename = sys.argv[2]
     else:
-        mapping_filename = csv_filename + '_mapping'
-    data = {}
-    labels = {}
-    with open(mapping_filename, "r") as f:
-        csvreader = csv.DictReader(f, delimiter=',')
-        for row in csvreader:
-            algo_id = int(row["id"])
-            labels[algo_id] = row["name"]
-            data[algo_id] = { 'iteration':[], 'cut_weight':[] }
-    with open(csv_filename, "r") as f:
-        csvreader = csv.DictReader(f, delimiter=',')
-        for row in csvreader:
-            algo_id = int(row["algorithm"])
-            data[algo_id]['iteration'].append(int(row['iteration']))
-            data[algo_id]['cut_weight'].append(int(row['cut_weight']))
+        mapping_filename = None
 
-    colors = ['b','g','r','m','c','y','k']
-
-    plot_param = []
-
-    for algo_id, data in data.items():
-        plt.plot(data['iteration'], data['cut_weight'], colors[algo_id%len(colors)] + '-', label=labels[algo_id])
-
-    plt.legend(loc='lower right')
-    plt.show()
+    plotter = Plotter(csv_filename, mapping_filename)
+    plotter.prepare_plot()
+    plotter.show_plot()
 
