@@ -51,7 +51,75 @@ class Algorithm:
         self.iteration += 1
         return IterationData(self.iteration, self.cut_weight)
 
-class unifAlgorithm(Algorithm):
+class ActivityAlgorithm(Algorithm):
+    def __init__(self,graph):
+        super().__init__(graph)
+        self.start_activity = 10
+        self.activity_inc = 1
+        self.activity_dec = -1
+        self.activity_max = 20
+        self.activity_min = 1
+        self.activity = {}
+        for node in graph.nodes:
+            self.activity[node] = self.start_activity
+
+    def update_activity(self, flipped_nodes):
+        for node in flipped_nodes:
+            for edge in self.graph.in_edges[node]:
+                if self.side[node] == self.side[edge.neighbour]:
+                    self.activity[edge.neighbour] += self.activity_inc
+                else:
+                    self.activity[edge.neighbour] += self.activity_dec
+                if self.activity[edge.neighbour] > self.activity_max:
+                    self.activity[edge.neighbour] = self.activity_max
+                if self.activity[edge.neighbour] < self.activity_min:
+                    self.activity[edge.neighbour] = self.activity_min
+            for edge in self.graph.out_edges[node]:
+                if self.side[node] == self.side[edge.neighbour]:
+                    self.activity[edge.neighbour] += self.activity_inc
+                else:
+                    self.activity[edge.neighbour] += self.activity_dec
+                if self.activity[edge.neighbour] > self.activity_max:
+                    self.activity[edge.neighbour] = self.activity_max
+                if self.activity[edge.neighbour] < self.activity_min:
+                    self.activity[edge.neighbour] = self.activity_min
+    
+    def choose_k_unique(self, population, weights, k):
+        result = []
+        total_weight = sum(weights.values())
+        node_chosen = {}
+        for node in population:
+            node_chosen[node] = False
+        for _ in range(k):
+            r = random.random() * total_weight
+            cum_weight = 0
+            for node in population:
+                if not node_chosen[node]:
+                    cum_weight += weights[node]
+                    if r <= cum_weight:
+                        result.append(node)
+                        node_chosen[node] = True
+                        break
+        return result
+
+class pmutActivity(ActivityAlgorithm):
+    def __init__(self, graph, power_law_beta):
+        self.power_law_beta = power_law_beta
+        self.node_list = list(graph.nodes)
+        super().__init__(graph)
+
+    def __str__(self):
+        return "pmutActivity_" + str(self.power_law_beta)
+
+    
+    def iterate(self):
+        k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
+        chosen_nodes = self.choose_k_unique(self.node_list, self.activity, k=k)
+        self.flip_nodes_if_improvement(chosen_nodes)
+        return super().iterate()
+
+
+class unif(Algorithm):
     def __str__(self):
         return "unif"
 
@@ -68,14 +136,14 @@ class unifAlgorithm(Algorithm):
         self.flip_nodes_if_improvement(chosen_nodes)
         return super().iterate()
 
-class pmutAlgorithm(Algorithm):
+class pmut(Algorithm):
     def __init__(self, graph, power_law_beta):
         self.power_law_beta = power_law_beta
         self.node_list = list(graph.nodes)
         super().__init__(graph)
 
     def __str__(self):
-        return "pmut"
+        return "pmut_" + str(self.power_law_beta)
 
     def iterate(self):
         k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
