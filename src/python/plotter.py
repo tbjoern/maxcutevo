@@ -19,13 +19,35 @@ class DataIt():
 
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) != 2:
-        print("Usage: plotter.py <csv file>")
-    data_points = []
-    with open(sys.argv[1], "r") as f:
+    if len(sys.argv) < 2:
+        print("Usage: plotter.py <csv file> <mapping file>")
+    csv_filename = sys.argv[1]
+    if len(sys.argv) == 3:
+        mapping_filename = sys.argv[2]
+    else:
+        mapping_filename = csv_filename + '_mapping'
+    data = {}
+    labels = {}
+    with open(mapping_filename, "r") as f:
         csvreader = csv.DictReader(f, delimiter=',')
         for row in csvreader:
-            data_points.append((int(row['iteration']), int(row['cut_weight'])))
-    plt.plot([x for x in DataIt(data_points, 0)], [x for x in DataIt(data_points, 1)], 'b-')
+            algo_id = int(row["id"])
+            labels[algo_id] = row["name"]
+            data[algo_id] = { 'iteration':[], 'cut_weight':[] }
+    with open(csv_filename, "r") as f:
+        csvreader = csv.DictReader(f, delimiter=',')
+        for row in csvreader:
+            algo_id = int(row["algorithm"])
+            data[algo_id]['iteration'].append(int(row['iteration']))
+            data[algo_id]['cut_weight'].append(int(row['cut_weight']))
+
+    colors = ['b','g','r','m','c','y','k']
+
+    plot_param = []
+
+    for algo_id, data in data.items():
+        plt.plot(data['iteration'], data['cut_weight'], colors[algo_id%len(colors)] + '-', label=labels[algo_id])
+
+    plt.legend(loc='lower right')
     plt.show()
 
