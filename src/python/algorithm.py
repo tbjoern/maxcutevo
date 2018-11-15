@@ -54,10 +54,10 @@ class Algorithm:
 class ActivityAlgorithm(Algorithm):
     def __init__(self,graph):
         super().__init__(graph)
-        self.start_activity = 10
-        self.activity_inc = 1
-        self.activity_dec = -1
-        self.activity_max = 20
+        self.start_activity = len(graph.nodes)/10
+        self.activity_inc = len(graph.nodes)/10
+        self.activity_dec = -1*len(graph.nodes)/10
+        self.activity_max = 10*len(graph.nodes)
         self.activity_min = 1
         self.activity = {}
         for node in graph.nodes:
@@ -149,4 +149,19 @@ class pmut(Algorithm):
         k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
         chosen_nodes = random.choices(self.node_list, k=k)
         self.flip_nodes_if_improvement(chosen_nodes)
+        return super().iterate()
+
+class greedy(Algorithm):
+    def __str__(self):
+        return "greedy"
+
+    def iterate(self):
+        maximum = 0
+        best_node = None
+        for node, change in self.change.items():
+            if change > maximum:
+                best_node = node
+                maximum = change
+        if best_node is not None:
+            self.flip_node(best_node)
         return super().iterate()
