@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     batch = Batch(read_config(sys.argv[1]))
     for filename in sys.argv[2:]:
-        logfile = batch.run(filename)
+        logfile = batch.run(filename, 10)
         plotter = Plotter(logfile)
         plotter.prepare_plot()
         plotter.show_plot()

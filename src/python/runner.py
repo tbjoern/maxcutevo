@@ -5,17 +5,13 @@ class Runner:
         self.graph = graph
         self.logger = logger
         self.iterations = iterations
-        self.algorithm_id = 0
-        self.algorithm_id_mapping = {}
 
     def run_algorithm(self, algorithm_class, *algorithm_params):
-        self.algorithm_id_mapping[self.algorithm_id] = algorithm_class(self.graph, *algorithm_params)
-        algorithm = self.algorithm_id_mapping[self.algorithm_id]
-        for i in range(self.iterations):
+        algorithm = algorithm_class(self.graph, *algorithm_params)
+        self.logger.set_algorithm(str(algorithm))
+        for _ in range(self.iterations):
             it_data = algorithm.iterate()
-            self.logger.log(self.algorithm_id, it_data.iteration, it_data.cut_weight)
-        self.algorithm_id += 1
-
+            self.logger.log(it_data.iteration, it_data.cut_weight)
 
 if __name__ == "__main__":
     def class_for_name(module_name, class_name):
