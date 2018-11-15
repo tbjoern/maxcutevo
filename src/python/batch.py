@@ -47,7 +47,6 @@ if __name__ == "__main__":
         number_of_runs = int(sys.argv[3])
 
     batch = Batch(read_config(sys.argv[1]))
-    for filename in sys.argv[2:]:
-        batch.run(filename, number_of_runs)
+    batch.run(sys.argv[2], number_of_runs)
 
     
