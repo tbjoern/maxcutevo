@@ -25,7 +25,7 @@ def read_config(filename):
                 elif entry_type == "algorithm":
                     algorithm_values = value.split()
                     algorithm_class = class_for_name("algorithm", algorithm_values[0])
-                    config["algorithms"].append(AlgorithmConfig(class_obj=algorithm_class, arguments=[int(x) for x in algorithm_values[1:]]))
+                    config["algorithms"].append(AlgorithmConfig(class_obj=algorithm_class, arguments=[float(x) for x in algorithm_values[1:]]))
             except Exception as x:
                 print(x)
                 print("error while parsing config entry, skipping")

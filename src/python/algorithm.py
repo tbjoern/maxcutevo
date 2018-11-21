@@ -83,6 +83,10 @@ class ActivityAlgorithm(Algorithm):
                     self.activity[edge.neighbour] = self.activity_max
                 if self.activity[edge.neighbour] < self.activity_min:
                     self.activity[edge.neighbour] = self.activity_min
+
+    def flip_node(self, node):
+        self.activity[node] = self.start_activity
+        super().flip_node(node)
     
     def choose_k_unique(self, population, weights, k):
         result = []
@@ -99,6 +103,7 @@ class ActivityAlgorithm(Algorithm):
                     if r <= cum_weight:
                         result.append(node)
                         node_chosen[node] = True
+                        total_weight -= weights[node]
                         break
         return result
 

@@ -33,6 +33,8 @@ def read_file(graph, file):
     filename, file_extension = os.path.splitext(file)
     if file_extension == ".mtx":
         return read_matrix_notation(graph, file)
+    elif file_extension == ".csv":
+        return read_csv(graph, file)
     else:
         return read_edgelist(graph, file)
 
@@ -46,6 +48,23 @@ def read_edgelist(graph, file):
         for line in lines[1:]:
             start, end, weight = [int(x) for x in line.split()]
             graph.add_edge(start, end, weight)
+    except Exception as x:
+        print(x)
+        raise GraphReadError()
+    return graph
+
+def read_csv(graph, file):
+    lines = []
+    with open(file, "r") as file:
+        lines = file.readlines()
+    try:
+        edge_count = 0
+        for line in lines:
+            start, end = [int(x) for x in line.split()]
+            graph.add_edge(start, end, 1)
+            graph.add_edge(end, start, 1)
+            edge_count += 2
+        graph.edges = edge_count
     except Exception as x:
         print(x)
         raise GraphReadError()
