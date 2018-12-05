@@ -102,17 +102,17 @@ class GRASP(FlipAlgorithm):
             chosen_node = random.choice(candidate_list)
             sigma_l, sigma_r = node_sigma_mapping[chosen_node]
             if sigma_l > sigma_r:
-                side[chosen_node] = -1
-            else
-                side[chosen_node] = 1
+                self.side[chosen_node] = -1
+            else:
+                self.side[chosen_node] = 1
 
             # update sigma values
-            if side[chosen_node] == -1 and chosen_node in self.graph.in_edges:
+            if self.side[chosen_node] == -1 and chosen_node in self.graph.in_edges:
                 for edge in self.graph.in_edges[chosen_node]:
                     nb_sigma_l, nb_sigma_r = node_sigma_mapping[edge.neighbour]
                     node_sigma_mapping[edge.neighbour] = (nb_sigma_l, nb_sigma_r + edge.weight)
 
-            if side[chosen_node] == 1 and chosen_node in self.graph.out_edges:
+            if self.side[chosen_node] == 1 and chosen_node in self.graph.out_edges:
                 for edge in self.graph.out_edges[chosen_node]:
                     nb_sigma_l, nb_sigma_r = node_sigma_mapping[edge.neighbour]
                     node_sigma_mapping[edge.neighbour] = (nb_sigma_l + edge.weight, nb_sigma_r)
