@@ -1,7 +1,7 @@
 class Logger:
     def __init__(self, logfile):
         self.filename = logfile
-        self.file = open(logfile, "w")
+        self.file = open(logfile + '.csv', "w")
         self.header = ["run_number", "algorithm", "iteration", "cut_weight"]
         self.file.write(",".join(self.header) + '\n')
         self.run_number = 0
