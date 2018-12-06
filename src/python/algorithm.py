@@ -1,8 +1,6 @@
 import random
 import math
 import copy
-import RandomAccessPriorityQueue
-from PriorityItem import PriorityItem
 from collections import namedtuple
 
 IterationData = namedtuple('IterationData', 'iteration cut_weight')
@@ -65,31 +63,6 @@ class FlipAlgorithm(Algorithm):
             return False
         return True
 
-class SigmaValue(PriorityItem):
-    def __init__(self, node, sigma_l, sigma_r):
-        self.node = node
-        self.sigma_l = sigma_l
-        self.sigma_r = sigma_r
-
-    def __repr__(self):
-        return "{}: {} - {}".format(self.node, self.sigma_l, self.sigma_r)
-
-    def __lt__(self, other):
-        return self.max() < other.max()
-
-    def __iter__(self):
-        return (v for v in [self.sigma_l, self.sigma_r])
-
-    def max(self):
-        return max(self.sigma_l, self.sigma_r)
-
-    def inverse(self):
-        return SigmaValue(self.node, self.sigma_l * -1, self.sigma_r * -1)
-
-    def key(self):
-        return self.node
-
-
 class GRASP(FlipAlgorithm):
     def __init__(self, graph):
         super().__init__(graph)
@@ -113,25 +86,25 @@ class GRASP(FlipAlgorithm):
         self.change = {}
         self.side = {}
         self.cut_weight = 0
-        sigma_values = RandomAccessPriorityQueue.MinMaxRandomAccessPriorityQueue(SigmaValue)
+        node_sigma_mapping = {}
         for node in self.graph.nodes:
             # sigma for side: (-1, 1)
-            sigma_values.insert(SigmaValue(node=node, sigma_l=0, sigma_r=0))
-        while sigma_values:
-            sigma_max, sigma_min = sigma_values.get_max().max(), sigma_values.get_min().max()
+            node_sigma_mapping[node] = (0,0)
+        while node_sigma_mapping:
+            sigma_max, sigma_min = self.get_bounds(node_sigma_mapping)
             alpha = random.random()
 
             # threshold value for selection
             mu = sigma_min + alpha * (sigma_max - sigma_min)
             # build candidate list
-            candidate_list = sigma_values.get_geq(SigmaValue(-1, mu, 0))
+            candidate_list = []
+            for node, sigma in node_sigma_mapping.items():
+                if max(sigma[0], sigma[1]) >= mu:
+                    candidate_list.append(node)
 
             # select node from candidate list and put it into a partition
-            chosen_node_item = random.choice(candidate_list)
-            chosen_node = chosen_node_item.node
-            sigma_values.pop_min(chosen_node)
-            # gets and deletes chosen node from sigma_values
-            sigma_l, sigma_r = chosen_node_item
+            chosen_node = random.choice(candidate_list)
+            sigma_l, sigma_r = node_sigma_mapping[chosen_node]
             if sigma_l > sigma_r:
                 self.side[chosen_node] = -1
             else:
@@ -142,15 +115,18 @@ class GRASP(FlipAlgorithm):
             # update sigma values
             if self.side[chosen_node] == -1 and chosen_node in self.graph.in_edges:
                 for edge in self.graph.in_edges[chosen_node]:
-                    if edge.neighbour in sigma_values:
-                        nb_sigma_l, nb_sigma_r = sigma_values.pop_min(edge.neighbour)
-                        sigma_values.insert(SigmaValue(edge.neighbour, nb_sigma_l, nb_sigma_r + edge.weight))
+                    if edge.neighbour in node_sigma_mapping:
+                        nb_sigma_l, nb_sigma_r = node_sigma_mapping[edge.neighbour]
+                        node_sigma_mapping[edge.neighbour] = (nb_sigma_l, nb_sigma_r + edge.weight)
 
             if self.side[chosen_node] == 1 and chosen_node in self.graph.out_edges:
                 for edge in self.graph.out_edges[chosen_node]:
-                    if edge.neighbour in sigma_values:
-                        nb_sigma_l, nb_sigma_r = sigma_values.pop_min(edge.neighbour)
-                        sigma_values.insert(SigmaValue(edge.neighbour, nb_sigma_l + edge.weight, nb_sigma_r))
+                    if edge.neighbour in node_sigma_mapping:
+                        nb_sigma_l, nb_sigma_r = node_sigma_mapping[edge.neighbour]
+                        node_sigma_mapping[edge.neighbour] = (nb_sigma_l + edge.weight, nb_sigma_r)
+
+            # delete chosen node from remaining nodes
+            del node_sigma_mapping[chosen_node]
 
         # calculate change values
         for node in self.graph.nodes:
