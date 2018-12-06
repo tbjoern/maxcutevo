@@ -8,14 +8,14 @@ class Plotter:
         self.data = {}
         self.labels = {}
         if mapping_name is None:
-            mapping_name = csv_name + '_mapping'
+            mapping_name = csv_name + '_mapping.csv'
         with open(mapping_name, "r") as f:
             csvreader = csv.DictReader(f, delimiter=',')
             for row in csvreader:
                 algo_id = int(row["id"])
                 self.labels[algo_id] = row["name"]
                 self.data[algo_id] = {}
-        with open(csv_name, "r") as f:
+        with open(csv_name + '.csv', "r") as f:
             csvreader = csv.DictReader(f, delimiter=',')
             for row in csvreader:
                 algo_id = int(row["algorithm"])

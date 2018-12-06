@@ -9,10 +9,9 @@ class Batch:
     def __init__(self, config):
         self.algorithm_configs = config["algorithms"]
         self.iterations = config["iterations"]
+        self.run_count = config["run_count"]
 
-    def run(self, file, run_count=1):
-        if run_count < 1:
-            raise ValueError("run_count must be a positive integer value")
+    def run(self, file):
         try:
             instance = graph.Graph(file)
         except FileNotFoundError:
@@ -21,7 +20,7 @@ class Batch:
         logfile_name = "_".join([os.path.basename(file),str(floor(time()))])
         logger = Logger(logfile_name)
 
-        for run_nr in range(run_count):
+        for run_nr in range(self.run_count):
             logger.set_run_number(run_nr)
             runner = Runner(instance, logger, self.iterations)
 
@@ -29,6 +28,7 @@ class Batch:
                 runner.run_algorithm(algorithm_config.class_obj, *algorithm_config.arguments)
             
         logger.write_algorithm_id_map(logfile_name + '_mapping')
+        logger.close()
 
         return logfile_name
         
@@ -47,6 +47,7 @@ if __name__ == "__main__":
         number_of_runs = int(sys.argv[3])
 
     batch = Batch(read_config(sys.argv[1]))
-    batch.run(sys.argv[2], number_of_runs)
+    import cProfile
+    cProfile.run('batch.run(sys.argv[2])')
 
     

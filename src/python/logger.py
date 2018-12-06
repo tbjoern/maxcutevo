@@ -8,6 +8,7 @@ class Logger:
         self.algorithm_id_map = {}
         self.algorithm_id_current = 0
         self.algorithm_id_max = 0
+        self.line_buffer = []
 
     def set_run_number(self, run_nr):
         self.run_number = run_nr
@@ -19,7 +20,7 @@ class Logger:
         self.algorithm_id_current = self.algorithm_id_map[algorithm_name]
 
     def write_algorithm_id_map(self, filename):
-        with open(filename, 'w') as mapfile:
+        with open(filename + '.csv', 'w') as mapfile:
             mapfile.write('id,name\n')
             for name,id in self.algorithm_id_map.items():
                 mapfile.write('{},{}\n'.format(id,name))
@@ -27,4 +28,9 @@ class Logger:
     def log(self, *data):
         data_strings = [str(x) for x in data]
         data_strings = [str(self.run_number), str(self.algorithm_id_current)] + data_strings
-        self.file.write(",".join(data_strings) + '\n')
+        self.line_buffer.append(",".join(data_strings) + '\n')
+
+    def close(self):
+        self.file.writelines(self.line_buffer)
+
+

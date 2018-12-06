@@ -8,10 +8,11 @@ if __name__ == "__main__":
         exit(127)
     
     from config_reader import read_config
+    config = read_config(sys.argv[1])
 
-    batch = Batch(read_config(sys.argv[1]))
+    batch = Batch(config)
     for filename in sys.argv[2:]:
-        logfile = batch.run(filename, 10)
+        logfile = batch.run(filename)
         if logfile is not None:
             plotter = Plotter(logfile)
             plotter.prepare_plot()
