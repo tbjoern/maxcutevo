@@ -27,7 +27,7 @@ def read_config(filename):
                     algorithm_class = class_for_name("algorithm", algorithm_values[0])
                     config["algorithms"].append(AlgorithmConfig(class_obj=algorithm_class, arguments=[float(x) for x in algorithm_values[1:]]))
                 elif entry_type == 'parallel':
-                    config[entry_type] = bool(value)
+                    config[entry_type] = "True" in value
             except Exception as x:
                 print(x)
                 print("error while parsing config entry: {}={} - skipping".format(entry_type, value))

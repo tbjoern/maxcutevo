@@ -18,7 +18,7 @@ class Runner:
 
 class ThreadRunner(threading.Thread):
     def __init__(self, runner, run_nr):
-        super().__init__(self)
+        super().__init__(group=None)
         self.runner = runner
         self.run_nr = run_nr
 
