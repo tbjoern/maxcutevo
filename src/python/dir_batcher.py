@@ -33,8 +33,9 @@ def run_batch(batch, filename):
     batch.run(filename)
 
 for filename in instance_dir.glob('**/*'):
-    p = Process(target=run_batch, args=(batch, filename, ))
-    processes.append(p)
+    if not filename.is_dir():
+        p = Process(target=run_batch, args=(batch, filename, ))
+        processes.append(p)
 
 logger.info("Starting batch processes:")
 for i,p in enumerate(processes):
