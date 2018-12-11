@@ -51,17 +51,14 @@ class Batch:
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 3:
-        print("Usage: batch.py <config_file> <instance_file> <number of runs>")
-        exit(127)
+        print("Usage: batch.py <config_file> <instance_file>")
+        exit(1)
     
     from config_reader import read_config
 
-    number_of_runs = 1
-    if len(sys.argv) == 4:
-        number_of_runs = int(sys.argv[3])
-
     batch = Batch(read_config(sys.argv[1]))
-    import cProfile
-    cProfile.run('batch.run(sys.argv[2])')
+    # import cProfile
+    # cProfile.run('batch.run(sys.argv[2])')
+    batch.run(sys.argv[2])
 
     
