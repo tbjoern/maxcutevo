@@ -14,13 +14,13 @@ def read_config(filename):
     # iterations=1000
     # algorithm=unifAlgorithm
     # algorithm=pmutAlgorithm -2
-    config = { 'iterations': 100, 'algorithms': [], 'run_count': 10 , 'parallel': False }
+    config = { 'iterations': 100, 'algorithms': [], 'run_count': 10 , 'parallel': False, 'cpu_count': 0 }
     with open(filename, 'r') as f:
         for line in f:
             try:
                 entry_type, value = line.split('=')
                 entry_type = entry_type.lower()
-                if entry_type == "iterations" or entry_type == "run_count":
+                if entry_type == "iterations" or entry_type == "run_count" or entry_type == "cpu_count":
                     config[entry_type] = int(value)
                 elif entry_type == "algorithm":
                     algorithm_values = value.split()
