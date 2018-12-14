@@ -14,7 +14,7 @@ def read_config(filename):
     # iterations=1000
     # algorithm=unifAlgorithm
     # algorithm=pmutAlgorithm -2
-    config = { 'iterations': 100, 'algorithms': [], 'run_count': 10 , 'parallel': False, 'cpu_count': 0 }
+    config = { 'iterations': 100, 'algorithms': [], 'run_count': 10 , 'parallel': False, 'cpu_count': 4 }
     with open(filename, 'r') as f:
         for line in f:
             try:
