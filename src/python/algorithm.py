@@ -284,7 +284,7 @@ class pmut(FlipAlgorithm):
 
     def iterate(self):
         k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
-        chosen_nodes = random.choices(self.node_list, k=k)
+        chosen_nodes = random.sample(self.node_list, k)
         self.flip_nodes_if_improvement(chosen_nodes)
         return super().iterate()
 
