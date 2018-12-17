@@ -48,8 +48,6 @@ protected:
 
   int changeByFlip(int nodeID);
 
-  Cut calcCutSizes();
-
   virtual void init() = 0;
 
 public:
@@ -62,7 +60,11 @@ public:
 
   int getCutSize();
 
+  Cut calcCutSizes();
+
   virtual void _init();
+
+  void setGraph(const AdjList &adj_list);
 
   int evaluation_count;
 };

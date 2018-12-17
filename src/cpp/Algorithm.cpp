@@ -39,7 +39,7 @@ std::pair<int, int> Algorithm::calculateCurrentCutSize() {
   return cut;
 }
 
-void Algorithm::init() {
+void Algorithm::_init() {
   const AdjList &adj_list = *_adj_list;
   _part = std::vector<int>(adj_list.node_count, int(NOT_CUT_SET));
   _change = std::vector<int>(adj_list.node_count, 0);
@@ -53,6 +53,7 @@ void Algorithm::init() {
   _cut_weight = 0;
   _max_cut_weight = 0;
   evaluation_count = 0;
+  this->init();
 }
 
 int Algorithm::changeByFlip(int nodeID) { return _change[nodeID]; }
@@ -106,12 +107,8 @@ Cut Algorithm::calcCutSizes() {
   return cut;
 }
 
-int Algorithm::getCutSize() {
-  return _max_cut_weight;
-}
+int Algorithm::getCutSize() { return _max_cut_weight; }
 
-void Algorithm::_init() {
-  this->init();
-}
+void Algorithm::setGraph(const AdjList &adj_list) { _adj_list = &adj_list; }
 
 } // namespace maxcut

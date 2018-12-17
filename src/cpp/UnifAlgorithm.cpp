@@ -5,9 +5,7 @@ using namespace std;
 
 namespace maxcut {
 
-void UnifAlgorithm::init() {
-  helper.setUniformRange(0, _node_count);
-}
+void UnifAlgorithm::init() { helper.setUniformRange(0, _node_count); }
 
 void UnifAlgorithm::iteration() {
   vector<int> nodes_to_flip;

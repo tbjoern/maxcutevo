@@ -101,9 +101,10 @@ public:
   }
 };
 
-std::vector<std::vector<RunResult>> benchmark(std::vector<std::string> &filenames,
-                     std::vector<std::shared_ptr<Algorithm>> &algorithms,
-                     const int max_time=1, const int max_iterations=1000) {
+std::vector<std::vector<RunResult>>
+benchmark(std::vector<std::string> &filenames,
+          std::vector<std::shared_ptr<Algorithm>> &algorithms,
+          const int max_time, const int max_iterations) {
   std::vector<std::vector<RunResult>> results(filenames.size());
   FileReader *reader;
   for (int fileID = 0; fileID < filenames.size(); ++fileID) {

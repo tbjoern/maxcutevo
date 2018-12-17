@@ -1,19 +1,18 @@
+#include "Algorithm.hpp"
+#include "Benchmark.hpp"
+
 // #include "ActivityAlgorithm.hpp"
 // #include "ActivityDeterministicAlgorithm.hpp"
-// #include "Algorithm.hpp"
 // #include "AnnealingAlgorithm.hpp"
-// #include "Benchmark.hpp"
 // #include "FMUTAlgorithm.hpp"
 // #include "GreedyActivityAlgorithm.hpp"
 // #include "GreedyAlgorithm.hpp"
 // #include "GreedyPMUTAlgorithm.hpp"
-// #include "MathHelper.hpp"
 // #include "PMUTAlgorithm.hpp"
 // #include "UnifActivityAlgorithm.hpp"
 #include "UnifAlgorithm.hpp"
 
 #include <algorithm>
-//#include <experimental/filesystem>
 #include <filesystem>
 #include <iomanip>
 #include <iostream>
@@ -76,7 +75,7 @@ int main(int argc, char *argv[]) {
 
   vector<shared_ptr<Algorithm>> algorithms;
 
-  // algorithms.push_back(make_shared<UnifAlgorithm>());
+  algorithms.push_back(make_shared<UnifAlgorithm>());
   // algorithms.push_back(make_shared<AnnealingAlgorithm>());
   // algorithms.push_back(make_shared<PMUTAlgorithm>());
   // algorithms.push_back(make_shared<FMUTAlgorithm>());
@@ -106,18 +105,17 @@ int main(int argc, char *argv[]) {
 
   for (int i = 0; i < results.size(); ++i) {
     const auto &results_for_file = results[i];
-    // cout << filenames[i] << endl;
-    // for (const auto run : results_for_file) {
-    //   cout << setw(25) << run.algorithmName << ": " << setw(7)
-    //        << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
-    //        << run.cut.inverse_size << setw(9) << run.time << "ms " <<
-    //        setw(10)
-    //        << run.evaluation_count << endl;
-    // }
+    cout << filenames[i] << endl;
+    for (const auto run : results_for_file) {
+      cout << setw(25) << run.algorithmName << ": " << setw(7)
+           << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
+           << run.cut.inverse_size << setw(9) << run.time << "ms " << setw(10)
+           << run.evaluation_count << endl;
+    }
     for (int j = 0; j < results_for_file.size(); ++j) {
       output_per_algorithm[j].push_back(results_for_file[j].cut_sizes.back());
     }
-    // cout << endl;
+    cout << endl;
   }
 
   for (int i = 0; i < output_per_algorithm.size(); ++i) {

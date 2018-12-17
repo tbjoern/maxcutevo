@@ -29,6 +29,7 @@ struct Cut {
 
 struct RunResult {
   std::string algorithmName;
+  Cut cut;
   std::vector<int> cut_sizes;
   double time;
   int evaluation_count;
