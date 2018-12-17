@@ -18,6 +18,7 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -35,9 +36,16 @@ struct path_leaf_string {
 vector<string> read_directory(const std::string &name) {
   vector<string> v;
   std::filesystem::path p(name);
-  std::filesystem::directory_iterator start(p);
-  std::filesystem::directory_iterator end;
-  std::transform(start, end, std::back_inserter(v), path_leaf_string());
+  if (!filesystem::exists(p)) {
+    throw invalid_argument(name + string(" not found"));
+  }
+  std::filesystem::recursive_directory_iterator dir(p);
+  for (const auto &entry : dir) {
+    if (!filesystem::is_directory(entry)) {
+      v.push_back(entry.path());
+    }
+  }
+
   return v;
 }
 
