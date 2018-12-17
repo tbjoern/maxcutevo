@@ -10,14 +10,11 @@
 
 namespace maxcut {
 
-enum FileExtension { EDGELIST, MTXREADER, CNFREADER };
+enum FileExtension { EDGELIST, MTXREADER, CNFREADER, NXEDGELIST };
 
 static std::map<std::string, FileExtension> filename_map = {
-    {".mtx", MTXREADER},
-    {".rud", EDGELIST},
-    {".mc", EDGELIST},
-    {".txt", EDGELIST},
-    {".cnf", CNFREADER}};
+    {".mtx", MTXREADER}, {".rud", EDGELIST},  {".mc", EDGELIST},
+    {".txt", EDGELIST},  {".cnf", CNFREADER}, {".edgelist", NXEDGELIST}};
 
 class FileReader {
 public:
@@ -56,6 +53,40 @@ public:
     AdjList adj_list(nodes);
 
     for (uint i = 0; i < edges; ++i) {
+      int source, dest;
+      input_file >> source >> dest;
+      adj_list.out_edges[source].push_back({dest, 1});
+      adj_list.in_edges[dest].push_back({source, 1});
+    }
+    return adj_list;
+  }
+};
+
+class NXEdgeListReader : public FileReader {
+public:
+  AdjList readFile(std::string filename) override {
+    std::ifstream input_file(filename);
+    int largest_node = 0;
+    int edge_count = 0;
+    while (input_file.peek() != EOF) {
+      int node;
+      input_file >> node;
+      if (node > largest_node) {
+        largest_node = node;
+      }
+      ++edge_count;
+    }
+
+    edge_count /= 2;
+
+    input_file.clear();
+    input_file.seekg(0);
+
+    // node indices start at 0, that means we have largest_node + 1 nodes in
+    // total
+    AdjList adj_list(largest_node + 1);
+
+    for (uint i = 0; i < edge_count; ++i) {
       int source, dest;
       input_file >> source >> dest;
       adj_list.out_edges[source].push_back({dest, 1});
@@ -124,6 +155,9 @@ benchmark(std::vector<std::string> &filenames,
         break;
       case FileExtension::CNFREADER:
         reader = new CNFReader();
+        break;
+      case FileExtension::NXEDGELIST:
+        reader = new NXEdgeListReader();
         break;
       }
     } catch (const std::out_of_range &e) {

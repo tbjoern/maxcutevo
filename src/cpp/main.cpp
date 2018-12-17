@@ -110,6 +110,9 @@ int main(int argc, char *argv[]) {
   case 3:
     if (std::filesystem::exists(argv[2])) {
       csv_dir = argv[2];
+      if (csv_dir.back() != '/') {
+        csv_dir += '/';
+      }
     } else {
       cout << "Could not find directory " << argv[2] << endl;
       exit(1);
