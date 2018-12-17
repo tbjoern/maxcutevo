@@ -17,6 +17,5 @@ void UnifAlgorithm::iteration() {
   if (nodes_to_flip.size()) {
     flipNodesIfBetterCut(nodes_to_flip);
   }
-  evaluation_count++;
 }
 } // namespace maxcut

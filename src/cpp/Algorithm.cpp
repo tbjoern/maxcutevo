@@ -111,4 +111,9 @@ int Algorithm::getCutSize() { return _max_cut_weight; }
 
 void Algorithm::setGraph(const AdjList &adj_list) { _adj_list = &adj_list; }
 
+void Algorithm::_iteration() {
+  this->iteration();
+  ++evaluation_count;
+}
+
 } // namespace maxcut

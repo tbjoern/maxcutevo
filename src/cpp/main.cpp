@@ -6,9 +6,9 @@
 // #include "AnnealingAlgorithm.hpp"
 // #include "FMUTAlgorithm.hpp"
 // #include "GreedyActivityAlgorithm.hpp"
-// #include "GreedyAlgorithm.hpp"
+#include "GreedyAlgorithm.hpp"
 // #include "GreedyPMUTAlgorithm.hpp"
-// #include "PMUTAlgorithm.hpp"
+#include "PMUTAlgorithm.hpp"
 // #include "UnifActivityAlgorithm.hpp"
 #include "UnifAlgorithm.hpp"
 
@@ -129,13 +129,13 @@ int main(int argc, char *argv[]) {
 
   algorithms.push_back(make_shared<UnifAlgorithm>());
   // algorithms.push_back(make_shared<AnnealingAlgorithm>());
-  // algorithms.push_back(make_shared<PMUTAlgorithm>());
+  algorithms.push_back(make_shared<PMUTAlgorithm>());
   // algorithms.push_back(make_shared<FMUTAlgorithm>());
   // algorithms.push_back(make_shared<ActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityAlgorithm>(true));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
-  // algorithms.push_back(make_shared<GreedyAlgorithm>());
+  algorithms.push_back(make_shared<GreedyAlgorithm>());
   // algorithms.push_back(make_shared<GreedyActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<GreedyActivityAlgorithm>(true));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));

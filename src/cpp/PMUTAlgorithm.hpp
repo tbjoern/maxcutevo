@@ -9,8 +9,12 @@ namespace maxcut {
  * k is chosen from a power law distribution.
  */
 class PMUTAlgorithm : public virtual Algorithm {
+  std::vector<int> _pop, _weights;
+
 public:
-  void run() override;
+  void iteration() override;
+
+  void init() override;
 
   std::string name() override { return "pmut"; }
 };

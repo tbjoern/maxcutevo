@@ -28,7 +28,7 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
          iteration < config.max_iterations && current_time < max_time;
          ++iteration,
              current_time = std::chrono::high_resolution_clock::now()) {
-      algorithm->iteration();
+      algorithm->_iteration();
       cut_sizes.push_back(algorithm->getCutSize());
     }
 

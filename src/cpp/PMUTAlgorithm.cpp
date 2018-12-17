@@ -6,21 +6,21 @@ using namespace std;
 
 namespace maxcut {
 
-void PMUTAlgorithm::run() {
-  vector<int> pop(_node_count), weights(_node_count, 1);
+void PMUTAlgorithm::init() {
+  _pop = vector<int>(_node_count);
+  _weights = vector<int>(_node_count, 1);
   for (int node = 0; node < _node_count; ++node) {
-    pop[node] = node;
+    _pop[node] = node;
   }
 
   helper.setPowerLawParam(2);
   helper.setUniformRange(0, _node_count);
+}
 
-  while (!stop) {
-    auto k = helper.getIntFromPowerLawDistribution(_node_count);
-    auto nodes_to_flip = helper.chooseKUnique(pop, weights, k);
-    flipNodesIfBetterCut(nodes_to_flip);
-    evaluation_count++;
-  }
+void PMUTAlgorithm::iteration() {
+  auto k = helper.getIntFromPowerLawDistribution(_node_count);
+  auto nodes_to_flip = helper.chooseKUnique(_pop, _weights, k);
+  flipNodesIfBetterCut(nodes_to_flip);
 }
 
 } // namespace maxcut

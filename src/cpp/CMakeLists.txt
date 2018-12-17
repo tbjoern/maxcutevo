@@ -10,10 +10,10 @@ set(sources
     # ActivityDeterministicAlgorithm.cpp
     # AnnealingAlgorithm.cpp
     # FMUTAlgorithm.cpp
-    # GreedyAlgorithm.cpp
+    GreedyAlgorithm.cpp
     # GreedyActivityAlgorithm.cpp
     # GreedyPMUTAlgorithm.cpp
-    # PMUTAlgorithm.cpp
+    PMUTAlgorithm.cpp
     # UnifActivityAlgorithm.cpp
     UnifAlgorithm.cpp
 )
@@ -28,10 +28,10 @@ set(includes
     # ActivityDeterministicAlgorithm.hpp
     # AnnealingAlgorithm.hpp
     # FMUTAlgorithm.hpp
-    # GreedyAlgorithm.hpp
+    GreedyAlgorithm.hpp
     # GreedyActivityAlgorithm.hpp
     # GreedyPMUTAlgorithm.hpp
-    # PMUTAlgorithm.hpp
+    PMUTAlgorithm.hpp
     # UnifActivityAlgorithm.hpp
     UnifAlgorithm.hpp
 )
