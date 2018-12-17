@@ -14,11 +14,14 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using namespace maxcut;
@@ -46,6 +49,46 @@ vector<string> read_directory(const std::string &name) {
   }
 
   return v;
+}
+
+string stem(string filename) { return filesystem::path(filename).stem(); }
+
+void write_csv(string filename, std::vector<AlgorithmResult> algo_results,
+               unordered_map<string, int> algo_id_map) {
+  ofstream csv_file(filename);
+  if (!csv_file.good()) {
+    throw invalid_argument("file cannot be written: " + filename);
+  }
+  csv_file << "algorithm,run_number,iteration,cut_weight" << endl;
+
+  for (const auto &algorithm_result : algo_results) {
+    auto algorithm_id = algo_id_map[algorithm_result.algorithmName];
+
+    for (int run_nr = 0; run_nr < algorithm_result.run_results.size();
+         ++run_nr) {
+      const auto &run_data = algorithm_result.run_results[run_nr];
+
+      for (int iteration = 0; iteration < run_data.cut_sizes.size();
+           ++iteration) {
+        csv_file << algorithm_id << "," << run_nr << "," << iteration << ","
+                 << run_data.cut_sizes[iteration] << endl;
+      }
+    }
+  }
+}
+
+void write_id_map(string filename, unordered_map<string, int> id_map) {
+  ofstream csv_file(filename);
+  if (!csv_file.good()) {
+    throw invalid_argument("file cannot be written: " + filename);
+  }
+  csv_file << "id,name" << endl;
+  for (const auto &pair : id_map) {
+    string name;
+    int id;
+    std::tie(name, id) = pair;
+    csv_file << id << "," << name << endl;
+  }
 }
 
 } // namespace
@@ -78,6 +121,8 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
+  string csv_dir = R"(./csv/)";
+
   RANDOM_SEED = std::random_device{}();
 
   vector<shared_ptr<Algorithm>> algorithms;
@@ -100,8 +145,7 @@ int main(int argc, char *argv[]) {
   auto filenames = read_directory(dirname);
   sort(filenames.begin(), filenames.end());
 
-  auto results =
-      benchmark(filenames, algorithms, config);
+  auto results = benchmark(filenames, algorithms, config);
 
   for_each(results.begin(), results.end(), [](auto &v) {
     sort(v.begin(), v.end(), [](const auto &r1, const auto &r2) {
@@ -112,26 +156,41 @@ int main(int argc, char *argv[]) {
   std::vector<std::vector<int>> output_per_algorithm(algorithms.size());
 
   for (int i = 0; i < results.size(); ++i) {
-    const auto &results_for_file = results[i].run_results;
+    const auto &results_for_file = results[i];
     cout << filenames[i] << endl;
-    for (const auto run : results_for_file) {
-      cout << setw(25) << results[i].algorithmName << ": " << setw(7)
+    for (const auto algo_result : results_for_file) {
+      const auto &run = algo_result.run_results[0];
+      cout << setw(25) << algo_result.algorithmName << ": " << setw(7)
            << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
            << run.cut.inverse_size << setw(9) << run.time << "ms " << setw(10)
            << run.evaluation_count << endl;
     }
     for (int j = 0; j < results_for_file.size(); ++j) {
-      output_per_algorithm[j].push_back(results_for_file[j].cut_sizes.back());
+      // TODO: take the maximum of all runs
+      output_per_algorithm[j].push_back(
+          results_for_file[j].run_results[0].cut.max_size);
     }
     cout << endl;
   }
 
   for (int i = 0; i < output_per_algorithm.size(); ++i) {
-    cout << results[0].algorithmName;
+    cout << results[0][i].algorithmName;
     for (auto number : output_per_algorithm[i]) {
       cout << "," << number;
     }
     cout << endl;
+  }
+
+  unordered_map<string, int> algo_id_map;
+  for (int i = 0; i < algorithms.size(); ++i) {
+    algo_id_map.insert({algorithms[i]->name(), i});
+  }
+
+  for (int file = 0; file < filenames.size(); ++file) {
+    write_csv(csv_dir + stem(filenames[file]) + string(".csv"), results[file],
+              algo_id_map);
+    write_id_map(csv_dir + stem(filenames[file]) + string("_mapping.csv"),
+                 algo_id_map);
   }
 
   // cout << "Random seed is: " << RANDOM_SEED << endl;

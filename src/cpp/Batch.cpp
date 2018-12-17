@@ -10,8 +10,8 @@
 namespace maxcut {
 
 AlgorithmResult runAlgorithm(const AdjList &adj_list,
-                                    std::shared_ptr<Algorithm> algorithm,
-                                    const RunConfig config) {
+                             std::shared_ptr<Algorithm> algorithm,
+                             const RunConfig config) {
   AlgorithmResult result;
   result.algorithmName = algorithm->name();
   for (int run_nr = 0; run_nr < config.run_count; ++run_nr) {
@@ -25,7 +25,8 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
     algorithm->_init();
 
     for (int iteration = 0;
-         iteration < config.max_iterations && current_time < max_time; ++iteration,
+         iteration < config.max_iterations && current_time < max_time;
+         ++iteration,
              current_time = std::chrono::high_resolution_clock::now()) {
       algorithm->iteration();
       cut_sizes.push_back(algorithm->getCutSize());
@@ -35,9 +36,9 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
     double total_time = std::chrono::duration_cast<std::chrono::milliseconds>(
                             stop_time - start_time)
                             .count();
-    result.run_results.emplace_back(algorithm->calcCutSizes(),
-                         std::move(cut_sizes), total_time,
-                         algorithm->evaluation_count);
+    result.run_results.push_back({algorithm->calcCutSizes(),
+                                  std::move(cut_sizes), total_time,
+                                  algorithm->evaluation_count});
   }
   return result;
 }
@@ -48,17 +49,16 @@ void runner_thread(const AdjList &adj_list,
                    std::shared_ptr<Algorithm> algorithm,
                    std::vector<AlgorithmResult> &results,
                    const RunConfig config) {
-  auto result =
-      runAlgorithm(adj_list, algorithm, config);
+  auto result = runAlgorithm(adj_list, algorithm, config);
   std::lock_guard<std::mutex> lock(mutex);
   results.push_back(result);
 }
 
-AlgorithmResult
+std::vector<AlgorithmResult>
 batch(AdjList &adj_list, std::vector<std::shared_ptr<Algorithm>> &algorithms,
       const RunConfig config) {
 
-  AlgorithmResult results;
+  std::vector<AlgorithmResult> results;
   std::vector<std::thread> threads;
   for (auto &algorithm : algorithms) {
     threads.emplace_back(runner_thread, std::ref(adj_list), algorithm,
