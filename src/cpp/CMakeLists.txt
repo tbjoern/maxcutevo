@@ -6,7 +6,7 @@ set(sources
     Benchmark.cpp
     main.cpp
     MathHelper.hpp
-    # ActivityAlgorithm.cpp
+    ActivityAlgorithm.cpp
     # ActivityDeterministicAlgorithm.cpp
     # AnnealingAlgorithm.cpp
     # FMUTAlgorithm.cpp
@@ -24,7 +24,7 @@ set(includes
     Benchmark.hpp
     types.hpp
     MathHelper.hpp
-    # ActivityAlgorithm.hpp
+    ActivityAlgorithm.hpp
     # ActivityDeterministicAlgorithm.hpp
     # AnnealingAlgorithm.hpp
     # FMUTAlgorithm.hpp

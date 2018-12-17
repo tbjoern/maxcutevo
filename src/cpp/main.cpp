@@ -1,7 +1,7 @@
 #include "Algorithm.hpp"
 #include "Benchmark.hpp"
 
-// #include "ActivityAlgorithm.hpp"
+#include "ActivityAlgorithm.hpp"
 // #include "ActivityDeterministicAlgorithm.hpp"
 // #include "AnnealingAlgorithm.hpp"
 // #include "FMUTAlgorithm.hpp"
@@ -96,32 +96,40 @@ void write_id_map(string filename, unordered_map<string, int> id_map) {
 int main(int argc, char *argv[]) {
   string dirname;
   RunConfig config;
+  string csv_dir = R"(./csv/)";
   switch (argc) {
+  case 6:
+    config.run_count = std::stoi(argv[5]);
+    [[fallthrough]];
   case 5:
-    config.run_count = std::stoi(argv[4]);
+    config.max_duration = std::stoi(argv[4]);
     [[fallthrough]];
   case 4:
-    config.max_duration = std::stoi(argv[3]);
+    config.max_iterations = std::stoi(argv[3]);
     [[fallthrough]];
   case 3:
-    config.max_iterations = std::stoi(argv[2]);
+    if (std::filesystem::exists(argv[2])) {
+      csv_dir = argv[2];
+    } else {
+      cout << "Could not find directory " << argv[2] << endl;
+      exit(1);
+    }
     [[fallthrough]];
   case 2:
     if (std::filesystem::exists(argv[1])) {
       dirname = argv[1];
     } else {
       cout << "Could not find directory " << argv[1] << endl;
-      exit(127);
+      exit(1);
     }
     break;
   default:
-    cout << "Usage: maxcut-benchmark <graph directory> <max iterations> "
+    cout << "Usage: maxcut-benchmark <graph directory> <csv_directory> <max "
+            "iterations> "
             "<max_duration> <run_count>"
          << endl;
     exit(1);
   }
-
-  string csv_dir = R"(./csv/)";
 
   RANDOM_SEED = std::random_device{}();
 
@@ -131,8 +139,8 @@ int main(int argc, char *argv[]) {
   // algorithms.push_back(make_shared<AnnealingAlgorithm>());
   algorithms.push_back(make_shared<PMUTAlgorithm>());
   // algorithms.push_back(make_shared<FMUTAlgorithm>());
-  // algorithms.push_back(make_shared<ActivityAlgorithm>(false));
-  // algorithms.push_back(make_shared<ActivityAlgorithm>(true));
+  algorithms.push_back(make_shared<ActivityAlgorithm>(false));
+  algorithms.push_back(make_shared<ActivityAlgorithm>(true));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
   algorithms.push_back(make_shared<GreedyAlgorithm>());

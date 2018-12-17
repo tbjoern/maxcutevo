@@ -10,6 +10,7 @@ namespace maxcut {
  */
 class ActivityAlgorithm : public Algorithm {
 protected:
+  std::vector<int> _pop;
   int _reverse;
   std::vector<double> _activity;
 
@@ -25,10 +26,12 @@ public:
   constexpr static int ACT_MIN = 1;
   constexpr static double DECAY_RATE = 0.95;
 
-  void run() override;
+  void iteration() override;
+
+  void init() override;
 
   std::string name() override {
-    return _reverse ? "reverse activity" : "activity";
+    return _reverse == -1 ? "reverse activity" : "activity";
   }
 
   ActivityAlgorithm(bool reverse) : _reverse(reverse ? -1 : 1) {}

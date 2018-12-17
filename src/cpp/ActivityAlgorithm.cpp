@@ -71,26 +71,24 @@ void ActivityAlgorithm::initActivity() {
   _activity = std::vector<double>(_node_count, START_ACTIVITY);
 }
 
-void ActivityAlgorithm::run() {
-  vector<int> pop(_node_count);
+void ActivityAlgorithm::init() {
+  _pop = vector<int>(_node_count);
   for (int node = 0; node < _node_count; ++node) {
-    pop[node] = node;
+    _pop[node] = node;
   }
 
   helper.setPowerLawParam(2);
   helper.setUniformRange(0, _node_count);
+}
 
-  while (!stop) {
-    auto k = helper.getIntFromPowerLawDistribution(_node_count);
-    auto nodes_to_flip = helper.chooseKUnique(pop, _activity, k);
-    bool flipped = flipNodesIfBetterCut(nodes_to_flip);
+void ActivityAlgorithm::iteration() {
+  auto k = helper.getIntFromPowerLawDistribution(_node_count);
+  auto nodes_to_flip = helper.chooseKUnique(_pop, _activity, k);
+  bool flipped = flipNodesIfBetterCut(nodes_to_flip);
 
-    if (flipped) {
-      updateActivity(nodes_to_flip);
-      decayActivity();
-
-      evaluation_count++;
-    }
+  if (flipped) {
+    updateActivity(nodes_to_flip);
+    decayActivity();
   }
 }
 
