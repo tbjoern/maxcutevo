@@ -101,11 +101,11 @@ public:
   }
 };
 
-std::vector<std::vector<RunResult>>
+std::vector<AlgorithmResult>
 benchmark(std::vector<std::string> &filenames,
           std::vector<std::shared_ptr<Algorithm>> &algorithms,
-          const int max_time, const int max_iterations) {
-  std::vector<std::vector<RunResult>> results(filenames.size());
+          const RunConfig config) {
+  std::vector<AlgorithmResult> results(filenames.size());
   FileReader *reader;
   for (int fileID = 0; fileID < filenames.size(); ++fileID) {
 
@@ -139,7 +139,7 @@ benchmark(std::vector<std::string> &filenames,
     // std::cout << "Starting batch";
     // std::cout.flush();
 
-    results[fileID] = batch(adj_list, algorithms, max_time, max_iterations);
+    results[fileID] = batch(adj_list, algorithms, config);
 
     // std::cout << "...done" << std::endl;
     delete reader;

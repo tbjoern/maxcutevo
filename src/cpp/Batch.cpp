@@ -9,53 +9,60 @@
 
 namespace maxcut {
 
-RunResult runAlgorithm(const AdjList &adj_list,
-                       std::shared_ptr<Algorithm> algorithm,
-                       const int max_duration, const int max_iterations) {
-  auto start_time = std::chrono::high_resolution_clock::now();
-  auto current_time = start_time;
-  auto max_time = start_time + std::chrono::seconds(max_duration);
+AlgorithmResult runAlgorithm(const AdjList &adj_list,
+                                    std::shared_ptr<Algorithm> algorithm,
+                                    const RunConfig config) {
+  AlgorithmResult result;
+  result.algorithmName = algorithm->name();
+  for (int run_nr = 0; run_nr < config.run_count; ++run_nr) {
+    auto start_time = std::chrono::high_resolution_clock::now();
+    auto current_time = start_time;
+    auto max_time = start_time + std::chrono::seconds(config.max_duration);
 
-  std::vector<int> cut_sizes;
+    std::vector<int> cut_sizes;
 
-  algorithm->setGraph(adj_list);
-  algorithm->_init();
+    algorithm->setGraph(adj_list);
+    algorithm->_init();
 
-  for (int iteration = 0; iteration < max_iterations && current_time < max_time;
-       ++iteration, current_time = std::chrono::high_resolution_clock::now()) {
-    algorithm->iteration();
-    cut_sizes.push_back(algorithm->getCutSize());
+    for (int iteration = 0;
+         iteration < config.max_iterations && current_time < max_time; ++iteration,
+             current_time = std::chrono::high_resolution_clock::now()) {
+      algorithm->iteration();
+      cut_sizes.push_back(algorithm->getCutSize());
+    }
+
+    auto stop_time = std::chrono::high_resolution_clock::now();
+    double total_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            stop_time - start_time)
+                            .count();
+    result.run_results.emplace_back(algorithm->calcCutSizes(),
+                         std::move(cut_sizes), total_time,
+                         algorithm->evaluation_count);
   }
-
-  auto stop_time = std::chrono::high_resolution_clock::now();
-  double total_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-                          stop_time - start_time)
-                          .count();
-
-  return {algorithm->name(), algorithm->calcCutSizes(), cut_sizes, total_time,
-          algorithm->evaluation_count};
+  return result;
 }
 
 std::mutex mutex;
 
 void runner_thread(const AdjList &adj_list,
                    std::shared_ptr<Algorithm> algorithm,
-                   std::vector<RunResult> &results, const int max_time,
-                   const int max_iterations) {
-  auto result = runAlgorithm(adj_list, algorithm, max_time, max_iterations);
+                   std::vector<AlgorithmResult> &results,
+                   const RunConfig config) {
+  auto result =
+      runAlgorithm(adj_list, algorithm, config);
   std::lock_guard<std::mutex> lock(mutex);
   results.push_back(result);
 }
 
-std::vector<RunResult>
+AlgorithmResult
 batch(AdjList &adj_list, std::vector<std::shared_ptr<Algorithm>> &algorithms,
-      const int max_time, const int max_iterations) {
+      const RunConfig config) {
 
-  std::vector<RunResult> results;
+  AlgorithmResult results;
   std::vector<std::thread> threads;
   for (auto &algorithm : algorithms) {
     threads.emplace_back(runner_thread, std::ref(adj_list), algorithm,
-                         std::ref(results), max_time, max_iterations);
+                         std::ref(results), config);
   }
 
   for (auto &thread : threads) {

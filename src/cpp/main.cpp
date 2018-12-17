@@ -52,10 +52,17 @@ vector<string> read_directory(const std::string &name) {
 
 int main(int argc, char *argv[]) {
   string dirname;
+  RunConfig config;
   switch (argc) {
-  case 1:
-    dirname = R"(/home/tbjoern/development/maxcut/maxcutevo/build/graphs)";
-    break;
+  case 5:
+    config.run_count = std::stoi(argv[4]);
+    [[fallthrough]];
+  case 4:
+    config.max_duration = std::stoi(argv[3]);
+    [[fallthrough]];
+  case 3:
+    config.max_iterations = std::stoi(argv[2]);
+    [[fallthrough]];
   case 2:
     if (std::filesystem::exists(argv[1])) {
       dirname = argv[1];
@@ -65,8 +72,8 @@ int main(int argc, char *argv[]) {
     }
     break;
   default:
-    cout << "Wrong number of arguments. Usage: maxcut-benchmark <graph "
-            "directory>"
+    cout << "Usage: maxcut-benchmark <graph directory> <max iterations> "
+            "<max_duration> <run_count>"
          << endl;
     exit(1);
   }
@@ -93,7 +100,8 @@ int main(int argc, char *argv[]) {
   auto filenames = read_directory(dirname);
   sort(filenames.begin(), filenames.end());
 
-  auto results = benchmark(filenames, algorithms);
+  auto results =
+      benchmark(filenames, algorithms, config);
 
   for_each(results.begin(), results.end(), [](auto &v) {
     sort(v.begin(), v.end(), [](const auto &r1, const auto &r2) {
@@ -104,10 +112,10 @@ int main(int argc, char *argv[]) {
   std::vector<std::vector<int>> output_per_algorithm(algorithms.size());
 
   for (int i = 0; i < results.size(); ++i) {
-    const auto &results_for_file = results[i];
+    const auto &results_for_file = results[i].run_results;
     cout << filenames[i] << endl;
     for (const auto run : results_for_file) {
-      cout << setw(25) << run.algorithmName << ": " << setw(7)
+      cout << setw(25) << results[i].algorithmName << ": " << setw(7)
            << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
            << run.cut.inverse_size << setw(9) << run.time << "ms " << setw(10)
            << run.evaluation_count << endl;
@@ -119,7 +127,7 @@ int main(int argc, char *argv[]) {
   }
 
   for (int i = 0; i < output_per_algorithm.size(); ++i) {
-    cout << results[0][i].algorithmName;
+    cout << results[0].algorithmName;
     for (auto number : output_per_algorithm[i]) {
       cout << "," << number;
     }

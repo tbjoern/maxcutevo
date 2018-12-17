@@ -28,11 +28,21 @@ struct Cut {
 };
 
 struct RunResult {
-  std::string algorithmName;
   Cut cut;
   std::vector<int> cut_sizes;
   double time;
   int evaluation_count;
+};
+
+struct AlgorithmResult {
+  std::vector<RunResult> run_results;
+  std::string algorithmName;
+};
+
+struct RunConfig {
+  int max_duration;
+  int max_iterations;
+  int run_count;
 };
 
 } // namespace maxcut

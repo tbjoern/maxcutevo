@@ -10,9 +10,9 @@ namespace maxcut {
 /**
  *  runs a set of algorithms on a set of graphs
  */
-std::vector<std::vector<RunResult>>
+std::vector<AlgorithmResult>
 benchmark(std::vector<std::string> &filenames,
           std::vector<std::shared_ptr<Algorithm>> &algorithms,
-          const int max_time = 1, const int max_iterations = 1000);
+          const RunConfig config);
 
 } // namespace maxcut
