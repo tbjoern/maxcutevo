@@ -10,7 +10,9 @@ namespace maxcut {
  */
 class UnifAlgorithm : public Algorithm {
 public:
-  void run() override;
+  void iteration() override;
+
+  void init() override;
 
   std::string name() override { return "unif"; }
 };
