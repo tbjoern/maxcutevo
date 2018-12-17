@@ -62,8 +62,8 @@ void ActivityAlgorithm::decayActivity() {
   }
 }
 
-void ActivityAlgorithm::init() {
-  Algorithm::init();
+void ActivityAlgorithm::_init() {
+  Algorithm::_init();
   initActivity();
 }
 

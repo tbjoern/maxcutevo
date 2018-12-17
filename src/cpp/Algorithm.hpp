@@ -50,6 +50,8 @@ protected:
 
   Cut calcCutSizes();
 
+  virtual void init() = 0;
+
 public:
   Algorithm() : _part(), _cut_weight(0), _max_cut_weight(0), _node_count(0){};
   virtual ~Algorithm(){};
@@ -58,9 +60,9 @@ public:
 
   virtual void iteration() = 0;
 
-  virtual int getCutSize();
+  int getCutSize();
 
-  virtual void init();
+  virtual void _init();
 
   int evaluation_count;
 };

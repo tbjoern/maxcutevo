@@ -16,7 +16,7 @@ RunResult runAlgorithm(const AdjList &adj_list, std::shared_ptr<Algorithm> algor
 
   std::vector<int> cut_sizes;
 
-  algorithm->init();
+  algorithm->_init();
 
   for(int iteration = 0; iteration < max_iterations && current_time < max_time; ++iteration, current_time = std::chrono::high_resolution_clock::now()) {
     algorithm->iteration();

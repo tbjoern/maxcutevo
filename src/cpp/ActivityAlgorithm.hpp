@@ -13,7 +13,7 @@ protected:
   int _reverse;
   std::vector<double> _activity;
 
-  void init() override;
+  void _init() override;
 
   void initActivity();
 

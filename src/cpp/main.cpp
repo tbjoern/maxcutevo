@@ -1,15 +1,15 @@
-#include "ActivityAlgorithm.hpp"
-#include "ActivityDeterministicAlgorithm.hpp"
-#include "Algorithm.hpp"
-#include "AnnealingAlgorithm.hpp"
-#include "Benchmark.hpp"
-#include "FMUTAlgorithm.hpp"
-#include "GreedyActivityAlgorithm.hpp"
-#include "GreedyAlgorithm.hpp"
-#include "GreedyPMUTAlgorithm.hpp"
-#include "MathHelper.hpp"
-#include "PMUTAlgorithm.hpp"
-#include "UnifActivityAlgorithm.hpp"
+// #include "ActivityAlgorithm.hpp"
+// #include "ActivityDeterministicAlgorithm.hpp"
+// #include "Algorithm.hpp"
+// #include "AnnealingAlgorithm.hpp"
+// #include "Benchmark.hpp"
+// #include "FMUTAlgorithm.hpp"
+// #include "GreedyActivityAlgorithm.hpp"
+// #include "GreedyAlgorithm.hpp"
+// #include "GreedyPMUTAlgorithm.hpp"
+// #include "MathHelper.hpp"
+// #include "PMUTAlgorithm.hpp"
+// #include "UnifActivityAlgorithm.hpp"
 #include "UnifAlgorithm.hpp"
 
 #include <algorithm>
@@ -84,12 +84,12 @@ int main(int argc, char *argv[]) {
   // algorithms.push_back(make_shared<ActivityAlgorithm>(true));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
-  algorithms.push_back(make_shared<GreedyAlgorithm>());
-  algorithms.push_back(make_shared<GreedyActivityAlgorithm>(false));
-  algorithms.push_back(make_shared<GreedyActivityAlgorithm>(true));
+  // algorithms.push_back(make_shared<GreedyAlgorithm>());
+  // algorithms.push_back(make_shared<GreedyActivityAlgorithm>(false));
+  // algorithms.push_back(make_shared<GreedyActivityAlgorithm>(true));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
   // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(true));
-  algorithms.push_back(make_shared<GreedyPMUTAlgorithm>());
+  // algorithms.push_back(make_shared<GreedyPMUTAlgorithm>());
 
   auto filenames = read_directory(dirname);
   sort(filenames.begin(), filenames.end());

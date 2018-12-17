@@ -110,4 +110,8 @@ int Algorithm::getCutSize() {
   return _max_cut_weight;
 }
 
+void Algorithm::_init() {
+  this->init();
+}
+
 } // namespace maxcut
