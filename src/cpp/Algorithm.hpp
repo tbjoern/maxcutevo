@@ -19,7 +19,6 @@ protected:
    * _cut_weight
    * resets helper variables to default
    */
-  virtual void init();
 
   void calculateChange();
 
@@ -49,26 +48,19 @@ protected:
 
   int changeByFlip(int nodeID);
 
-  /**
-   * Implement MaxCut solving algorithms by overriding this method
-   */
-  virtual void run() = 0;
-
   Cut calcCutSizes();
 
 public:
-  std::sig_atomic_t volatile stop = 0;
-
   Algorithm() : _part(), _cut_weight(0), _max_cut_weight(0), _node_count(0){};
   virtual ~Algorithm(){};
-  /**
-   * runs the algorithm contained in Algorithm::run
-   * runs initCutTracking before run
-   * @returns the maximum found cut weight
-   */
-  Cut calcSolution(const AdjList &);
 
   virtual std::string name() = 0;
+
+  virtual void iteration() = 0;
+
+  virtual int getCutSize();
+
+  virtual void init();
 
   int evaluation_count;
 };

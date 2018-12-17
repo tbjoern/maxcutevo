@@ -28,7 +28,7 @@ RunResult runAlgorithm(const AdjList &adj_list, std::shared_ptr<Algorithm> algor
                           stop_time - start_time)
                           .count();
 
-  return {algorithm.name(), cut_sizes, total_time, algorithm.evaluation_count};
+  return {algorithm->name(), cut_sizes, total_time, algorithm->evaluation_count};
 }
 
 std::mutex mutex;

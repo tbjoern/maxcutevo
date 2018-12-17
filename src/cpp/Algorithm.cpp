@@ -41,7 +41,6 @@ std::pair<int, int> Algorithm::calculateCurrentCutSize() {
 
 void Algorithm::init() {
   const AdjList &adj_list = *_adj_list;
-  stop = 0;
   _part = std::vector<int>(adj_list.node_count, int(NOT_CUT_SET));
   _change = std::vector<int>(adj_list.node_count, 0);
   for (int node = 0; node < adj_list.node_count; ++node) {
@@ -107,11 +106,8 @@ Cut Algorithm::calcCutSizes() {
   return cut;
 }
 
-Cut Algorithm::calcSolution(const AdjList &adj_list) {
-  _adj_list = &adj_list;
-  this->init();
-  this->run();
-  return calcCutSizes();
+int Algorithm::getCutSize() {
+  return _max_cut_weight;
 }
 
 } // namespace maxcut
