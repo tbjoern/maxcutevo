@@ -10,16 +10,8 @@ namespace maxcut {
 /**
  *  runs a set of algorithms on a set of graphs
  */
-class Benchmark {
-public:
-  Benchmark(std::vector<std::string> &filenames,
-            std::vector<std::shared_ptr<Algorithm>> &algorithms);
-
-  std::vector<std::vector<RunResult>> run() const;
-
-private:
-  std::vector<std::shared_ptr<Algorithm>> &_algorithms;
-  const std::vector<std::string> _filenames;
-};
+std::vector<std::vector<RunResult>> benchmark(std::vector<std::string> &filenames,
+                     std::vector<std::shared_ptr<Algorithm>> &algorithms,
+                     const int max_time=1, const int max_iterations=1000);
 
 } // namespace maxcut

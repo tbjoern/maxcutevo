@@ -101,21 +101,19 @@ public:
   }
 };
 
-Benchmark::Benchmark(std::vector<std::string> &filename,
-                     std::vector<std::shared_ptr<Algorithm>> &algorithms)
-    : _algorithms(algorithms), _filenames(filename) {}
-
-std::vector<std::vector<RunResult>> Benchmark::run() const {
-  std::vector<std::vector<RunResult>> results(_filenames.size());
+std::vector<std::vector<RunResult>> benchmark(std::vector<std::string> &filenames,
+                     std::vector<std::shared_ptr<Algorithm>> &algorithms,
+                     const int max_time=1, const int max_iterations=1000) {
+  std::vector<std::vector<RunResult>> results(filenames.size());
   FileReader *reader;
-  for (int fileID = 0; fileID < _filenames.size(); ++fileID) {
+  for (int fileID = 0; fileID < filenames.size(); ++fileID) {
 
     // std::cout << "Reading file " << _filenames[fileID];
     // std::cout.flush();
 
     std::string fileextension;
     try {
-      fileextension = _filenames[fileID].substr(_filenames[fileID].rfind('.'));
+      fileextension = filenames[fileID].substr(filenames[fileID].rfind('.'));
       switch (filename_map.at(fileextension)) {
       case FileExtension::EDGELIST:
         reader = new EdgeListReader();
@@ -130,18 +128,17 @@ std::vector<std::vector<RunResult>> Benchmark::run() const {
     } catch (const std::out_of_range &e) {
       e.what();
       throw std::runtime_error("Could not determine file extension of file " +
-                               _filenames[fileID]);
+                               filenames[fileID]);
     }
 
-    AdjList adj_list = reader->readFile(_filenames[fileID]);
+    AdjList adj_list = reader->readFile(filenames[fileID]);
 
     // std::cout << " ...done" << std::endl;
 
     // std::cout << "Starting batch";
     // std::cout.flush();
 
-    Batch batch(std::move(adj_list), _algorithms);
-    results[fileID] = batch.run();
+    results[fileID] = batch(adj_list, algorithms, max_time, max_iterations);
 
     // std::cout << "...done" << std::endl;
     delete reader;

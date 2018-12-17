@@ -93,8 +93,8 @@ int main(int argc, char *argv[]) {
 
   auto filenames = read_directory(dirname);
   sort(filenames.begin(), filenames.end());
-  Benchmark benchmark(filenames, algorithms);
-  auto results = benchmark.run();
+
+  auto results = benchmark(filenames, algorithms);
 
   for_each(results.begin(), results.end(), [](auto &v) {
     sort(v.begin(), v.end(), [](const auto &r1, const auto &r2) {
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
     //        << run.evaluation_count << endl;
     // }
     for (int j = 0; j < results_for_file.size(); ++j) {
-      output_per_algorithm[j].push_back(results_for_file[j].cut.max_size);
+      output_per_algorithm[j].push_back(results_for_file[j].cut_sizes.back());
     }
     // cout << endl;
   }

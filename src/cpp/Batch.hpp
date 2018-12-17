@@ -10,16 +10,6 @@ namespace maxcut {
 /**
  *  runs a set of algorithms on a graph
  */
-class Batch {
-public:
-  constexpr static int ALGORITHM_RUN_DURATION = 1;
-  Batch(AdjList &&adj_list,
-        std::vector<std::shared_ptr<Algorithm>> &algorithms);
+std::vector<RunResult> batch(AdjList &adj_list, std::vector<std::shared_ptr<Algorithm>> &algorithms, const int max_time, const int max_iterations);
 
-  std::vector<RunResult> run() const;
-
-private:
-  AdjList _adj_list;
-  std::vector<std::shared_ptr<Algorithm>> &_algorithms;
-};
 } // namespace maxcut
