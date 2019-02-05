@@ -77,13 +77,13 @@ void Algorithm::flipNode(int nodeID) {
   }
 }
 
-void Algorithm::flipNodes(std::vector<int> nodeIDs) {
+void Algorithm::flipNodes(std::vector<int> &nodeIDs) {
   for (auto nodeID : nodeIDs) {
     flipNode(nodeID);
   }
 }
 
-bool Algorithm::flipNodesIfBetterCut(std::vector<int> nodeIDs) {
+bool Algorithm::flipNodesIfBetterCut(std::vector<int> &nodeIDs) {
   auto prev_cut_weight = _cut_weight;
   flipNodes(nodeIDs);
   if (prev_cut_weight > _cut_weight) {

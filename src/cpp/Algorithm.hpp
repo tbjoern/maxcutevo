@@ -42,9 +42,9 @@ protected:
    */
   void flipNode(int nodeID);
 
-  void flipNodes(std::vector<int> nodeIDs);
+  void flipNodes(std::vector<int> &nodeIDs);
 
-  bool flipNodesIfBetterCut(std::vector<int> nodeIDs);
+  bool flipNodesIfBetterCut(std::vector<int> &nodeIDs);
 
   int changeByFlip(int nodeID);
 

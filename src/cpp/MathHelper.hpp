@@ -43,8 +43,8 @@ public:
 
   double getReal() { return _real(_engine); }
 
-  std::vector<int> chooseKUnique(std::vector<int> population,
-                                 std::vector<int> weights, int k) {
+  std::vector<int> chooseKUnique(std::vector<int> &population,
+                                 std::vector<int> &weights, int k) {
     std::vector<int> result;
     assert(population.size() == weights.size());
     int total_weight = 0;
@@ -71,8 +71,8 @@ public:
     return result;
   }
 
-  std::vector<int> chooseKUnique(std::vector<int> population,
-                                 std::vector<double> weights, int k) {
+  std::vector<int> chooseKUnique(std::vector<int> &population,
+                                 std::vector<double> &weights, int k) {
     std::vector<int> result;
     assert(population.size() == weights.size());
     double total_weight = 0;
