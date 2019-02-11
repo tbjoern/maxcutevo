@@ -53,11 +53,6 @@ unordered_map<string, shared_ptr<Algorithm> (*)()> create_algorithm = {
     {"greedy", &make_algorithm<Greedy>}};
 
 RunConfig read_config(string filename) {
-  // TODO: parse config file in ini format
-  // sections: run information and algorithm
-  // run information section has max_duration, max_iterations and run_count
-  // algorithm sections can be repeated, each has
-  //      name, unique id, parameters
   auto cfg_file = ifstream(filename);
   json json_cfg;
   cfg_file >> json_cfg;
