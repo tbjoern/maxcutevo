@@ -13,7 +13,7 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
                              std::shared_ptr<Algorithm> algorithm,
                              const RunConfig config) {
   AlgorithmResult result;
-  result.algorithmName = algorithm->name();
+  result.algorithm_id = algorithm->id;
   for (int run_nr = 0; run_nr < config.run_count; ++run_nr) {
     auto start_time = std::chrono::high_resolution_clock::now();
     auto current_time = start_time;

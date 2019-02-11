@@ -13,13 +13,7 @@
 #include "UnifAlgorithm.hpp"
 
 #include <algorithm>
-#include <filesystem>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <memory>
-#include <sstream>
-#include <stdexcept>
+#include <ostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -29,40 +23,10 @@ using namespace std;
 
 namespace {
 
-struct path_leaf_string {
-  std::string operator()(const std::filesystem::directory_entry &entry) const {
-    return entry.path().string();
-  }
-};
-
-vector<string> read_directory(const std::string &name) {
-  vector<string> v;
-  std::filesystem::path p(name);
-  if (!filesystem::exists(p)) {
-    throw invalid_argument(name + string(" not found"));
-  }
-  std::filesystem::recursive_directory_iterator dir(p);
-  for (const auto &entry : dir) {
-    if (!filesystem::is_directory(entry)) {
-      v.push_back(entry.path());
-    }
-  }
-
-  return v;
-}
-
-string stem(string filename) { return filesystem::path(filename).stem(); }
-
-void write_csv(const string filename, const std::vector<AlgorithmResult> &algo_results,
-               unordered_map<string, int> &algo_id_map) {
-  ofstream csv_file(filename);
-  if (!csv_file.good()) {
-    throw invalid_argument("file cannot be written: " + filename);
-  }
-  csv_file << "algorithm,run_number,iteration,cut_weight" << endl;
-
-  for (const auto &algorithm_result : algo_results) {
-    auto algorithm_id = algo_id_map[algorithm_result.algorithmName];
+void write_result_to_stream(const vector<AlgorithmResult> &results,
+                            const RunConfig config, std::ostream &stream) {
+  for (const auto &algorithm_result : results) {
+    int algorithm_id = algorithm_result.algorithm_id;
 
     for (int run_nr = 0; run_nr < algorithm_result.run_results.size();
          ++run_nr) {
@@ -70,87 +34,37 @@ void write_csv(const string filename, const std::vector<AlgorithmResult> &algo_r
 
       for (int iteration = 0; iteration < run_data.cut_sizes.size();
            ++iteration) {
-        csv_file << algorithm_id << "," << run_nr << "," << iteration << ","
-                 << run_data.cut_sizes[iteration] << endl;
+        stream << algorithm_id << "," << run_nr << "," << iteration << ","
+               << run_data.cut_sizes[iteration] << endl;
       }
     }
   }
-}
-
-void write_id_map(string filename, unordered_map<string, int> &id_map) {
-  ofstream csv_file(filename);
-  if (!csv_file.good()) {
-    throw invalid_argument("file cannot be written: " + filename);
-  }
-  csv_file << "id,name" << endl;
-  for (const auto &pair : id_map) {
-    string name;
-    int id;
-    std::tie(name, id) = pair;
-    csv_file << id << "," << name << endl;
-  }
-}
-
-void write_results_to_files(const vector<vector<AlgorithmResult>> &results, vector<shared_ptr<Algorithm>> &algorithms, vector<string>& filenames, string csv_dir) {
-    for_each(results.begin(), results.end(), [](auto &v) {
-        sort(v.begin(), v.end(), [](const auto &r1, const auto &r2) {
-        return r1.algorithmName < r2.algorithmName;
-        });
-    });
-
-    unordered_map<string, int> algo_id_map;
-    for (int i = 0; i < algorithms.size(); ++i) {
-        algo_id_map.insert({algorithms[i]->name(), i});
-    }
-
-    for (int file = 0; file < filenames.size(); ++file) {
-        write_csv(csv_dir + stem(filenames[file]) + string(".csv"), results[file],
-                algo_id_map);
-        write_id_map(csv_dir + stem(filenames[file]) + string("_mapping.csv"),
-                    algo_id_map);
-    }
 }
 
 } // namespace
 
+template <typename T> shared_ptr<Algorithm> make_algorithm() {
+  return make_shared<T>();
+}
+
+unordered_map<string, shared_ptr<Algorithm> (*)()> create_algorithm = {
+    {"unif", &make_algorithm<UnifAlgorithm>},
+    {"pmut", &make_algorithm<PMUTAlgorithm>},
+    {"activity", &make_algorithm<ActivityAlgorithm>},
+    {"greedy", &make_algorithm<GreedyAlgorithm>}};
+
+RunConfig read_config(string filename) { return RunConfig(); }
+
 int main(int argc, char *argv[]) {
-  string dirname;
+  string filename;
   RunConfig config;
-  string csv_dir = R"(./csv/)";
   switch (argc) {
-  case 6:
-    config.run_count = std::stoi(argv[5]);
-    [[fallthrough]];
-  case 5:
-    config.max_duration = std::stoi(argv[4]);
-    [[fallthrough]];
-  case 4:
-    config.max_iterations = std::stoi(argv[3]);
-    [[fallthrough]];
   case 3:
-    if (std::filesystem::exists(argv[2])) {
-      csv_dir = argv[2];
-      if (csv_dir.back() != '/') {
-        csv_dir += '/';
-      }
-    } else {
-      cout << "Could not find directory " << argv[2] << endl;
-      exit(1);
-    }
-    [[fallthrough]];
-  case 2:
-    if (std::filesystem::exists(argv[1])) {
-      dirname = argv[1];
-    } else {
-      cout << "Could not find directory " << argv[1] << endl;
-      exit(1);
-    }
+    config = read_config(argv[2]);
+    filename = argv[1];
     break;
   default:
-    cout << "Usage: maxcut-benchmark <graph directory> <csv_directory> <max "
-            "iterations> "
-            "<max_duration> <run_count>"
-         << endl;
+    cout << "Usage: maxcut-benchmark <graph_instance> <config_file>" << endl;
     exit(1);
   }
 
@@ -158,27 +72,14 @@ int main(int argc, char *argv[]) {
 
   vector<shared_ptr<Algorithm>> algorithms;
 
-  algorithms.push_back(make_shared<UnifAlgorithm>());
-  // algorithms.push_back(make_shared<AnnealingAlgorithm>());
-  algorithms.push_back(make_shared<PMUTAlgorithm>());
-  //   algorithms.push_back(make_shared<FMUTAlgorithm>());
-  //   algorithms.push_back(make_shared<ActivityAlgorithm>(false));
-  //   algorithms.push_back(make_shared<ActivityAlgorithm>(true));
-  // algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
-  // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
-  algorithms.push_back(make_shared<GreedyAlgorithm>());
-  // algorithms.push_back(make_shared<GreedyActivityAlgorithm>(false));
-  // algorithms.push_back(make_shared<GreedyActivityAlgorithm>(true));
-  // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(false));
-  // algorithms.push_back(make_shared<ActivityDeterministicAlgorithm>(true));
-  // algorithms.push_back(make_shared<GreedyPMUTAlgorithm>());
+  for (const auto &p : config.algorithms) {
+    algorithms.push_back(create_algorithm[p.first]());
+    algorithms.back()->id = p.second;
+  }
 
-  auto filenames = read_directory(dirname);
-  sort(filenames.begin(), filenames.end());
+  auto results = benchmark(filename, algorithms, config);
 
-  auto results = benchmark(filenames, algorithms, config);
-
-  write_results_to_files(results, algorithms, filenames, csv_dir);
+  write_result_to_stream(results, config, std::cout);
 
   // cout << "Random seed is: " << RANDOM_SEED << endl;
   return 0;

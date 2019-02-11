@@ -2,6 +2,10 @@
 #include "Algorithm.hpp"
 #include "types.hpp"
 
+namespace {
+constexpr int REVERSE = -1, NORMAL = 1;
+}
+
 namespace maxcut {
 
 /**
@@ -31,10 +35,12 @@ public:
   void init() override;
 
   std::string name() override {
-    return _reverse == -1 ? "reverse activity" : "activity";
+    return _reverse == REVERSE ? "reverse activity" : "activity";
   }
 
-  ActivityAlgorithm(bool reverse) : _reverse(reverse ? -1 : 1) {}
+  ActivityAlgorithm() : _reverse(NORMAL) {}
+
+  ActivityAlgorithm(bool reverse) : _reverse(reverse ? REVERSE : NORMAL) {}
 
   void updateActivity(const std::vector<int> &flipped_nodes);
 

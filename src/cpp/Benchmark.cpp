@@ -132,53 +132,40 @@ public:
   }
 };
 
-std::vector<std::vector<AlgorithmResult>>
-benchmark(std::vector<std::string> &filenames,
+std::vector<AlgorithmResult>
+benchmark(std::string &filename,
           std::vector<std::shared_ptr<Algorithm>> &algorithms,
           const RunConfig config) {
-  std::vector<std::vector<AlgorithmResult>> results(filenames.size());
   FileReader *reader;
-  for (int fileID = 0; fileID < filenames.size(); ++fileID) {
-
-    // std::cout << "Reading file " << _filenames[fileID];
-    // std::cout.flush();
-
-    std::string fileextension;
-    try {
-      fileextension = filenames[fileID].substr(filenames[fileID].rfind('.'));
-      switch (filename_map.at(fileextension)) {
-      case FileExtension::EDGELIST:
-        reader = new EdgeListReader();
-        break;
-      case FileExtension::MTXREADER:
-        reader = new MTXReader();
-        break;
-      case FileExtension::CNFREADER:
-        reader = new CNFReader();
-        break;
-      case FileExtension::NXEDGELIST:
-        reader = new NXEdgeListReader();
-        break;
-      }
-    } catch (const std::out_of_range &e) {
-      e.what();
-      throw std::runtime_error("Could not determine file extension of file " +
-                               filenames[fileID]);
+  std::string fileextension;
+  try {
+    fileextension = filename.substr(filename.rfind('.'));
+    switch (filename_map.at(fileextension)) {
+    case FileExtension::EDGELIST:
+      reader = new EdgeListReader();
+      break;
+    case FileExtension::MTXREADER:
+      reader = new MTXReader();
+      break;
+    case FileExtension::CNFREADER:
+      reader = new CNFReader();
+      break;
+    case FileExtension::NXEDGELIST:
+      reader = new NXEdgeListReader();
+      break;
     }
-
-    AdjList adj_list = reader->readFile(filenames[fileID]);
-
-    // std::cout << " ...done" << std::endl;
-
-    // std::cout << "Starting batch";
-    // std::cout.flush();
-
-    results[fileID] = batch(adj_list, algorithms, config);
-
-    // std::cout << "...done" << std::endl;
-    delete reader;
+  } catch (const std::out_of_range &e) {
+    e.what();
+    throw std::runtime_error("Could not determine file extension of file " +
+                             filename);
   }
-  return results;
+
+  AdjList adj_list = reader->readFile(filename);
+
+  auto result = batch(adj_list, algorithms, config);
+
+  delete reader;
+  return result;
 }
 
 } // namespace maxcut

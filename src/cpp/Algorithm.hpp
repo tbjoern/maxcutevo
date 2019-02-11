@@ -69,6 +69,8 @@ public:
   void setGraph(const AdjList &adj_list);
 
   int evaluation_count;
+
+  int id;
 };
 
 } // namespace maxcut

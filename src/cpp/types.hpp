@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
+#include <memory>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -36,13 +38,15 @@ struct RunResult {
 
 struct AlgorithmResult {
   std::vector<RunResult> run_results;
-  std::string algorithmName;
+  int algorithm_id;
 };
 
 struct RunConfig {
   int max_duration;
   int max_iterations;
   int run_count;
+  // pair<classname, id>
+  std::vector<std::pair<std::string, int>> algorithms;
 };
 
 } // namespace maxcut

@@ -8,10 +8,10 @@
 namespace maxcut {
 
 /**
- *  runs a set of algorithms on a set of graphs
+ *  manages graph file I/O
  */
-std::vector<std::vector<AlgorithmResult>>
-benchmark(std::vector<std::string> &filenames,
+std::vector<AlgorithmResult>
+benchmark(std::string &filename,
           std::vector<std::shared_ptr<Algorithm>> &algorithms,
           const RunConfig config);
 
