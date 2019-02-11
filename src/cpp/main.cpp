@@ -53,8 +53,8 @@ vector<string> read_directory(const std::string &name) {
 
 string stem(string filename) { return filesystem::path(filename).stem(); }
 
-void write_csv(string filename, std::vector<AlgorithmResult> algo_results,
-               unordered_map<string, int> algo_id_map) {
+void write_csv(const string filename, const std::vector<AlgorithmResult> &algo_results,
+               unordered_map<string, int> &algo_id_map) {
   ofstream csv_file(filename);
   if (!csv_file.good()) {
     throw invalid_argument("file cannot be written: " + filename);
@@ -77,7 +77,7 @@ void write_csv(string filename, std::vector<AlgorithmResult> algo_results,
   }
 }
 
-void write_id_map(string filename, unordered_map<string, int> id_map) {
+void write_id_map(string filename, unordered_map<string, int> &id_map) {
   ofstream csv_file(filename);
   if (!csv_file.good()) {
     throw invalid_argument("file cannot be written: " + filename);
@@ -89,6 +89,26 @@ void write_id_map(string filename, unordered_map<string, int> id_map) {
     std::tie(name, id) = pair;
     csv_file << id << "," << name << endl;
   }
+}
+
+void write_results_to_files(const vector<vector<AlgorithmResult>> &results, vector<shared_ptr<Algorithm>> &algorithms, vector<string>& filenames, string csv_dir) {
+    for_each(results.begin(), results.end(), [](auto &v) {
+        sort(v.begin(), v.end(), [](const auto &r1, const auto &r2) {
+        return r1.algorithmName < r2.algorithmName;
+        });
+    });
+
+    unordered_map<string, int> algo_id_map;
+    for (int i = 0; i < algorithms.size(); ++i) {
+        algo_id_map.insert({algorithms[i]->name(), i});
+    }
+
+    for (int file = 0; file < filenames.size(); ++file) {
+        write_csv(csv_dir + stem(filenames[file]) + string(".csv"), results[file],
+                algo_id_map);
+        write_id_map(csv_dir + stem(filenames[file]) + string("_mapping.csv"),
+                    algo_id_map);
+    }
 }
 
 } // namespace
@@ -141,9 +161,9 @@ int main(int argc, char *argv[]) {
   algorithms.push_back(make_shared<UnifAlgorithm>());
   // algorithms.push_back(make_shared<AnnealingAlgorithm>());
   algorithms.push_back(make_shared<PMUTAlgorithm>());
-  // algorithms.push_back(make_shared<FMUTAlgorithm>());
-  algorithms.push_back(make_shared<ActivityAlgorithm>(false));
-  algorithms.push_back(make_shared<ActivityAlgorithm>(true));
+  //   algorithms.push_back(make_shared<FMUTAlgorithm>());
+  //   algorithms.push_back(make_shared<ActivityAlgorithm>(false));
+  //   algorithms.push_back(make_shared<ActivityAlgorithm>(true));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(false));
   // algorithms.push_back(make_shared<UnifActivityAlgorithm>(true));
   algorithms.push_back(make_shared<GreedyAlgorithm>());
@@ -158,51 +178,7 @@ int main(int argc, char *argv[]) {
 
   auto results = benchmark(filenames, algorithms, config);
 
-  for_each(results.begin(), results.end(), [](auto &v) {
-    sort(v.begin(), v.end(), [](const auto &r1, const auto &r2) {
-      return r1.algorithmName < r2.algorithmName;
-    });
-  });
-
-  std::vector<std::vector<int>> output_per_algorithm(algorithms.size());
-
-  for (int i = 0; i < results.size(); ++i) {
-    const auto &results_for_file = results[i];
-    cout << filenames[i] << endl;
-    for (const auto algo_result : results_for_file) {
-      const auto &run = algo_result.run_results[0];
-      cout << setw(25) << algo_result.algorithmName << ": " << setw(7)
-           << run.cut.max_size << setw(7) << run.cut.size << "|" << setw(7)
-           << run.cut.inverse_size << setw(9) << run.time << "ms " << setw(10)
-           << run.evaluation_count << endl;
-    }
-    for (int j = 0; j < results_for_file.size(); ++j) {
-      // TODO: take the maximum of all runs
-      output_per_algorithm[j].push_back(
-          results_for_file[j].run_results[0].cut.max_size);
-    }
-    cout << endl;
-  }
-
-  for (int i = 0; i < output_per_algorithm.size(); ++i) {
-    cout << results[0][i].algorithmName;
-    for (auto number : output_per_algorithm[i]) {
-      cout << "," << number;
-    }
-    cout << endl;
-  }
-
-  unordered_map<string, int> algo_id_map;
-  for (int i = 0; i < algorithms.size(); ++i) {
-    algo_id_map.insert({algorithms[i]->name(), i});
-  }
-
-  for (int file = 0; file < filenames.size(); ++file) {
-    write_csv(csv_dir + stem(filenames[file]) + string(".csv"), results[file],
-              algo_id_map);
-    write_id_map(csv_dir + stem(filenames[file]) + string("_mapping.csv"),
-                 algo_id_map);
-  }
+  write_results_to_files(results, algorithms, filenames, csv_dir);
 
   // cout << "Random seed is: " << RANDOM_SEED << endl;
   return 0;
