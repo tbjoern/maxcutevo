@@ -53,7 +53,14 @@ unordered_map<string, shared_ptr<Algorithm> (*)()> create_algorithm = {
     {"activity", &make_algorithm<ActivityAlgorithm>},
     {"greedy", &make_algorithm<GreedyAlgorithm>}};
 
-RunConfig read_config(string filename) { return RunConfig(); }
+RunConfig read_config(string filename) { 
+    // TODO: parse config file in ini format
+    // sections: run information and algorithm
+    // run information section has max_duration, max_iterations and run_count
+    // algorithm sections can be repeated, each has
+    //      name, unique id, parameters
+    return RunConfig(); 
+}
 
 int main(int argc, char *argv[]) {
   string filename;
