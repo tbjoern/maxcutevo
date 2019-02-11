@@ -1,6 +1,6 @@
 #pragma once
+#include "../types.hpp"
 #include "Algorithm.hpp"
-#include "types.hpp"
 
 namespace maxcut {
 
@@ -8,7 +8,7 @@ namespace maxcut {
  * Evolutionary Algorithm for MaxCut that chooses a node to flip with even
  * probability distribution
  */
-class UnifAlgorithm : public Algorithm {
+class Unif : public Algorithm {
 public:
   void iteration() override;
 

@@ -1,6 +1,6 @@
 #pragma once
+#include "../types.hpp"
 #include "Algorithm.hpp"
-#include "types.hpp"
 
 namespace {
 constexpr int REVERSE = -1, NORMAL = 1;

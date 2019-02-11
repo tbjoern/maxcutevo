@@ -1,5 +1,5 @@
-#include "GreedyAlgorithm.hpp"
-#include "MathHelper.hpp"
+#include "Greedy.hpp"
+#include "../MathHelper.hpp"
 
 #include <tuple>
 
@@ -7,7 +7,7 @@ using namespace std;
 
 namespace maxcut {
 
-void GreedyAlgorithm::iteration() {
+void Greedy::iteration() {
   _improved = false;
   int best_node = -1, improvement = 0;
   for (int node = 0; node < _adj_list->node_count; ++node) {

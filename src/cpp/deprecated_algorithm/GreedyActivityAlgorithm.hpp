@@ -5,8 +5,8 @@
 namespace maxcut {
 
 /**
- * Uses GreedyAlgorithm as a baseline
- * After GreedyAlgorithm is finished, choose vertex with highest activity
+ * Uses Greedy as a baseline
+ * After Greedy is finished, choose vertex with highest activity
  */
 class GreedyActivityAlgorithm : public ActivityAlgorithm {
   bool greedyIteration();

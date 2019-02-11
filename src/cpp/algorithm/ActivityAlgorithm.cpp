@@ -1,7 +1,7 @@
 #include "ActivityAlgorithm.hpp"
+#include "../MathHelper.hpp"
+#include "../types.hpp"
 #include "Algorithm.hpp"
-#include "MathHelper.hpp"
-#include "types.hpp"
 #include <iostream>
 
 using namespace std;

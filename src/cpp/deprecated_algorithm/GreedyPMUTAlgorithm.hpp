@@ -1,6 +1,6 @@
 #pragma once
-#include "GreedyAlgorithm.hpp"
-#include "PMUTAlgorithm.hpp"
+#include "Greedy.hpp"
+#include "PMUT.hpp"
 #include "types.hpp"
 
 namespace maxcut {
@@ -8,7 +8,7 @@ namespace maxcut {
 /**
  * Always chooses the vertex with the highest cut weight gain.
  */
-class GreedyPMUTAlgorithm : public GreedyAlgorithm, public PMUTAlgorithm {
+class GreedyPMUT : public Greedy, public PMUT {
 public:
   void run() override;
 

@@ -1,13 +1,13 @@
 #pragma once
+#include "../types.hpp"
 #include "Algorithm.hpp"
-#include "types.hpp"
 
 namespace maxcut {
 
 /**
  * Always chooses the vertex with the highest cut weight gain.
  */
-class GreedyAlgorithm : public virtual Algorithm {
+class Greedy : public virtual Algorithm {
   bool _improved = false;
 
 public:

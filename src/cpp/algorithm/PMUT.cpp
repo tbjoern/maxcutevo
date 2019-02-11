@@ -1,12 +1,11 @@
-#include "PMUTAlgorithm.hpp"
-#include "MathHelper.hpp"
-#include <random>
+#include "PMUT.hpp"
+#include "../MathHelper.hpp"
 
 using namespace std;
 
 namespace maxcut {
 
-void PMUTAlgorithm::init() {
+void PMUT::init() {
   _pop = vector<int>(_node_count);
   _weights = vector<int>(_node_count, 1);
   for (int node = 0; node < _node_count; ++node) {
@@ -17,7 +16,7 @@ void PMUTAlgorithm::init() {
   helper.setUniformRange(0, _node_count);
 }
 
-void PMUTAlgorithm::iteration() {
+void PMUT::iteration() {
   auto k = helper.getIntFromPowerLawDistribution(_node_count);
   auto nodes_to_flip = helper.chooseKUnique(_pop, _weights, k);
   flipNodesIfBetterCut(nodes_to_flip);

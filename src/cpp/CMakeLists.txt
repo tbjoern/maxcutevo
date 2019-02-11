@@ -1,39 +1,28 @@
+
 set(target maxcut-benchmark)
 
 set(sources
-    Algorithm.cpp
     Batch.cpp
     Benchmark.cpp
     main.cpp
     MathHelper.hpp
-    ActivityAlgorithm.cpp
-    # ActivityDeterministicAlgorithm.cpp
-    # AnnealingAlgorithm.cpp
-    # FMUTAlgorithm.cpp
-    GreedyAlgorithm.cpp
-    # GreedyActivityAlgorithm.cpp
-    # GreedyPMUTAlgorithm.cpp
-    PMUTAlgorithm.cpp
-    # UnifActivityAlgorithm.cpp
-    UnifAlgorithm.cpp
+    algorithm/Algorithm.cpp
+    algorithm/ActivityAlgorithm.cpp
+    algorithm/Greedy.cpp
+    algorithm/PMUT.cpp
+    algorithm/Unif.cpp
 )
 
 set(includes
-    Algorithm.hpp
     Batch.hpp
     Benchmark.hpp
     types.hpp
     MathHelper.hpp
-    ActivityAlgorithm.hpp
-    # ActivityDeterministicAlgorithm.hpp
-    # AnnealingAlgorithm.hpp
-    # FMUTAlgorithm.hpp
-    GreedyAlgorithm.hpp
-    # GreedyActivityAlgorithm.hpp
-    # GreedyPMUTAlgorithm.hpp
-    PMUTAlgorithm.hpp
-    # UnifActivityAlgorithm.hpp
-    UnifAlgorithm.hpp
+    algorithm/Algorithm.hpp
+    algorithm/ActivityAlgorithm.hpp
+    algorithm/Greedy.hpp
+    algorithm/PMUT.hpp
+    algorithm/Unif.hpp
 )
 
 set(libraries

@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 
-#include "Algorithm.hpp"
+#include "algorithm/Algorithm.hpp"
 #include "types.hpp"
 
 namespace maxcut {

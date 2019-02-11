@@ -1,5 +1,5 @@
 #pragma once
-#include "Algorithm.hpp"
+#include "algorithm/Algorithm.hpp"
 #include "types.hpp"
 #include <memory>
 #include <string>

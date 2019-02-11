@@ -1,16 +1,10 @@
-#include "Algorithm.hpp"
 #include "Benchmark.hpp"
+#include "algorithm/Algorithm.hpp"
 
-#include "ActivityAlgorithm.hpp"
-// #include "ActivityDeterministicAlgorithm.hpp"
-// #include "AnnealingAlgorithm.hpp"
-// #include "FMUTAlgorithm.hpp"
-// #include "GreedyActivityAlgorithm.hpp"
-#include "GreedyAlgorithm.hpp"
-// #include "GreedyPMUTAlgorithm.hpp"
-#include "PMUTAlgorithm.hpp"
-// #include "UnifActivityAlgorithm.hpp"
-#include "UnifAlgorithm.hpp"
+#include "algorithm/ActivityAlgorithm.hpp"
+#include "algorithm/Greedy.hpp"
+#include "algorithm/PMUT.hpp"
+#include "algorithm/Unif.hpp"
 
 #include <algorithm>
 #include <ostream>
@@ -48,18 +42,18 @@ template <typename T> shared_ptr<Algorithm> make_algorithm() {
 }
 
 unordered_map<string, shared_ptr<Algorithm> (*)()> create_algorithm = {
-    {"unif", &make_algorithm<UnifAlgorithm>},
-    {"pmut", &make_algorithm<PMUTAlgorithm>},
+    {"unif", &make_algorithm<Unif>},
+    {"pmut", &make_algorithm<PMUT>},
     {"activity", &make_algorithm<ActivityAlgorithm>},
-    {"greedy", &make_algorithm<GreedyAlgorithm>}};
+    {"greedy", &make_algorithm<Greedy>}};
 
-RunConfig read_config(string filename) { 
-    // TODO: parse config file in ini format
-    // sections: run information and algorithm
-    // run information section has max_duration, max_iterations and run_count
-    // algorithm sections can be repeated, each has
-    //      name, unique id, parameters
-    return RunConfig(); 
+RunConfig read_config(string filename) {
+  // TODO: parse config file in ini format
+  // sections: run information and algorithm
+  // run information section has max_duration, max_iterations and run_count
+  // algorithm sections can be repeated, each has
+  //      name, unique id, parameters
+  return RunConfig();
 }
 
 int main(int argc, char *argv[]) {

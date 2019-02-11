@@ -1,10 +1,10 @@
-#include "GreedyPMUTAlgorithm.hpp"
+#include "GreedyPMUT.hpp"
 
 namespace maxcut {
 
-void GreedyPMUTAlgorithm::run() {
-  GreedyAlgorithm::run();
-  PMUTAlgorithm::run();
+void GreedyPMUT::run() {
+  Greedy::run();
+  PMUT::run();
 }
 
 } // namespace maxcut

@@ -1,6 +1,6 @@
 #pragma once
-#include "MathHelper.hpp"
-#include "types.hpp"
+#include "../MathHelper.hpp"
+#include "../types.hpp"
 
 #include <csignal>
 
