@@ -135,9 +135,9 @@ def main():
         plotter.add_csv(cfg.csv_path)
     else:
         csv_dir = Path(os.path.abspath(cfg.csv_path))
-        filenames = sorted(list(csv_dir.glob('**/*.csv')))
+        filenames = sorted(list(csv_dir.glob('**/*')))
         for filename in filenames:
-            if not 'mapping' in str(filename):
+            if not filename.is_dir() and not 'mapping' in str(filename):
                 print(filename)
                 plotter.add_csv(filename)
     print("Plotting")
