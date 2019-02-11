@@ -23,6 +23,7 @@ namespace {
 
 void write_result_to_stream(const vector<AlgorithmResult> &results,
                             std::ostream &stream) {
+  stream << "algorithm,run_number,iteration,cut_weight" << endl;
   for (const auto &algorithm_result : results) {
     int algorithm_id = algorithm_result.algorithm_id;
 

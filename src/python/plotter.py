@@ -5,6 +5,7 @@ import os
 import cProfile
 from pathlib import Path
 from argparse import ArgumentParser
+import json
 
 class Plotter:
     def __init__(self):
@@ -12,6 +13,11 @@ class Plotter:
         self.figure = 0
         self.plot_data = []
         self.matfigure = plt.figure()
+        self.config = None
+
+    def add_config_json(self, config_file):
+        with open(config_file, 'r') as f:
+            self.config = json.load(f)
 
     def add_csv(self, csv_name, mapping_name=None):
         self.plot_data.append({
@@ -31,12 +37,18 @@ class Plotter:
     def read_algorithm_mapping(self, mapping_name):
         data = self.plot_data[self.figure]['data']
         labels = self.plot_data[self.figure]['labels']
-        with open(mapping_name, "r") as f:
-            csvreader = csv.DictReader(f, delimiter=',')
-            for row in csvreader:
-                algo_id = int(row["id"])
-                labels[algo_id] = row["name"]
+        if self.config:
+            for algorithm in self.config["algorithms"]:
+                algo_id = algorithm["id"]
+                labels[algo_id] = algorithm["name"]
                 data[algo_id] = {}
+        else:
+            with open(mapping_name, "r") as f:
+                csvreader = csv.DictReader(f, delimiter=',')
+                for row in csvreader:
+                    algo_id = int(row["id"])
+                    labels[algo_id] = row["name"]
+                    data[algo_id] = {}
 
     def read_csv_data(self, csv_name):
         data = self.plot_data[self.figure]['data']
@@ -108,11 +120,15 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('--dir', action='store_true', help='treats csv_path as a directory, creates a plot for every csv file in the directory')
     parser.add_argument('csv_path', action='store', help='path of the csv file')
+    parser.add_argument('--config', '-c', action='store', help='a json config file containing algorithm ids/names under json["algorithms"][#nr]["id"] and ..["name"')
     cfg = parser.parse_args()
 
     plotter = Plotter()
 
     plotter.matfigure.canvas.mpl_connect('button_press_event', onclick)
+
+    if cfg.config:
+        plotter.add_config_json(cfg.config)
 
     print("Loading csv..")
     if not cfg.dir:
