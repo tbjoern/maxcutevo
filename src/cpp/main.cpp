@@ -1,5 +1,6 @@
 #include "Benchmark.hpp"
 #include "algorithm/Algorithm.hpp"
+#include <nlohmann/json.hpp>
 
 #include "algorithm/ActivityAlgorithm.hpp"
 #include "algorithm/Greedy.hpp"
@@ -7,6 +8,7 @@
 #include "algorithm/Unif.hpp"
 
 #include <algorithm>
+#include <fstream>
 #include <ostream>
 #include <string>
 #include <unordered_map>
@@ -15,10 +17,12 @@
 using namespace maxcut;
 using namespace std;
 
+using json = nlohmann::json;
+
 namespace {
 
 void write_result_to_stream(const vector<AlgorithmResult> &results,
-                            const RunConfig config, std::ostream &stream) {
+                            std::ostream &stream) {
   for (const auto &algorithm_result : results) {
     int algorithm_id = algorithm_result.algorithm_id;
 
@@ -53,7 +57,21 @@ RunConfig read_config(string filename) {
   // run information section has max_duration, max_iterations and run_count
   // algorithm sections can be repeated, each has
   //      name, unique id, parameters
-  return RunConfig();
+  auto cfg_file = ifstream(filename);
+  json json_cfg;
+  cfg_file >> json_cfg;
+
+  auto config = RunConfig();
+
+  config.max_duration = json_cfg["max_duration"];
+  config.max_iterations = json_cfg["max_iterations"];
+  config.run_count = json_cfg["run_count"];
+
+  for (const auto &algorithm : json_cfg["algorithms"]) {
+    config.algorithms.push_back({algorithm["name"], algorithm["id"]});
+  }
+
+  return config;
 }
 
 int main(int argc, char *argv[]) {
@@ -80,7 +98,7 @@ int main(int argc, char *argv[]) {
 
   auto results = benchmark(filename, algorithms, config);
 
-  write_result_to_stream(results, config, std::cout);
+  write_result_to_stream(results, std::cout);
 
   // cout << "Random seed is: " << RANDOM_SEED << endl;
   return 0;
