@@ -9,6 +9,8 @@ namespace maxcut {
  * probability distribution
  */
 class Unif : public Algorithm {
+  double _probability;
+
 public:
   void iteration() override;
 

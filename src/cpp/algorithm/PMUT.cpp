@@ -12,7 +12,7 @@ void PMUT::init() {
     _pop[node] = node;
   }
 
-  helper.setPowerLawParam(2);
+  helper.setPowerLawParam(1.5);
   helper.setUniformRange(0, _node_count);
 }
 

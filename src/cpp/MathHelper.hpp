@@ -41,7 +41,7 @@ public:
     return ceil(rand);
   }
 
-  double getReal() { return _real(_engine); }
+  inline double getReal() { return _real(_engine); }
 
   std::vector<int> chooseKUnique(std::vector<int> &population,
                                  std::vector<int> &weights, int k) {
@@ -101,9 +101,8 @@ public:
 
   double sigmoid(double x) { return (x / 8) / ((abs(x / 2) + 1)) + 1 / 4; }
 
-  bool sampleProbability(double probabilty) {
-    setRealRange(0, 1);
-    return getReal() >= probabilty;
+  inline bool sampleProbability(double probabilty) {
+    return getReal() <= probabilty;
   }
 
 private:
