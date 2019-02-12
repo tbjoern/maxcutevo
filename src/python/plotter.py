@@ -33,6 +33,7 @@ class Plotter:
         self.read_algorithm_mapping(mapping_name)
         
         self.read_csv_data(csv_name)
+
     
     def read_algorithm_mapping(self, mapping_name):
         data = self.plot_data[self.figure]['data']
@@ -40,7 +41,7 @@ class Plotter:
         if self.config:
             for algorithm in self.config["algorithms"]:
                 algo_id = algorithm["id"]
-                labels[algo_id] = algorithm["name"]
+                labels[algo_id] = self.build_algorithm_name(algorithm)
                 data[algo_id] = {}
         else:
             with open(mapping_name, "r") as f:
@@ -49,6 +50,14 @@ class Plotter:
                     algo_id = int(row["id"])
                     labels[algo_id] = row["name"]
                     data[algo_id] = {}
+
+    def build_algorithm_name(self, algorithm):
+        name_parts = list()
+        name_parts.append(algorithm["name"])
+        if "arguments" in algorithm:
+            for key,value in algorithm["arguments"].items():
+                name_parts.append(f"{key}={value}")
+        return " ".join(name_parts)
 
     def read_csv_data(self, csv_name):
         data = self.plot_data[self.figure]['data']
