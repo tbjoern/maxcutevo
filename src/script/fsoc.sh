@@ -21,5 +21,5 @@ do
     echo "${exec_name} ${file} ${config_file} > ${2}/${logfile}"
     echo "${2}/${logfile}"
     install -D -m 644 /dev/null "${2}/${logfile}"
-	srun -n1 -c4 --exclusive --output "${2}/${logfile}" ""${exec_name} ${file} ${config_file}" &
+	srun -n1 -c4 --exclusive --output "${2}/${logfile}" ${exec_name} ${file} ${config_file} &
 done
