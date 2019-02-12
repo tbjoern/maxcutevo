@@ -9,8 +9,12 @@ install -d $2
 
 for file in `find -L $dir -type f`
 do
-    echo "${exec_name} ${file} ${config_file} > ${2}/${file}"
-    echo "${2}/${file}"
-    install -Dv -m 644 /dev/null "${2}/${file}"
-	eval "${exec_name} ${file} ${config_file} > ${2}/${file}"
+    ext=${file##*.}
+    fname=`basename $file .$ext`
+    fdir=`dirname $file`
+    logfile="$fdir/$fname.csv"
+    echo "${exec_name} ${file} ${config_file} > ${2}/${logfile}"
+    echo "${2}/${logfile}"
+    install -D -m 644 /dev/null "${2}/${logfile}"
+	eval "${exec_name} ${file} ${config_file} > ${2}/${logfile}"
 done
