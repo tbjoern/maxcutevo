@@ -1,15 +1,25 @@
 #!/bin/bash
 
-#SBATCH --ntasks 800
+#SBATCH --job-name maxcut-benchmark
+#SBATCH --ntasks 40
 #SBATCH --output slurm.out
+#SBATCH --cpus-per-task 4
 
 dir=$1
-exec_name='src/python/batch.py'
-config_file='config.ini'
+exec_name='./maxcut-benchmark'
+config_file='./config.json'
 
-shopt -s globstar
+echo $2
+install -d $2
 
-for file in $dir/**/*.*
+for file in `find -L $dir -type f`
 do
-	srun python3 $exec_name $config_file $file &
+    ext=${file##*.}
+    fname=`basename $file .$ext`
+    fdir=`dirname $file`
+    logfile="$fdir/$fname.csv"
+    echo "${exec_name} ${file} ${config_file} > ${2}/${logfile}"
+    echo "${2}/${logfile}"
+    install -D -m 644 /dev/null "${2}/${logfile}"
+	srun -n1 -c4 --exclusive "${exec_name} ${file} ${config_file} > ${2}/${logfile}" &
 done
