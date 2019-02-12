@@ -3,7 +3,6 @@
 #SBATCH --job-name maxcut-benchmark
 #SBATCH --ntasks 40
 #SBATCH --output slurm.out
-#SBATCH --cpus-per-task 4
 
 dir=$1
 exec_name='./maxcut-benchmark'
