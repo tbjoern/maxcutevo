@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -41,12 +42,18 @@ struct AlgorithmResult {
   int algorithm_id;
 };
 
+struct AlgorithmConfig {
+  std::string name;
+  int id;
+  nlohmann::json arguments;
+};
+
 struct RunConfig {
   int max_duration;
   int max_iterations;
   int run_count;
   // pair<classname, id>
-  std::vector<std::pair<std::string, int>> algorithms;
+  std::vector<AlgorithmConfig> algorithms;
 };
 
 } // namespace maxcut

@@ -10,8 +10,11 @@ namespace maxcut {
  */
 class PMUT : public virtual Algorithm {
   std::vector<int> _pop, _weights;
+  double power_law_beta;
 
 public:
+  void parse_arguments(nlohmann::json arguments) override;
+
   void iteration() override;
 
   void init() override;

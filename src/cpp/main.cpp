@@ -64,7 +64,16 @@ RunConfig read_config(string filename) {
   config.run_count = json_cfg["run_count"];
 
   for (const auto &algorithm : json_cfg["algorithms"]) {
-    config.algorithms.push_back({algorithm["name"], algorithm["id"]});
+    AlgorithmConfig cfg;
+    cfg.name = algorithm["name"];
+    cfg.id = algorithm["id"];
+    if (algorithm.find("arguments") != algorithm.end()) {
+      cfg.arguments = algorithm["arguments"];
+    } else {
+      cfg.arguments = json::object();
+    }
+
+    config.algorithms.push_back(cfg);
   }
 
   return config;
@@ -87,9 +96,10 @@ int main(int argc, char *argv[]) {
 
   vector<shared_ptr<Algorithm>> algorithms;
 
-  for (const auto &p : config.algorithms) {
-    algorithms.push_back(create_algorithm[p.first]());
-    algorithms.back()->id = p.second;
+  for (const auto &algorithmConfig : config.algorithms) {
+    algorithms.push_back(create_algorithm[algorithmConfig.name]());
+    algorithms.back()->id = algorithmConfig.id;
+    algorithms.back()->parse_arguments(algorithmConfig.arguments);
   }
 
   auto results = benchmark(filename, algorithms, config);

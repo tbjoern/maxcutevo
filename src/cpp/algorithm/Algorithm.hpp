@@ -2,6 +2,8 @@
 #include "../MathHelper.hpp"
 #include "../types.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include <csignal>
 
 namespace maxcut {
@@ -71,6 +73,8 @@ public:
   int evaluation_count;
 
   int id;
+
+  virtual void parse_arguments(nlohmann::json) {}
 };
 
 } // namespace maxcut
