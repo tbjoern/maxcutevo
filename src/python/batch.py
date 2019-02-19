@@ -8,9 +8,9 @@ import threading
 from multiprocessing import Process, Queue, current_process, freeze_support
 
 def worker(input, output):
-    for runner, run_nr in iter(input.get(), 'STOP'):
+    for runner, run_nr in iter(input.get, 'STOP'):
         runner.run_algorithm(run_nr)
-        output.put('DONE')
+        output.put(runner.logger.lines)
 
 class Batch:
     def __init__(self, config, log_to_stdout=False):
@@ -41,25 +41,25 @@ class Batch:
                         yield (runner, run_nr)
                 for _ in range(self.parallel):
                    yield 'STOP'
+
             for _ in range(self.parallel):
                 Process(target=worker, args=(run_tasks, finished_queue)).start()
+
             for run_task in generate_run_tasks():
                 run_tasks.put(run_task)
+                
             for _ in range(len(self.algorithm_configs * self.run_count)):
-                finished_queue.get()
+                lines = finished_queue.get()
+                logger.write(lines)
         else:
             for algorithm_config in self.algorithm_configs:
                 runner = Runner(instance, logger, self.iterations, algorithm_config)
 
                 for run_nr in range(self.run_count):
                     runner.run_algorithm(run_nr)
-            
         logger.close()
-
         return logfile_name
         
-
-
 if __name__ == "__main__":
     import sys, argparse
 
