@@ -2,19 +2,19 @@ import algorithm
 import threading
 
 class Runner:
-    def __init__(self, graph, logger, iterations, algorithm_class, *algorithm_params):
+    def __init__(self, graph, logger, iterations, algorithm_config):
         self.graph = graph
         self.logger = logger
         self.iterations = iterations
-        self.algorithm_class = algorithm_class
-        self.algorithm_params = algorithm_params
+        self.algorithm_class = algorithm_config.class_obj
+        self.algorithm_params = algorithm_config.arguments
+        self.id = algorithm_config.id
 
     def run_algorithm(self, run_nr):
         algorithm = self.algorithm_class(self.graph, *(self.algorithm_params))
-        id = self.logger.add_algorithm(str(algorithm))
         for _ in range(self.iterations):
             it_data = algorithm.iterate()
-            self.logger.log(run_nr, id, it_data.iteration, it_data.cut_weight)
+            self.logger.log(run_nr, self.id, it_data.iteration, it_data.cut_weight)
 
 class ThreadRunner(threading.Thread):
     def __init__(self, runner, run_nr):
