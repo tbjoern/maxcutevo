@@ -30,7 +30,6 @@ class Logger:
             
     def close(self):
         if self.log_to_stdout:
-            sys.stdout.write(",".join(self.header) + '\n')
             for line in self.lines:
                sys.stdout.write(line)
         else:
