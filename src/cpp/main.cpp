@@ -50,6 +50,7 @@ unordered_map<string, shared_ptr<Algorithm> (*)()> create_algorithm = {
     {"unif", &make_algorithm<Unif>},
     {"pmut", &make_algorithm<PMUT>},
     {"activity", &make_algorithm<ActivityAlgorithm>},
+    {"pmutActivity", &make_algorithm<ActivityAlgorithm>},
     {"greedy", &make_algorithm<Greedy>}};
 
 RunConfig read_config(string filename) {
@@ -60,7 +61,7 @@ RunConfig read_config(string filename) {
   auto config = RunConfig();
 
   config.max_duration = json_cfg["max_duration"];
-  config.max_iterations = json_cfg["max_iterations"];
+  config.max_iterations = json_cfg["iterations"];
   config.run_count = json_cfg["run_count"];
 
   for (const auto &algorithm : json_cfg["algorithms"]) {
