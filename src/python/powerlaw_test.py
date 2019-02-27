@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 import random
+from numpy.random import exponential
 
 def randomPowerLawNumber(n, x0, x1):
     y = random.random()
@@ -10,11 +11,11 @@ def randomPowerLawNumber(n, x0, x1):
 if __name__ == "__main__":
     x = []
     y = []
-    n = -2.5
+    beta = 1.5
     start = 1
     end = 10000
     for i in range(2,10000):
-        y.append(randomPowerLawNumber(n,start,end))
+        y.append(exponential(beta))
 
     plt.plot(y,"bo")
     plt.show()
