@@ -27,7 +27,7 @@ class FlipAlgorithm(Algorithm):
         self.CUT_SET = 1
         self.NON_CUT_SET = -1
         self.init_cut_tracking()
-        self.flip_nodes_randomly()
+        # self.flip_nodes_randomly()
 
     def flip_nodes_randomly(self):
         for node in self.graph.nodes:
