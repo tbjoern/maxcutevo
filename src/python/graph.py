@@ -35,6 +35,8 @@ def read_file(graph, file):
         return read_matrix_notation(graph, file)
     elif file_extension == ".csv":
         return read_csv(graph, file)
+    elif file_extension == ".rud":
+        return read_rud(graph, file)
     else:
         return read_edgelist(graph, file)
 
@@ -47,6 +49,21 @@ def read_edgelist(graph, file):
             graph.edges += 1
             start, end = [int(x.strip()) for x in line.split()]
             graph.add_edge(start, end, 1)
+    except Exception as x:
+        print(x)
+        raise GraphReadError()
+    return graph
+
+def read_rud(graph, file):
+    lines = []
+    with open(file, "r") as file:
+        lines = file.readlines()
+    try:
+        header = lines[0]
+        nodes, graph.edges = [int(x) for x in header.split()]
+        for line in lines[1:]:
+            start, end, weight = [int(x) for x in line.split()]
+            graph.add_edge(start, end, weight)
     except Exception as x:
         print(x)
         raise GraphReadError()
