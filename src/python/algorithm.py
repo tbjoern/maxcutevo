@@ -2,13 +2,20 @@ import random
 import math
 import copy
 from collections import namedtuple
+from numpy.random import exponential
 
 IterationData = namedtuple('IterationData', 'iteration cut_weight')
 
-def randomPowerLawNumber(n, x0, x1):
-    y = random.random()
-    x = ((x1**(n+1) - x0**(n+1))*y + x0**(n+1))**(1/(n+1))
-    return math.floor(x)
+# def randomPowerLawNumber(n, x0, x1):
+#     y = random.random()
+#     x = ((x1**(n+1) - x0**(n+1))*y + x0**(n+1))**(1/(n+1))
+#     return math.floor(x)
+
+def randomPowerLawNumber(beta, max_value):
+    value = exponential(beta)
+    if value > max_value:
+        return max_value
+    return value
 
 class Algorithm:
     def __init__(self, graph):
@@ -263,7 +270,7 @@ class pmutActivity(ActivityAlgorithm):
 
     
     def iterate(self):
-        k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
+        k = randomPowerLawNumber(self.power_law_beta, len(self.graph.nodes))
         chosen_nodes = self.choose_k_unique(self.node_list, self.activity, k=k)
         flipped = self.flip_nodes_if_improvement(chosen_nodes)
 
@@ -300,7 +307,7 @@ class pmut(FlipAlgorithm):
         return "pmut_" + str(self.power_law_beta)
 
     def iterate(self):
-        k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
+        k = randomPowerLawNumber(self.power_law_beta, len(self.graph.nodes))
         chosen_nodes = random.sample(self.node_list, k)
         self.flip_nodes_if_improvement(chosen_nodes)
         return super().iterate()
