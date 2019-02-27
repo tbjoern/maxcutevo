@@ -24,7 +24,15 @@ class Algorithm:
 class FlipAlgorithm(Algorithm):
     def __init__(self, graph):
         super().__init__(graph)
+        self.CUT_SET = 1
+        self.NON_CUT_SET = -1
         self.init_cut_tracking()
+        self.flip_nodes_randomly()
+
+    def flip_nodes_randomly(self):
+        for node in self.graph.nodes:
+            if random.random() >= 0.5:
+                self.flip_node(node)
 
     def init_cut_tracking(self):
         self.change = {}
@@ -34,12 +42,12 @@ class FlipAlgorithm(Algorithm):
         self.side = {}
         for node in self.graph.in_edges:
             self.change[node] = 0
-            self.side[node] = -1
+            self.side[node] = self.NON_CUT_SET
         for node, edges in self.graph.out_edges.items():
             self.change[node] = 0
             for edge in edges:
                 self.change[node] += edge.weight
-            self.side[node] = -1
+            self.side[node] = self.NON_CUT_SET
 
 
     def flip_node(self, node):
@@ -186,39 +194,44 @@ class GRASP(FlipAlgorithm):
 class ActivityAlgorithm(FlipAlgorithm):
     def __init__(self,graph):
         super().__init__(graph)
-        self.start_activity = len(graph.nodes)/10
-        self.activity_inc = len(graph.nodes)/10
-        self.activity_dec = -1*len(graph.nodes)/10
-        self.activity_max = 10*len(graph.nodes)
+        self.start_activity = 10
+        self.activity_inc = 5
+        self.activity_dec = 1
+        self.activity_max = 100
         self.activity_min = 1
+        self.decay_rate = 0.95
         self.activity = {}
         for node in graph.nodes:
             self.activity[node] = self.start_activity
 
     def update_activity(self, flipped_nodes):
         for node in flipped_nodes:
-            for edge in self.graph.in_edges[node]:
-                if self.side[node] == self.side[edge.neighbour]:
-                    self.activity[edge.neighbour] += self.activity_inc
-                else:
-                    self.activity[edge.neighbour] += self.activity_dec
-                if self.activity[edge.neighbour] > self.activity_max:
-                    self.activity[edge.neighbour] = self.activity_max
-                if self.activity[edge.neighbour] < self.activity_min:
-                    self.activity[edge.neighbour] = self.activity_min
-            for edge in self.graph.out_edges[node]:
-                if self.side[node] == self.side[edge.neighbour]:
-                    self.activity[edge.neighbour] += self.activity_inc
-                else:
-                    self.activity[edge.neighbour] += self.activity_dec
-                if self.activity[edge.neighbour] > self.activity_max:
-                    self.activity[edge.neighbour] = self.activity_max
-                if self.activity[edge.neighbour] < self.activity_min:
-                    self.activity[edge.neighbour] = self.activity_min
-
-    def flip_node(self, node):
-        self.activity[node] = self.start_activity
-        super().flip_node(node)
+            self.activity[node] = self.start_activity
+        for node in flipped_nodes:
+            if self.side[node] == self.CUT_SET:
+                for edge in self.graph.out_edges[node]:
+                    if self.side[edge.neighbour] == self.CUT_SET:
+                        self.activity[edge.neighbour] += self.activity_inc
+                    else:
+                        self.activity[edge.neighbour] -= self.activity_dec
+                    self.clamp_activity(edge.neighbour)
+            else:
+                for edge in self.graph.in_edges[node]:
+                    if self.side[edge.neighbour] == self.CUT_SET:
+                        self.activity[edge.neighbour] -= self.activity_dec
+                    else:
+                        self.activity[edge.neighbour] += self.activity_inc
+                    self.clamp_activity(edge.neighbour)
+    
+    def clamp_activity(self, node):
+        if self.activity[node] > self.activity_max:
+            self.activity[node] = self.activity_max
+        if self.activity[node] < self.activity_min:
+            self.activity[node] = self.activity_min
+    
+    def decay_activity(self):
+        for node, activity in self.activity.items():
+            self.activity[node] = activity * self.decay_rate
     
     def choose_k_unique(self, population, weights, k):
         result = []
@@ -252,7 +265,11 @@ class pmutActivity(ActivityAlgorithm):
     def iterate(self):
         k = randomPowerLawNumber(self.power_law_beta, 1, len(self.graph.nodes))
         chosen_nodes = self.choose_k_unique(self.node_list, self.activity, k=k)
-        self.flip_nodes_if_improvement(chosen_nodes)
+        flipped = self.flip_nodes_if_improvement(chosen_nodes)
+
+        if flipped:
+            self.update_activity(chosen_nodes)
+            self.decay_activity()
         return super().iterate()
 
 
