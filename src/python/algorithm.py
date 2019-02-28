@@ -15,7 +15,7 @@ def randomPowerLawNumber(beta, max_value):
     value = exponential(beta)
     if value > max_value:
         return max_value
-    return value
+    return math.ceil(value)
 
 class Algorithm:
     def __init__(self, graph):
@@ -213,8 +213,6 @@ class ActivityAlgorithm(FlipAlgorithm):
 
     def update_activity(self, flipped_nodes):
         for node in flipped_nodes:
-            self.activity[node] = self.start_activity
-        for node in flipped_nodes:
             if self.side[node] == self.CUT_SET:
                 for edge in self.graph.out_edges[node]:
                     if self.side[edge.neighbour] == self.CUT_SET:
@@ -229,6 +227,8 @@ class ActivityAlgorithm(FlipAlgorithm):
                     else:
                         self.activity[edge.neighbour] += self.activity_inc
                     self.clamp_activity(edge.neighbour)
+        for node in flipped_nodes:
+            self.activity[node] = self.start_activity
     
     def clamp_activity(self, node):
         if self.activity[node] > self.activity_max:
@@ -325,4 +325,22 @@ class greedy(FlipAlgorithm):
                 maximum = change
         if best_node is not None:
             self.flip_node(best_node)
+        return super().iterate()
+
+class greedyActivity(ActivityAlgorithm):
+    def __str__(self):
+        return "greedyActivity"
+
+    def iterate(self):
+        maximum = 0
+        best_node = None
+        for node, change in self.change.items():
+            activity_change = change * (self.activity[node] / self.start_activity)
+            if activity_change > maximum:
+                best_node = node
+                maximum = activity_change
+        if best_node is not None:
+            self.flip_node(best_node)
+            self.update_activity([best_node])
+            self.decay_activity()
         return super().iterate()
