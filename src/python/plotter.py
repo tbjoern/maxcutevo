@@ -23,7 +23,9 @@ class Plotter:
         self.plot_data.append({
             'data': {},
             'labels': {},
-            'file': os.path.basename(csv_name)
+            'file': os.path.basename(csv_name),
+            'file_path': csv_name,
+            'is_loaded': False
         })
         self.figure = len(self.plot_data) - 1
         # read and store data
@@ -31,10 +33,7 @@ class Plotter:
             mapping_name = os.path.splitext(csv_name)[0] + '_mapping.csv'
         # read algorithm mapping
         self.read_algorithm_mapping(mapping_name)
-        
-        self.read_csv_data(csv_name)
 
-    
     def read_algorithm_mapping(self, mapping_name):
         data = self.plot_data[self.figure]['data']
         labels = self.plot_data[self.figure]['labels']
@@ -60,6 +59,7 @@ class Plotter:
         return " ".join(name_parts)
 
     def read_csv_data(self, csv_name):
+        print(f'reading {csv_name}')
         data = self.plot_data[self.figure]['data']
         with open(csv_name, "r") as f:
             csvreader = csv.DictReader(f, delimiter=',')
@@ -70,8 +70,11 @@ class Plotter:
                     data[algo_id][run_nr] = { 'iteration':[], 'cut_weight':[] }
                 data[algo_id][run_nr]['iteration'].append(int(row['iteration']))
                 data[algo_id][run_nr]['cut_weight'].append(int(row['cut_weight']))
+        self.plot_data[self.figure]['is_loaded'] = True
 
     def plot_current_figure(self):
+        if not self.plot_data[self.figure]['is_loaded']:
+            self.read_csv_data(self.plot_data[self.figure]['file_path'])
         data = self.plot_data[self.figure]['data']
         labels = self.plot_data[self.figure]['labels']
         file = self.plot_data[self.figure]['file']
