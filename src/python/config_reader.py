@@ -35,4 +35,4 @@ def read_config(file_path):
     default_config = { 'iterations': 100, 'algorithms': [], 'run_count': 10 , 'parallel': False, 'cpu_count': 4 }
     if file_extension == '.json':
         return read_json(file_path, config=default_config)
-    raise RuntimeError(f'Unknown config format: {file_extension}')
+    raise RuntimeError('Unknown config format: {}'.format(file_extension))
