@@ -11,7 +11,7 @@ class Runner:
         self.id = algorithm_config.id
 
     def run_algorithm(self, run_nr):
-        algorithm = self.algorithm_class(self.graph, *(self.algorithm_params))
+        algorithm = self.algorithm_class(self.graph, **self.algorithm_params)
         for _ in range(self.iterations):
             it_data = algorithm.iterate()
             self.logger.log(run_nr, self.id, it_data.iteration, it_data.cut_weight)

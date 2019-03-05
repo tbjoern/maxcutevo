@@ -199,14 +199,14 @@ class GRASP(FlipAlgorithm):
     
 
 class ActivityAlgorithm(FlipAlgorithm):
-    def __init__(self,graph):
+    def __init__(self,graph, start_activity=10, inc=1, dec=1, max=100, min=1, decay=0.95):
         super().__init__(graph)
-        self.start_activity = 10
-        self.activity_inc = 5
-        self.activity_dec = 1
-        self.activity_max = 100
-        self.activity_min = 1
-        self.decay_rate = 0.95
+        self.start_activity = start_activity
+        self.activity_inc = inc
+        self.activity_dec = dec
+        self.activity_max = max
+        self.activity_min = min
+        self.decay_rate = decay
         self.activity = {}
         for node in graph.nodes:
             self.activity[node] = self.start_activity
@@ -260,10 +260,10 @@ class ActivityAlgorithm(FlipAlgorithm):
         return result
 
 class pmutActivity(ActivityAlgorithm):
-    def __init__(self, graph, power_law_beta):
+    def __init__(self, graph, power_law_beta, **kwargs):
         self.power_law_beta = power_law_beta
         self.node_list = list(graph.nodes)
-        super().__init__(graph)
+        super().__init__(graph, **kwargs)
 
     def __str__(self):
         return "pmutActivity_" + str(self.power_law_beta)
@@ -298,10 +298,10 @@ class unif(FlipAlgorithm):
         return super().iterate()
 
 class pmut(FlipAlgorithm):
-    def __init__(self, graph, power_law_beta):
+    def __init__(self, graph, power_law_beta, **kwargs):
         self.power_law_beta = power_law_beta
         self.node_list = list(graph.nodes)
-        super().__init__(graph)
+        super().__init__(graph, **kwargs)
 
     def __str__(self):
         return "pmut_" + str(self.power_law_beta)
