@@ -12,6 +12,8 @@ class Runner:
 
     def run_algorithm(self, run_nr):
         algorithm = self.algorithm_class(self.graph, **self.algorithm_params)
+        if self.algorithm_class.deterministic and run_nr != 0:
+            return
         for _ in range(self.iterations):
             it_data = algorithm.iterate()
             self.logger.log(run_nr, self.id, it_data.iteration, it_data.cut_weight)

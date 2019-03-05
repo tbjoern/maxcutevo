@@ -18,6 +18,8 @@ def randomPowerLawNumber(beta, max_value):
     return math.ceil(value)
 
 class Algorithm:
+    deterministic = False
+    
     def __init__(self, graph):
         self.graph = graph
         self.iteration = 0
@@ -313,6 +315,8 @@ class pmut(FlipAlgorithm):
         return super().iterate()
 
 class greedy(FlipAlgorithm):
+    deterministic = True
+
     def __str__(self):
         return "greedy"
 
@@ -328,6 +332,8 @@ class greedy(FlipAlgorithm):
         return super().iterate()
 
 class greedyActivity(ActivityAlgorithm):
+    deterministic = True
+
     def __str__(self):
         return "greedyActivity"
 
