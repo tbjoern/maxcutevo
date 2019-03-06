@@ -22,7 +22,7 @@ class Batch:
 
     def run(self, file):
         try:
-            instance = graph.Graph(file)
+            instance = graph.read_file(file)
         except FileNotFoundError:
             print("Cannot find file {}, skipping.".format(file))
             return ""

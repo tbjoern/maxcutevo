@@ -4,13 +4,12 @@ import os
 Edge = namedtuple('Edge', 'neighbour weight')
 
 class Graph:
-    def __init__(self, file):
+    def __init__(self):
         # adjacency list format: { node: [(neighbour, weight), ...], ... }
         self.in_edges = {} # adjacency list with incoming edges
         self.out_edges = {} # adjacency list with outgoing edges
         self.nodes = set()
-        self.edges = 0
-        read_file(self, file)
+        self.edge_count = 0
 
     def add_edge(self, start, end, weight):
         if not start in self.in_edges:
@@ -29,7 +28,8 @@ class Graph:
 class GraphReadError(Exception):
     pass
 
-def read_file(graph, file):
+def read_file(file):
+    graph = Graph()
     filename, file_extension = os.path.splitext(file)
     if file_extension == ".mtx":
         return read_matrix_notation(graph, file)
@@ -46,7 +46,7 @@ def read_edgelist(graph, file):
         lines = file.readlines()
     try:
         for line in lines:
-            graph.edges += 1
+            graph.edge_count += 1
             start, end = [int(x.strip()) for x in line.split()]
             graph.add_edge(start, end, 1)
     except Exception as x:
@@ -60,7 +60,7 @@ def read_headed_weighted_edgelist(graph, file):
         lines = file.readlines()
     try:
         header = lines[0]
-        nodes, graph.edges = [int(x) for x in header.split()]
+        nodes, graph.edge_count = [int(x) for x in header.split()]
         for line in lines[1:]:
             start, end, weight = [int(x) for x in line.split()]
             graph.add_edge(start, end, weight)
@@ -80,7 +80,7 @@ def read_csv(graph, file):
             graph.add_edge(start, end, 1)
             graph.add_edge(end, start, 1)
             edge_count += 2
-        graph.edges = edge_count
+        graph.edge_count = edge_count
     except Exception as x:
         print(x)
         raise GraphReadError()
@@ -95,7 +95,7 @@ def read_matrix_notation(graph, file):
         while '%' in lines[index]:
             index += 1
         header = lines[index]
-        nodes, nodes, graph.edges = [int(x) for x in header.split()]
+        nodes, nodes, graph.edge_count = [int(x) for x in header.split()]
         for line in lines[(index+1):]:
             start, end = [int(x) for x in line.split()]
             graph.add_edge(start, end, 1)
@@ -103,15 +103,21 @@ def read_matrix_notation(graph, file):
         print(x)
         raise GraphReadError()
     return graph
+
+def as_headed_weighted_edgelist(graph):
+    yield '{} {}'.format(len(graph.nodes), graph.edge_count)
+    for node, edges in graph.out_edges.items():
+        for edge in edges:
+            yield '{} {} {}'.format(node, edge.neighbour, edge.weight)
     
 
 if __name__ == "__main__":
     test_data = ["4 2", "0 1 1", "2 3 -1"]
-    with open("test.txt", "w") as f:
+    with open("test.rud", "w") as f:
         f.write("\n".join(test_data))
-    g = Graph("test.txt")
+    g = read_file('test.rud')
     assert(g.nodes == set([0,1,2,3]))
-    assert(g.edges == 2)
+    assert(g.edge_count == 2)
     assert(g.out_edges[0][0].neighbour == 1)
     assert(g.out_edges[0][0].weight == 1)
     assert(g.in_edges[1][0].neighbour == 0)
