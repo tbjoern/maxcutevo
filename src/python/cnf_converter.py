@@ -4,7 +4,7 @@ from itertools import product
 def readCNF(filename):
     with open(filename, 'r') as cnffile:
         lines = cnffile.readlines()
-    without_comments = [line for line in lines if line[0] not in 'cp']
+    without_comments = [line for line in lines if line[0] not in 'cp%']
     unify = " ".join(without_comments)
     tokens = unify.split()
     clauses = []
