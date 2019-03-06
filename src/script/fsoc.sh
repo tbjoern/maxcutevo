@@ -8,7 +8,7 @@
 
 dir=$1
 exec_name='python3 ../src/python/batch.py'
-config_file='./config.json'
+config_file=$3
 
 echo $2
 install -d $2
