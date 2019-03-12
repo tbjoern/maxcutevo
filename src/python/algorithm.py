@@ -236,7 +236,7 @@ class ActivityAlgorithm(FlipAlgorithm):
         if self.activity[node] < self.activity_min:
             self.activity[node] = self.activity_min
 
-    def clamp_all_activity(self, node):
+    def clamp_all_activity(self):
         for node in self.activity:
             self.clamp_activity(node)
     
