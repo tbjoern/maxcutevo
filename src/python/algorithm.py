@@ -221,14 +221,12 @@ class ActivityAlgorithm(FlipAlgorithm):
                         self.activity[edge.neighbour] += self.activity_inc
                     else:
                         self.activity[edge.neighbour] -= self.activity_dec
-                    self.clamp_activity(edge.neighbour)
             else:
                 for edge in self.graph.in_edges[node]:
                     if self.side[edge.neighbour] == self.CUT_SET:
                         self.activity[edge.neighbour] -= self.activity_dec
                     else:
                         self.activity[edge.neighbour] += self.activity_inc
-                    self.clamp_activity(edge.neighbour)
         for node in flipped_nodes:
             self.activity[node] = self.start_activity
     
@@ -237,6 +235,10 @@ class ActivityAlgorithm(FlipAlgorithm):
             self.activity[node] = self.activity_max
         if self.activity[node] < self.activity_min:
             self.activity[node] = self.activity_min
+
+    def clamp_all_activity(self, node):
+        for node in self.activity:
+            self.clamp_activity(node)
     
     def decay_activity(self):
         for node, activity in self.activity.items():
@@ -279,6 +281,7 @@ class pmutActivity(ActivityAlgorithm):
         if flipped:
             self.update_activity(chosen_nodes)
             self.decay_activity()
+            self.clamp_all_activity()
         return super().iterate()
 
 
@@ -349,6 +352,7 @@ class greedyActivity(ActivityAlgorithm):
             self.flip_node(best_node)
             self.update_activity([best_node])
             self.decay_activity()
+            self.clamp_all_activity()
         return super().iterate()
 
 class greedyActivityReverse(ActivityAlgorithm):
@@ -369,4 +373,5 @@ class greedyActivityReverse(ActivityAlgorithm):
             self.flip_node(best_node)
             self.update_activity([best_node])
             self.decay_activity()
+            self.clamp_all_activity()
         return super().iterate()
