@@ -350,3 +350,23 @@ class greedyActivity(ActivityAlgorithm):
             self.update_activity([best_node])
             self.decay_activity()
         return super().iterate()
+
+class greedyActivityReverse(ActivityAlgorithm):
+    deterministic = True
+
+    def __str__(self):
+        return "greedyActivity"
+
+    def iterate(self):
+        maximum = 0
+        best_node = None
+        for node, change in self.change.items():
+            activity_change = change * (self.start_activity / self.activity[node])
+            if activity_change > maximum:
+                best_node = node
+                maximum = activity_change
+        if best_node is not None:
+            self.flip_node(best_node)
+            self.update_activity([best_node])
+            self.decay_activity()
+        return super().iterate()
