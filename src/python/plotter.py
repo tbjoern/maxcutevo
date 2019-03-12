@@ -9,7 +9,7 @@ import json
 
 class Plotter:
     def __init__(self):
-        self.colors = ['b','g','r','m','c','y','k']
+        self.colors = ['b','g','r','m','c','y','k','orange']
         self.figure = 0
         self.plot_data = []
         self.matfigure = plt.figure()
@@ -92,9 +92,9 @@ class Plotter:
             cut_weight_mean = nparray.mean(axis=0)
             sigma = nparray.std(axis=0)
             color = self.colors[algo_id%len(self.colors)]
-            fmt = color + '-'
+            fmt = '-'
             indices = np.arange(min_length)
-            plt.plot(indices, cut_weight_mean, fmt, label=labels[algo_id])
+            plt.plot(indices, cut_weight_mean, fmt, label=labels[algo_id], color=color)
             plt.fill_between(indices, cut_weight_mean+sigma, cut_weight_mean-sigma, facecolor=color, alpha=0.5)
         plt.legend(loc='lower right', prop={'size': 6})
         plt.suptitle(file)
