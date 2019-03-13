@@ -13,7 +13,7 @@ config_file=$3
 echo $2
 install -d $2
 
-for file in `find -L $dir -type f`
+for file in `find -L $dir -type f | grep -v .git`
 do
     ext=${file##*.}
     fname=`basename $file .$ext`
