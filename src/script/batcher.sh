@@ -1,8 +1,8 @@
 #!/bin/bash
 
 dir=$1
-exec_name='./maxcut-benchmark'
-config_file='./config.json'
+exec_name='python3 ../src/python/batch.py'
+config_file=$3
 
 echo $2
 install -d $2
@@ -13,8 +13,8 @@ do
     fname=`basename $file .$ext`
     fdir=`dirname $file`
     logfile="$fdir/$fname.csv"
-    echo "${exec_name} ${file} ${config_file} > ${2}/${logfile}"
-    echo "${2}/${logfile}"
+    cmd="${exec_name} --stdout ${config_file} ${file} > ${2}/${logfile}"
+    echo $cmd
     install -D -m 644 /dev/null "${2}/${logfile}"
-	eval "${exec_name} ${file} ${config_file} > ${2}/${logfile}"
+	eval $cmd
 done
