@@ -14,7 +14,6 @@ conf_ext=${config_file##*.}
 result_dir=`basename $config_file .$conf_ext`
 echo "using output directory: $result_dir"
 
-
 install -d $result_dir
 mv $config_file $result_dir
 
