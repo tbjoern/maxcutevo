@@ -35,7 +35,7 @@ def read_file(file):
         return read_matrix_notation(graph, file)
     elif file_extension == ".csv":
         return read_csv(graph, file)
-    elif file_extension == ".rud" or file_extension == ".mc":
+    elif file_extension == ".rud" or file_extension == ".mc" or file_extension == ".txt":
         return read_headed_weighted_edgelist(graph, file)
     else:
         return read_edgelist(graph, file)
