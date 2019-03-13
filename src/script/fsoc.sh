@@ -17,7 +17,7 @@ echo "using output directory: $result_dir"
 install -d $result_dir
 mv $config_file $result_dir
 
-for file in `find -L $dir -type f | grep -v .git`
+for file in `find -L $instance_dir -type f | grep -v .git`
 do
     ext=${file##*.}
     fname=`basename $file .$ext`
