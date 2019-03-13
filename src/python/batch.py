@@ -17,7 +17,7 @@ class Batch:
         self.algorithm_configs = config["algorithms"]
         self.iterations = config["iterations"]
         self.run_count = config["run_count"]
-        self.parallel = config["parallel"]
+        self.cpu_count = config["cpu_count"]
         self.log_to_stdout = log_to_stdout
 
     def run(self, file):
@@ -29,8 +29,8 @@ class Batch:
         logfile_name = "_".join([os.path.basename(file),str(floor(time()))])
         logger = Logger(logfile_name, log_to_stdout=self.log_to_stdout)
 
-        if self.parallel > 0:
-            run_tasks = Queue(self.parallel)
+        if self.cpu_count > 1:
+            run_tasks = Queue(self.cpu_count)
             finished_queue = Queue()
             def generate_run_tasks():
                 for algorithm_config in self.algorithm_configs:
@@ -39,10 +39,10 @@ class Batch:
                         # using the same runner for each thread is fine,
                         # because run_algorithm does not mutate the runner instance
                         yield (runner, run_nr)
-                for _ in range(self.parallel):
+                for _ in range(self.cpu_count):
                    yield 'STOP'
 
-            for _ in range(self.parallel):
+            for _ in range(self.cpu_count):
                 Process(target=worker, args=(run_tasks, finished_queue)).start()
 
             for run_task in generate_run_tasks():
