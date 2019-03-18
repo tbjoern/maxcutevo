@@ -17,6 +17,10 @@ def randomPowerLawNumber(beta, max_value):
         return max_value
     return math.ceil(value)
 
+
+def sigmoid(x):
+    return (math.atan((2*x-1) * 5)) / (2*math.atan(5)) + 0.5
+
 class Algorithm:
     deterministic = False
     
@@ -372,6 +376,42 @@ class greedyActivityReverse(ActivityAlgorithm):
         if best_node is not None:
             self.flip_node(best_node)
             self.update_activity([best_node])
+            self.decay_activity()
+            self.clamp_all_activity()
+        return super().iterate()
+
+
+class pmutActivitySigmoid(ActivityAlgorithm):
+    def __init__(self, graph, power_law_beta, **kwargs):
+        self.power_law_beta = power_law_beta
+        self.node_list = list(graph.nodes)
+        self.sigmoid_lower = 1 / (len(self.node_list)**2)
+        self.sigmoid_upper = 1/2
+        self.sigmoid_multiplier = self.sigmoid_upper - self.sigmoid_lower
+        super().__init__(graph, **kwargs)
+
+    def __str__(self):
+        return "pmutActivity_" + str(self.power_law_beta)
+
+    def map_to_sigmoid_chance(self, activity):
+        percentage = activity / self.activity_max
+        sigmoid_value = sigmoid(percentage)
+        chance = self.sigmoid_multiplier*sigmoid_value + self.sigmoid_lower
+        return chance
+
+    def iterate(self):
+        k = randomPowerLawNumber(self.power_law_beta, len(self.graph.nodes))
+        chosen_nodes = []
+        while not chosen_nodes:
+            for node in self.node_list:
+                chance = self.map_to_sigmoid_chance(self.activity[node])
+                sample = random.random()
+                if sample <= chance:
+                    chosen_nodes.append(node)
+        flipped = self.flip_nodes_if_improvement(chosen_nodes)
+
+        if flipped:
+            self.update_activity(chosen_nodes)
             self.decay_activity()
             self.clamp_all_activity()
         return super().iterate()
