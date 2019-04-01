@@ -246,7 +246,7 @@ class ActivityAlgorithm(FlipAlgorithm):
     
     def decay_activity(self):
         for node, activity in self.activity.items():
-            self.activity[node] = activity * self.decay_rate
+            self.activity[node] = (activity - self.start_activity) * self.decay_rate + self.start_activity
     
     def choose_k_unique(self, population, weights, k):
         result = []
