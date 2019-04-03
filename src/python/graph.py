@@ -25,6 +25,21 @@ class Graph:
         self.out_edges[start].append(Edge(end, weight))
         self.in_edges[end].append(Edge(start,weight))
 
+    def neatify_node_indices(self):
+        node_list = sorted(self.nodes)
+        node_mapping = {}
+        for i, node in enumerate(node_list):
+            node_mapping[node] = i
+        in_edges = self.in_edges
+        out_edges = self.out_edges
+        self.in_edges = {}
+        self.out_edges = {}
+        for node, adj_nodes in in_edges.items():
+            self.in_edges[node_mapping[node]] = [Edge(node_mapping[i], weight) for i, weight in adj_nodes]
+        for node, adj_nodes in out_edges.items():
+            self.out_edges[node_mapping[node]] = [Edge(node_mapping[i], weight) for i, weight in adj_nodes]
+        self.nodes = set(range(len(node_list)))
+
 class GraphReadError(Exception):
     pass
 
@@ -32,13 +47,15 @@ def read_file(file):
     graph = Graph()
     filename, file_extension = os.path.splitext(file)
     if file_extension == ".mtx":
-        return read_matrix_notation(graph, file)
+        graph = read_matrix_notation(graph, file)
     elif file_extension == ".csv":
-        return read_csv(graph, file)
+        graph = read_csv(graph, file)
     elif file_extension == ".rud" or file_extension == ".mc" or file_extension == ".txt":
-        return read_headed_weighted_edgelist(graph, file)
+        graph = read_headed_weighted_edgelist(graph, file)
     else:
-        return read_edgelist(graph, file)
+        graph = read_edgelist(graph, file)
+    graph.neatify_node_indices()
+    return graph
 
 def read_edgelist(graph, file):
     lines = []
