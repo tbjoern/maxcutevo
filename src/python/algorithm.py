@@ -269,39 +269,6 @@ class ActivityAlgorithm(FlipAlgorithm):
                         break
         return result
 
-class ActivityAlgorithmNoBounds(FlipAlgorithm):
-    def __init__(self,graph, inc=1, dec=1, decay=0.95):
-        super().__init__(graph)
-        self.start_activity = 0
-        self.activity_inc = inc
-        self.activity_dec = dec
-        self.decay_rate = decay
-        self.activity = {}
-        for node in graph.nodes:
-            self.activity[node] = self.start_activity
-
-    def update_activity(self, flipped_nodes):
-        for node in flipped_nodes:
-            if self.side[node] == self.CUT_SET:
-                for edge in self.graph.out_edges[node]:
-                    if self.side[edge.neighbour] == self.CUT_SET:
-                        self.activity[edge.neighbour] += self.activity_inc
-                    else:
-                        self.activity[edge.neighbour] -= self.activity_dec
-            else:
-                for edge in self.graph.in_edges[node]:
-                    if self.side[edge.neighbour] == self.CUT_SET:
-                        self.activity[edge.neighbour] -= self.activity_dec
-                    else:
-                        self.activity[edge.neighbour] += self.activity_inc
-        for node in flipped_nodes:
-            self.activity[node] = self.start_activity
-    
-    def decay_activity(self):
-        for node, activity in self.activity.items():
-            self.activity[node] = activity * self.decay_rate
-
-
 class pmutActivity(ActivityAlgorithm):
     def __init__(self, graph, power_law_beta, **kwargs):
         self.power_law_beta = power_law_beta
@@ -416,18 +383,22 @@ class greedyActivityReverse(ActivityAlgorithm):
         return super().iterate()
 
 
-class unifActivitySigmoid(ActivityAlgorithmNoBounds):
-    def __init__(self, graph, power_law_beta, sigmoid_smoothness = 1,**kwargs):
+class unifActivitySigmoid(ActivityAlgorithm):
+    def __init__(self, graph, power_law_beta, max=100, min=-100, sigmoid_smoothness = 1,**kwargs):
         self.power_law_beta = power_law_beta
         self.node_list = list(graph.nodes)
         self.sigmoid_lower = 1 / (len(self.node_list)**2)
         self.sigmoid_upper = 1/2
         self.sigmoid_multiplier = self.sigmoid_upper - self.sigmoid_lower
         self.sigmoid = make_sigmoid(sigmoid_smoothness)
-        super().__init__(graph, **kwargs)
+        super().__init__(graph, max=max, min=min, start_activity=0, **kwargs)
 
     def __str__(self):
         return "unifActivitySigmoid"
+
+    def decay_activity(self):
+        for node, activity in self.activity.items():
+            self.activity[node] = activity * self.decay_rate
 
     def map_to_sigmoid_chance(self, activity):
         sigmoid_value = self.sigmoid(activity)
@@ -447,4 +418,5 @@ class unifActivitySigmoid(ActivityAlgorithmNoBounds):
         if flipped:
             self.update_activity(chosen_nodes)
             self.decay_activity()
+            self.clamp_all_activity()
         return super().iterate()
