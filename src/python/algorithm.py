@@ -3,6 +3,7 @@ import math
 import copy
 from collections import namedtuple
 from numpy.random import exponential
+from functools import lru_cache
 
 IterationData = namedtuple('IterationData', 'iteration cut_weight')
 
@@ -19,6 +20,7 @@ def randomPowerLawNumber(beta, max_value):
 
 def make_sigmoid(smoothness):
     mult = smoothness * -1
+    @lru_cache(300)
     def sigmoid(x):
         return 1/(1 + math.exp(mult*x))
     return sigmoid
@@ -69,6 +71,9 @@ class FlipAlgorithm(Algorithm):
         self.cut_weight += self.change[node]
         self.change[node] *= -1
         self.side[node] *= -1
+        self.update_change_values(node)
+    
+    def update_change_values(self, node):
         for edge in self.graph.in_edges[node]:
             self.change[edge.neighbour] += edge.weight * self.side[edge.neighbour] * self.side[node]
         for edge in self.graph.out_edges[node]:
@@ -384,12 +389,14 @@ class greedyActivityReverse(ActivityAlgorithm):
 
 
 class unifActivitySigmoid(ActivityAlgorithm):
-    def __init__(self, graph, power_law_beta, max=100, min=-100, sigmoid_smoothness = 1,**kwargs):
+    def __init__(self, graph, power_law_beta, max=100, min=-100, sigmoid_smoothness = 0.05,**kwargs):
         self.power_law_beta = power_law_beta
         self.node_list = list(graph.nodes)
         self.sigmoid_lower = 1 / (len(self.node_list)**2)
-        self.sigmoid_upper = 1/2
-        self.sigmoid_multiplier = self.sigmoid_upper - self.sigmoid_lower
+        self.sigmoid_center = 1 / (len(self.node_list))
+        self.sigmoid_upper = 0.5
+        self.sigmoid_mp = self.sigmoid_upper - self.sigmoid_center
+        self.sigmoid_mn = self.sigmoid_center - self.sigmoid_lower
         self.sigmoid = make_sigmoid(sigmoid_smoothness)
         super().__init__(graph, max=max, min=min, start_activity=0, **kwargs)
 
@@ -401,22 +408,29 @@ class unifActivitySigmoid(ActivityAlgorithm):
             self.activity[node] = activity * self.decay_rate
 
     def map_to_sigmoid_chance(self, activity):
-        sigmoid_value = self.sigmoid(activity)
-        chance = self.sigmoid_multiplier*sigmoid_value + self.sigmoid_lower
-        return chance
+        sigmoid_value = self.sigmoid(math.ceil(activity)) * 2
+        if sigmoid_value >= 1:
+            sigmoid_value -= 1
+            return self.sigmoid_mp * sigmoid_value + self.sigmoid_center
+        else:
+            return self.sigmoid_mn * sigmoid_value + self.sigmoid_lower
+
+    def sample_nodes(self):
+        chosen_nodes = []
+        for node in self.node_list:
+            chance = self.map_to_sigmoid_chance(self.activity[node])
+            sample = random.random()
+            if sample <= chance:
+                chosen_nodes.append(node)
+        return chosen_nodes
 
     def iterate(self):
-        chosen_nodes = []
-        while not chosen_nodes:
-            for node in self.node_list:
-                chance = self.map_to_sigmoid_chance(self.activity[node])
-                sample = random.random()
-                if sample <= chance:
-                    chosen_nodes.append(node)
-        flipped = self.flip_nodes_if_improvement(chosen_nodes)
+        chosen_nodes = self.sample_nodes()
+        if chosen_nodes:
+            flipped = self.flip_nodes_if_improvement(chosen_nodes)
 
-        if flipped:
-            self.update_activity(chosen_nodes)
-            self.decay_activity()
-            self.clamp_all_activity()
+            if flipped:
+                self.update_activity(chosen_nodes)
+                self.decay_activity()
+                self.clamp_all_activity()
         return super().iterate()
