@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 set(project maxcutevo)
+cmake_policy(SET CMP0048 NEW)
 project(${project})
 set("${project}_VERSION" 0.1)
 

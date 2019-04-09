@@ -10,7 +10,6 @@ namespace maxcut {
 /**
  *  manages graph file I/O
  */
-AdjList
-read_graph(std::string filename);
+AdjList read_graph(std::string filename);
 
 } // namespace maxcut

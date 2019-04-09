@@ -1,4 +1,5 @@
-#include "Benchmark.hpp"
+#include "Batch.hpp"
+#include "Graph.hpp"
 #include "algorithm/Algorithm.hpp"
 #include <nlohmann/json.hpp>
 

@@ -33,5 +33,6 @@ set(libraries
 
 if(OpenMP_CXX_FOUND)
     set(libraries ${libraries} OpenMP::OpenMP_CXX)
+endif(OpenMP_CXX_FOUND)
 
 create_executable(${project} ${target} "${sources}" "${includes}" "${libraries}")

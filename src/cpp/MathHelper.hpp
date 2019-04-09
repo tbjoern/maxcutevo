@@ -9,16 +9,10 @@ namespace maxcut {
 static unsigned int RANDOM_SEED;
 
 struct BernoulliGenerator {
-  BernoulliGenerator(double probability, std::mt19937& engine) : b(probability), _engine(engine) {}
-
-  BernoulliGenerator& operator=(BernoulliGenerator&&) = default;
-
   std::bernoulli_distribution b;
-  std::mt19937& _engine;
+  std::mt19937 _engine;
 
-  bool get() {
-    return b(_engine);
-  }
+  bool get() { return b(_engine); }
 };
 
 class MathHelper {
@@ -56,13 +50,13 @@ public:
 
   inline double getReal() { return _real(_engine); }
 
-  template<typename T>
+  template <typename T>
   std::vector<int> chooseKUnique(std::vector<int> &population,
                                  std::vector<T> &weights, int k) {
-    std::discrete_distribution d(weights.start(), weights.end());
+    std::discrete_distribution<> d(weights.begin(), weights.end());
     std::vector<int> result;
     result.reserve(k);
-    for(int i = 0; i < k; ++i) {
+    for (int i = 0; i < k; ++i) {
       result.push_back(population[d(_engine)]);
     }
     return result;
@@ -76,7 +70,8 @@ public:
   }
 
   BernoulliGenerator probabilitySampler(double probability) {
-    return BernoulliGenerator(probability, _engine);
+    return {std::bernoulli_distribution(probability),
+                              _engine};
   }
 
 private:

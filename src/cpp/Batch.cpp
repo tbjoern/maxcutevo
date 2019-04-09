@@ -3,10 +3,10 @@
 #include <csignal>
 #include <functional>
 #include <mutex>
+#include <omp.h>
 #include <thread>
 #include <unistd.h>
 #include <vector>
-#include <omp.h>
 
 namespace maxcut {
 
@@ -23,9 +23,7 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
     algorithm->setGraph(adj_list);
     algorithm->_init();
 
-    for (int iteration = 0;
-         iteration < config.max_iterations;
-         ++iteration) {
+    for (int iteration = 0; iteration < config.max_iterations; ++iteration) {
       algorithm->_iteration();
       cut_sizes.push_back(algorithm->getCutSize());
     }
@@ -48,7 +46,7 @@ batch(AdjList &adj_list, std::vector<std::shared_ptr<Algorithm>> &algorithms,
   std::vector<AlgorithmResult> results;
   std::mutex mutex;
 
-  #pragma omp parallel
+#pragma omp parallel
   for (auto &algorithm : algorithms) {
     auto result = runAlgorithm(adj_list, algorithm, config);
     std::lock_guard<std::mutex> lock(mutex);

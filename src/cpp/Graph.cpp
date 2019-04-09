@@ -132,8 +132,7 @@ public:
   }
 };
 
-AdjList
-read_graph(std::string &filename) {
+AdjList read_graph(std::string filename) {
   FileReader *reader;
   std::string fileextension;
   try {

@@ -100,9 +100,8 @@ Cut Algorithm::calcCutSizes() {
   cut.inverse_size = sizes.second;
   if (_cut_weight != cut.inverse_size && _cut_weight != cut.size) {
     std::cout << "Actual cut weight and tracked cut weight do not match. "
-              << this->name() << " actual:" << cut.size << "|"
-              << cut.inverse_size << " tracked:" << _max_cut_weight
-              << std::endl;
+              << " actual:" << cut.size << "|" << cut.inverse_size
+              << " tracked:" << _max_cut_weight << std::endl;
   }
   return cut;
 }
