@@ -34,10 +34,6 @@ public:
 
   void init() override;
 
-  std::string name() override {
-    return _reverse == REVERSE ? "reverse activity" : "activity";
-  }
-
   ActivityAlgorithm() : _reverse(NORMAL) {}
 
   ActivityAlgorithm(bool reverse) : _reverse(reverse ? REVERSE : NORMAL) {}

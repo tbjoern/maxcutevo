@@ -18,8 +18,6 @@ public:
   void iteration() override;
 
   void init() override;
-
-  std::string name() override { return "pmut"; }
 };
 
 } // namespace maxcut

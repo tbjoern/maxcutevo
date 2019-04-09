@@ -58,8 +58,6 @@ public:
   Algorithm() : _part(), _cut_weight(0), _max_cut_weight(0), _node_count(0){};
   virtual ~Algorithm(){};
 
-  virtual std::string name() = 0;
-
   virtual void _iteration();
 
   int getCutSize();
