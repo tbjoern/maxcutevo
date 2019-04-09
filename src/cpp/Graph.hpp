@@ -10,9 +10,7 @@ namespace maxcut {
 /**
  *  manages graph file I/O
  */
-std::vector<AlgorithmResult>
-benchmark(std::string &filename,
-          std::vector<std::shared_ptr<Algorithm>> &algorithms,
-          const RunConfig config);
+AdjList
+read_graph(std::string filename);
 
 } // namespace maxcut

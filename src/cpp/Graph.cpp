@@ -1,4 +1,4 @@
-#include "Benchmark.hpp"
+#include "Graph.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -132,10 +132,8 @@ public:
   }
 };
 
-std::vector<AlgorithmResult>
-benchmark(std::string &filename,
-          std::vector<std::shared_ptr<Algorithm>> &algorithms,
-          const RunConfig config) {
+AdjList
+read_graph(std::string &filename) {
   FileReader *reader;
   std::string fileextension;
   try {
@@ -161,11 +159,9 @@ benchmark(std::string &filename,
   }
 
   AdjList adj_list = reader->readFile(filename);
-
-  auto result = batch(adj_list, algorithms, config);
-
   delete reader;
-  return result;
+
+  return adj_list;
 }
 
 } // namespace maxcut

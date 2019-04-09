@@ -6,6 +6,7 @@
 #include <thread>
 #include <unistd.h>
 #include <vector>
+#include <omp.h>
 
 namespace maxcut {
 
@@ -16,8 +17,6 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
   result.algorithm_id = algorithm->id;
   for (int run_nr = 0; run_nr < config.run_count; ++run_nr) {
     auto start_time = std::chrono::high_resolution_clock::now();
-    auto current_time = start_time;
-    auto max_time = start_time + std::chrono::seconds(config.max_duration);
 
     std::vector<int> cut_sizes;
 
@@ -25,9 +24,8 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
     algorithm->_init();
 
     for (int iteration = 0;
-         iteration < config.max_iterations && current_time < max_time;
-         ++iteration,
-             current_time = std::chrono::high_resolution_clock::now()) {
+         iteration < config.max_iterations;
+         ++iteration) {
       algorithm->_iteration();
       cut_sizes.push_back(algorithm->getCutSize());
     }
@@ -43,30 +41,18 @@ AlgorithmResult runAlgorithm(const AdjList &adj_list,
   return result;
 }
 
-std::mutex mutex;
-
-void runner_thread(const AdjList &adj_list,
-                   std::shared_ptr<Algorithm> algorithm,
-                   std::vector<AlgorithmResult> &results,
-                   const RunConfig config) {
-  auto result = runAlgorithm(adj_list, algorithm, config);
-  std::lock_guard<std::mutex> lock(mutex);
-  results.push_back(result);
-}
-
 std::vector<AlgorithmResult>
 batch(AdjList &adj_list, std::vector<std::shared_ptr<Algorithm>> &algorithms,
       const RunConfig config) {
 
   std::vector<AlgorithmResult> results;
-  std::vector<std::thread> threads;
-  for (auto &algorithm : algorithms) {
-    threads.emplace_back(runner_thread, std::ref(adj_list), algorithm,
-                         std::ref(results), config);
-  }
+  std::mutex mutex;
 
-  for (auto &thread : threads) {
-    thread.join();
+  #pragma omp parallel
+  for (auto &algorithm : algorithms) {
+    auto result = runAlgorithm(adj_list, algorithm, config);
+    std::lock_guard<std::mutex> lock(mutex);
+    results.push_back(result);
   }
 
   return results;

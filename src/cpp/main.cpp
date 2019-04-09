@@ -60,7 +60,6 @@ RunConfig read_config(string filename) {
 
   auto config = RunConfig();
 
-  config.max_duration = json_cfg["max_duration"];
   config.max_iterations = json_cfg["iterations"];
   config.run_count = json_cfg["run_count"];
 
@@ -103,7 +102,8 @@ int main(int argc, char *argv[]) {
     algorithms.back()->parse_arguments(algorithmConfig.arguments);
   }
 
-  auto results = benchmark(filename, algorithms, config);
+  auto adj_list = read_graph(filename);
+  auto results = batch(adj_list, algorithms, config);
 
   write_result_to_stream(results, std::cout);
 

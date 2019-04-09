@@ -3,7 +3,7 @@ set(target maxcut-benchmark)
 
 set(sources
     Batch.cpp
-    Benchmark.cpp
+    Graph.cpp
     main.cpp
     MathHelper.hpp
     algorithm/Algorithm.cpp
@@ -15,7 +15,7 @@ set(sources
 
 set(includes
     Batch.hpp
-    Benchmark.hpp
+    Graph.hpp
     types.hpp
     MathHelper.hpp
     algorithm/Algorithm.hpp
@@ -30,5 +30,8 @@ set(libraries
     Threads::Threads
     nlohmann_json::nlohmann_json
 )
+
+if(OpenMP_CXX_FOUND)
+    set(libraries ${libraries} OpenMP::OpenMP_CXX)
 
 create_executable(${project} ${target} "${sources}" "${includes}" "${libraries}")

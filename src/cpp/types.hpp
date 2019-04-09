@@ -49,7 +49,6 @@ struct AlgorithmConfig {
 };
 
 struct RunConfig {
-  int max_duration;
   int max_iterations;
   int run_count;
   // pair<classname, id>
