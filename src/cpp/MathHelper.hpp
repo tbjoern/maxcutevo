@@ -8,6 +8,19 @@ namespace maxcut {
 
 static unsigned int RANDOM_SEED;
 
+struct BernoulliGenerator {
+  BernoulliGenerator(double probability, std::mt19937& engine) : b(probability), _engine(engine) {}
+
+  BernoulliGenerator& operator=(BernoulliGenerator&&) = default;
+
+  std::bernoulli_distribution b;
+  std::mt19937& _engine;
+
+  bool get() {
+    return b(_engine);
+  }
+};
+
 class MathHelper {
 public:
   // static MathHelper& getInstance()
@@ -43,58 +56,14 @@ public:
 
   inline double getReal() { return _real(_engine); }
 
+  template<typename T>
   std::vector<int> chooseKUnique(std::vector<int> &population,
-                                 std::vector<int> &weights, int k) {
+                                 std::vector<T> &weights, int k) {
+    std::discrete_distribution d(weights.start(), weights.end());
     std::vector<int> result;
-    assert(population.size() == weights.size());
-    int total_weight = 0;
-    for (auto &v : weights) {
-      total_weight += v;
-    }
-    std::vector<unsigned int> node_chosen(population.size(), false);
-    for (int i = 0; i < k; ++i) {
-      setUniformRange(0, total_weight);
-      int r = _unif(_engine);
-      int cumulative_weight = 0;
-      for (int j = 0; j < population.size(); ++j) {
-        if (!node_chosen[j]) {
-          cumulative_weight += weights[j];
-          if (cumulative_weight >= r) {
-            result.push_back(population[j]);
-            node_chosen[j] = true;
-            total_weight -= weights[j];
-            break;
-          }
-        }
-      }
-    }
-    return result;
-  }
-
-  std::vector<int> chooseKUnique(std::vector<int> &population,
-                                 std::vector<double> &weights, int k) {
-    std::vector<int> result;
-    assert(population.size() == weights.size());
-    double total_weight = 0;
-    for (auto &v : weights) {
-      total_weight += v;
-    }
-    std::vector<unsigned int> node_chosen(population.size(), false);
-    for (int i = 0; i < k; ++i) {
-      setRealRange(0, total_weight);
-      auto r = getReal();
-      double cumulative_weight = 0;
-      for (int j = 0; j < population.size(); ++j) {
-        if (!node_chosen[j]) {
-          cumulative_weight += weights[j];
-          if (cumulative_weight >= r) {
-            result.push_back(population[j]);
-            node_chosen[j] = true;
-            total_weight -= weights[j];
-            break;
-          }
-        }
-      }
+    result.reserve(k);
+    for(int i = 0; i < k; ++i) {
+      result.push_back(population[d(_engine)]);
     }
     return result;
   }
@@ -102,7 +71,12 @@ public:
   double sigmoid(double x) { return (x / 8) / ((abs(x / 2) + 1)) + 1 / 4; }
 
   inline bool sampleProbability(double probabilty) {
-    return getReal() <= probabilty;
+    std::bernoulli_distribution b(probabilty);
+    return b(_engine);
+  }
+
+  BernoulliGenerator probabilitySampler(double probability) {
+    return BernoulliGenerator(probability, _engine);
   }
 
 private:
