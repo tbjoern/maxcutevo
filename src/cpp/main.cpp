@@ -64,8 +64,6 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  cout << "finished init" << endl;
-
   try {
     batch(runs);
   } catch (exception x) {
