@@ -14,24 +14,6 @@ using namespace std;
 
 using json = nlohmann::json;
 
-namespace {
-
-void write_result_to_stream(const vector<RunResult> &results,
-                            std::ostream &stream) {
-  stream << "algorithm,run_number,iteration,cut_weight" << endl;
-  for (const auto &algorithm_result : results) {
-    int algorithm_id = algorithm_result.algorithm_id;
-    int run_nr = algorithm_result.run_id;
-    const auto &run_data = algorithm_result.cut_sizes;
-    for (int iteration = 0; iteration < run_data.size(); ++iteration) {
-      stream << algorithm_id << "," << run_nr << "," << iteration << ","
-             << run_data[iteration] << endl;
-    }
-  }
-}
-
-} // namespace
-
 RunConfig read_config(string filename) {
   auto cfg_file = ifstream(filename);
   json json_cfg;
@@ -82,9 +64,13 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  auto results = batch(runs);
+  cout << "finished init" << endl;
 
-  write_result_to_stream(results, std::cout);
+  try {
+    batch(runs);
+  } catch (exception x) {
+    cout << x.what() << endl;
+  }
 
   // cout << "Random seed is: " << RANDOM_SEED << endl;
   return 0;

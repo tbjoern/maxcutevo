@@ -10,7 +10,7 @@ using maxcut::side;
 
 Algorithm::Algorithm(const AdjList &adj_list)
     : _part(adj_list.node_count, int(NOT_CUT_SET)),
-      _change(_adj_list.node_count, 0), _cut_weight(0), _max_cut_weight(0),
+      _change(adj_list.node_count, 0), _cut_weight(0), _max_cut_weight(0),
       _node_count(adj_list.node_count), _adj_list(adj_list) {
 
   for (int node = 0; node < _adj_list.node_count; ++node) {
