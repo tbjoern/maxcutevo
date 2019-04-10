@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
   for (auto &algorithm_config : config.algorithms) {
     for (int run_id = 0; run_id < config.run_count; ++run_id) {
       runs.push_back(
-          {algorithm_config, adj_list, run_id++, config.max_iterations});
+          {algorithm_config, adj_list, run_id, config.max_iterations});
     }
   }
 

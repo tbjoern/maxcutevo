@@ -23,7 +23,7 @@ public:
   //     return instance;
   // }
 
-  MathHelper() : _engine(RANDOM_SEED), _exp(1), _unif() {}
+  MathHelper() : _engine(std::random_device{}()), _exp(1), _unif() {}
 
   MathHelper(MathHelper const &) = delete;
   void operator=(MathHelper const &) = delete;

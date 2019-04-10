@@ -16,7 +16,7 @@ void write_result_to_stream(const RunResult &result, ostream &stream) {
   int run_nr = result.run_id;
   const auto &run_data = result.cut_sizes;
   for (int iteration = 0; iteration < run_data.size(); ++iteration) {
-    stream << algorithm_id << "," << run_nr << "," << iteration << ","
+    stream << run_nr << "," << algorithm_id << "," << iteration << ","
            << run_data[iteration] << endl;
   }
 }
@@ -48,11 +48,11 @@ void batch(const vector<Run> &runs) {
   // vector<RunResult> results;
   std::mutex mutex;
 
-  cout << "algorithm,run_number,iteration,cut_weight" << endl;
+  cout << "run_number,algorithm,iteration,cut_weight" << endl;
 
-#pragma omp parallel
-  for (const auto &run : runs) {
-    auto result = execute(run);
+#pragma omp parallel for
+  for (auto it = runs.cbegin(); it < runs.cend(); ++it) {
+    auto result = execute(*it);
     std::lock_guard<std::mutex> lock(mutex);
     // results.push_back(result);
     write_result_to_stream(result, cout);
