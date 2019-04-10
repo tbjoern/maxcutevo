@@ -15,28 +15,21 @@ namespace maxcut {
 class ActivityAlgorithm : public Algorithm {
 protected:
   std::vector<int> _pop;
-  int _reverse;
   std::vector<double> _activity;
-
-  void _init() override;
 
   void initActivity();
 
 public:
-  constexpr static int START_ACTIVITY = 10;
-  constexpr static int ACT_INC = 5;
+  constexpr static int START_ACTIVITY = 100;
+  constexpr static int ACT_INC = 1;
   constexpr static int ACT_DEC = 1;
-  constexpr static int ACT_MAX = 100;
+  constexpr static int ACT_MAX = 200;
   constexpr static int ACT_MIN = 1;
   constexpr static double DECAY_RATE = 0.95;
 
   void iteration() override;
 
-  void init() override;
-
-  ActivityAlgorithm() : _reverse(NORMAL) {}
-
-  ActivityAlgorithm(bool reverse) : _reverse(reverse ? REVERSE : NORMAL) {}
+  ActivityAlgorithm(const AdjList &adj_list, double power_law_param);
 
   void updateActivity(const std::vector<int> &flipped_nodes);
 

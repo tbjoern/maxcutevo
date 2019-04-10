@@ -9,9 +9,9 @@ namespace maxcut {
  */
 class Greedy : public virtual Algorithm {
 public:
-  void iteration() override;
+  Greedy(const AdjList &adj_list) : Algorithm(adj_list) {}
 
-  void init() override{};
+  void iteration() override;
 };
 
 } // namespace maxcut

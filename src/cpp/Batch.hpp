@@ -11,8 +11,6 @@ namespace maxcut {
  *  runs a set of algorithms on a graph
  *  handles parralel processing
  */
-std::vector<AlgorithmResult>
-batch(AdjList &adj_list, std::vector<std::shared_ptr<Algorithm>> &algorithms,
-      const RunConfig config);
+std::vector<RunResult> batch(const std::vector<Run> &runs);
 
 } // namespace maxcut

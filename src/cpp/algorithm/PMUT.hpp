@@ -13,11 +13,9 @@ class PMUT : public virtual Algorithm {
   double power_law_beta;
 
 public:
-  void parse_arguments(nlohmann::json arguments) override;
+  PMUT(const AdjList &adj_list, double power_law_beta);
 
   void iteration() override;
-
-  void init() override;
 };
 
 } // namespace maxcut

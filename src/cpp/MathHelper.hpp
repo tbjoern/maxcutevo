@@ -70,8 +70,7 @@ public:
   }
 
   BernoulliGenerator probabilitySampler(double probability) {
-    return {std::bernoulli_distribution(probability),
-                              _engine};
+    return {std::bernoulli_distribution(probability), _engine};
   }
 
 private:

@@ -8,14 +8,26 @@ namespace maxcut {
 
 using maxcut::side;
 
+Algorithm::Algorithm(const AdjList &adj_list)
+    : _part(adj_list.node_count, int(NOT_CUT_SET)),
+      _change(_adj_list.node_count, 0), _cut_weight(0), _max_cut_weight(0),
+      _node_count(adj_list.node_count), _adj_list(adj_list) {
+
+  for (int node = 0; node < _adj_list.node_count; ++node) {
+    for (const auto &edge : _adj_list.out_edges[node]) {
+      _change[node] += edge.weight;
+    }
+  }
+}
+
 void Algorithm::calculateChange() {
-  for (int node = 0; node < _adj_list->node_count; ++node) {
-    for (const auto &edge : _adj_list->out_edges[node]) {
+  for (int node = 0; node < _adj_list.node_count; ++node) {
+    for (const auto &edge : _adj_list.out_edges[node]) {
       _change[node] += edge.weight * _part[node] * _part[edge.neighbour];
       _change[edge.neighbour] -=
           edge.weight * _part[node] * _part[edge.neighbour];
     }
-    for (const auto &edge : _adj_list->in_edges[node]) {
+    for (const auto &edge : _adj_list.in_edges[node]) {
       _change[node] -= edge.weight * _part[node] * _part[edge.neighbour];
       _change[edge.neighbour] +=
           edge.weight * _part[node] * _part[edge.neighbour];
@@ -26,7 +38,7 @@ void Algorithm::calculateChange() {
 std::pair<int, int> Algorithm::calculateCurrentCutSize() {
   std::pair<int, int> cut;
   for (int node = 0; node < _node_count; ++node) {
-    for (const auto &edge : _adj_list->out_edges[node]) {
+    for (const auto &edge : _adj_list.out_edges[node]) {
       if (_part[node] != _part[edge.neighbour]) {
         if (_part[node] == CUT_SET) {
           cut.first += edge.weight;
@@ -39,23 +51,6 @@ std::pair<int, int> Algorithm::calculateCurrentCutSize() {
   return cut;
 }
 
-void Algorithm::_init() {
-  const AdjList &adj_list = *_adj_list;
-  _part = std::vector<int>(adj_list.node_count, int(NOT_CUT_SET));
-  _change = std::vector<int>(adj_list.node_count, 0);
-  for (int node = 0; node < adj_list.node_count; ++node) {
-    for (const auto &edge : adj_list.out_edges[node]) {
-      _change[node] += edge.weight;
-    }
-  }
-  // calculateChange();
-  _node_count = adj_list.node_count;
-  _cut_weight = 0;
-  _max_cut_weight = 0;
-  evaluation_count = 0;
-  this->init();
-}
-
 int Algorithm::changeByFlip(int nodeID) { return _change[nodeID]; }
 
 void Algorithm::flipNode(int nodeID) {
@@ -63,11 +58,11 @@ void Algorithm::flipNode(int nodeID) {
   _part[nodeID] = -_part[nodeID];
   _change[nodeID] = -_change[nodeID];
 
-  for (const auto &edge : _adj_list->in_edges[nodeID]) {
+  for (const auto &edge : _adj_list.in_edges[nodeID]) {
     _change[edge.neighbour] +=
         edge.weight * _part[nodeID] * _part[edge.neighbour];
   }
-  for (const auto &edge : _adj_list->out_edges[nodeID]) {
+  for (const auto &edge : _adj_list.out_edges[nodeID]) {
     _change[edge.neighbour] +=
         edge.weight * _part[nodeID] * _part[edge.neighbour];
   }
@@ -107,12 +102,5 @@ Cut Algorithm::calcCutSizes() {
 }
 
 int Algorithm::getCutSize() { return _max_cut_weight; }
-
-void Algorithm::setGraph(const AdjList &adj_list) { _adj_list = &adj_list; }
-
-void Algorithm::_iteration() {
-  this->iteration();
-  ++evaluation_count;
-}
 
 } // namespace maxcut

@@ -12,9 +12,9 @@ class Unif : public Algorithm {
   double _probability;
 
 public:
-  void iteration() override;
+  Unif(const AdjList &adj_list);
 
-  void init() override;
+  void iteration() override;
 };
 
 } // namespace maxcut

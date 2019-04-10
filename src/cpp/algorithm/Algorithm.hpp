@@ -34,7 +34,7 @@ protected:
   // total current weight of the cut
   int _cut_weight, _max_cut_weight;
   int _node_count;
-  const AdjList *_adj_list;
+  const AdjList &_adj_list;
   MathHelper helper;
 
   /**
@@ -50,27 +50,18 @@ protected:
 
   int changeByFlip(int nodeID);
 
-  virtual void init() = 0;
-
-  virtual void iteration() = 0;
-
 public:
-  Algorithm() : _part(), _cut_weight(0), _max_cut_weight(0), _node_count(0){};
+  // Algorithm() : {};
+  Algorithm(const AdjList &adj_list);
   virtual ~Algorithm(){};
 
-  virtual void _iteration();
+  virtual void iteration() = 0;
 
   int getCutSize();
 
   Cut calcCutSizes();
 
-  virtual void _init();
-
   void setGraph(const AdjList &adj_list);
-
-  int evaluation_count;
-
-  int id;
 
   virtual void parse_arguments(nlohmann::json) {}
 };

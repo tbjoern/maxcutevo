@@ -1,12 +1,6 @@
 #include "Batch.hpp"
 #include "Graph.hpp"
-#include "algorithm/Algorithm.hpp"
 #include <nlohmann/json.hpp>
-
-#include "algorithm/ActivityAlgorithm.hpp"
-#include "algorithm/Greedy.hpp"
-#include "algorithm/PMUT.hpp"
-#include "algorithm/Unif.hpp"
 
 #include <algorithm>
 #include <fstream>
@@ -22,37 +16,21 @@ using json = nlohmann::json;
 
 namespace {
 
-void write_result_to_stream(const vector<AlgorithmResult> &results,
+void write_result_to_stream(const vector<RunResult> &results,
                             std::ostream &stream) {
   stream << "algorithm,run_number,iteration,cut_weight" << endl;
   for (const auto &algorithm_result : results) {
     int algorithm_id = algorithm_result.algorithm_id;
-
-    for (int run_nr = 0; run_nr < algorithm_result.run_results.size();
-         ++run_nr) {
-      const auto &run_data = algorithm_result.run_results[run_nr];
-
-      for (int iteration = 0; iteration < run_data.cut_sizes.size();
-           ++iteration) {
-        stream << algorithm_id << "," << run_nr << "," << iteration << ","
-               << run_data.cut_sizes[iteration] << endl;
-      }
+    int run_nr = algorithm_result.run_id;
+    const auto &run_data = algorithm_result.cut_sizes;
+    for (int iteration = 0; iteration < run_data.size(); ++iteration) {
+      stream << algorithm_id << "," << run_nr << "," << iteration << ","
+             << run_data[iteration] << endl;
     }
   }
 }
 
 } // namespace
-
-template <typename T> shared_ptr<Algorithm> make_algorithm() {
-  return make_shared<T>();
-}
-
-unordered_map<string, shared_ptr<Algorithm> (*)()> create_algorithm = {
-    {"unif", &make_algorithm<Unif>},
-    {"pmut", &make_algorithm<PMUT>},
-    {"activity", &make_algorithm<ActivityAlgorithm>},
-    {"pmutActivity", &make_algorithm<ActivityAlgorithm>},
-    {"greedy", &make_algorithm<Greedy>}};
 
 RunConfig read_config(string filename) {
   auto cfg_file = ifstream(filename);
@@ -94,20 +72,28 @@ int main(int argc, char *argv[]) {
   }
 
   RANDOM_SEED = std::random_device{}();
+  const auto adj_list = read_graph(filename);
 
-  vector<shared_ptr<Algorithm>> algorithms;
-
-  for (const auto &algorithmConfig : config.algorithms) {
-    algorithms.push_back(create_algorithm[algorithmConfig.name]());
-    algorithms.back()->id = algorithmConfig.id;
-    algorithms.back()->parse_arguments(algorithmConfig.arguments);
+  vector<Run> runs;
+  for (auto &algorithm_config : config.algorithms) {
+    for (int run_id = 0; run_id < config.run_count; ++run_id) {
+      runs.push_back(
+          {algorithm_config, adj_list, run_id++, config.max_iterations});
+    }
   }
 
-  auto adj_list = read_graph(filename);
-  auto results = batch(adj_list, algorithms, config);
+  auto results = batch(runs);
 
   write_result_to_stream(results, std::cout);
 
   // cout << "Random seed is: " << RANDOM_SEED << endl;
   return 0;
 }
+
+// vector<shared_ptr<Algorithm>> algorithms;
+
+// for (const auto &algorithmConfig : config.algorithms) {
+//   algorithms.push_back(create_algorithm[algorithmConfig.name]());
+//   algorithms.back()->id = algorithmConfig.id;
+//   algorithms.back()->parse_arguments(algorithmConfig.arguments);
+// }

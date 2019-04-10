@@ -9,6 +9,8 @@
 
 namespace maxcut {
 
+class Algorithm;
+
 struct Edge {
   int neighbour; // for in edges: start of edge ; for out edges: end of edge
   int weight;
@@ -31,10 +33,10 @@ struct Cut {
 };
 
 struct RunResult {
-  Cut cut;
   std::vector<int> cut_sizes;
+  int run_id;
+  int algorithm_id;
   double time;
-  int evaluation_count;
 };
 
 struct AlgorithmResult {
@@ -51,8 +53,14 @@ struct AlgorithmConfig {
 struct RunConfig {
   int max_iterations;
   int run_count;
-  // pair<classname, id>
   std::vector<AlgorithmConfig> algorithms;
+};
+
+struct Run {
+  const AlgorithmConfig &algorithm_config;
+  const AdjList &adj_list;
+  int run_id;
+  int iterations;
 };
 
 } // namespace maxcut
