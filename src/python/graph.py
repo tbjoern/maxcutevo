@@ -24,6 +24,7 @@ class Graph:
             self.nodes.add(end)
         self.out_edges[start].append(Edge(end, weight))
         self.in_edges[end].append(Edge(start,weight))
+        self.edge_count += 1
 
     def neatify_node_indices(self):
         node_list = sorted(self.nodes)
