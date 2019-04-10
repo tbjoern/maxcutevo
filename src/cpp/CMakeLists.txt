@@ -11,6 +11,7 @@ set(sources
     algorithm/ActivityAlgorithm.cpp
     algorithm/Greedy.cpp
     algorithm/PMUT.cpp
+    algorithm/PMUTActivity.cpp
     algorithm/Unif.cpp
 )
 
@@ -24,6 +25,7 @@ set(includes
     algorithm/ActivityAlgorithm.hpp
     algorithm/Greedy.hpp
     algorithm/PMUT.hpp
+    algorithm/PMUTActivity.hpp
     algorithm/Unif.hpp
 )
 

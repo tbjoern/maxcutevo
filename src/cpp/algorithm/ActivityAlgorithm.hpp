@@ -14,7 +14,6 @@ namespace maxcut {
  */
 class ActivityAlgorithm : public Algorithm {
 protected:
-  std::vector<int> _pop;
   std::vector<double> _activity;
 
   void initActivity();
@@ -27,9 +26,7 @@ public:
   constexpr static int ACT_MIN = 1;
   constexpr static double DECAY_RATE = 0.95;
 
-  void iteration() override;
-
-  ActivityAlgorithm(const AdjList &adj_list, double power_law_param);
+  ActivityAlgorithm(const AdjList &adj_list);
 
   void updateActivity(const std::vector<int> &flipped_nodes);
 

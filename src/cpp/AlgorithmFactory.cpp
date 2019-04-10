@@ -1,7 +1,7 @@
 #include "AlgorithmFactory.hpp"
-#include "algorithm/ActivityAlgorithm.hpp"
 #include "algorithm/Greedy.hpp"
 #include "algorithm/PMUT.hpp"
+#include "algorithm/PMUTActivity.hpp"
 #include "algorithm/Unif.hpp"
 
 using namespace std;
@@ -21,7 +21,7 @@ AlgorithmFactory::make(std::string algorithm_name, const AdjList &adj_list,
     return make_shared<PMUT>(adj_list, power_law_beta);
   case Algorithm_Type::PMUTACTIVITY:
     power_law_beta = params["power_law_beta"];
-    return make_shared<ActivityAlgorithm>(adj_list, power_law_beta);
+    return make_shared<PMUTActivity>(adj_list, power_law_beta);
   case Algorithm_Type::UNIF:
     return make_shared<Unif>(adj_list);
   }

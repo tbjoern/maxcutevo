@@ -62,29 +62,9 @@ void ActivityAlgorithm::decayActivity() {
   }
 }
 
-void ActivityAlgorithm::iteration() {
-  auto k = helper.getIntFromPowerLawDistribution(_node_count);
-  auto nodes_to_flip = helper.chooseKUnique(_pop, _activity, k);
-  bool flipped = flipNodesIfBetterCut(nodes_to_flip);
-
-  if (flipped) {
-    updateActivity(nodes_to_flip);
-    decayActivity();
-  }
-}
-
-ActivityAlgorithm::ActivityAlgorithm(const AdjList &adj_list,
-                                     double power_law_param)
+ActivityAlgorithm::ActivityAlgorithm(const AdjList &adj_list)
     : Algorithm(adj_list) {
   _activity = std::vector<double>(_node_count, START_ACTIVITY);
-
-  _pop = vector<int>(_node_count);
-  for (int node = 0; node < _node_count; ++node) {
-    _pop[node] = node;
-  }
-
-  helper.setPowerLawParam(power_law_param);
-  helper.setUniformRange(0, _node_count);
 }
 
 } // namespace maxcut
