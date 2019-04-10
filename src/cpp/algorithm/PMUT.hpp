@@ -8,8 +8,8 @@ namespace maxcut {
  * Evolutionary Algorithm for MaxCut that chooses k nodes to flip.
  * k is chosen from a power law distribution.
  */
-class PMUT : public virtual Algorithm {
-  std::vector<int> _pop, _weights;
+class PMUT : public Algorithm {
+  std::vector<int> _weights;
   double power_law_beta;
 
 public:

@@ -53,7 +53,6 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  RANDOM_SEED = std::random_device{}();
   const auto adj_list = read_graph(filename);
 
   vector<Run> runs;

@@ -6,8 +6,6 @@
 
 namespace maxcut {
 
-static unsigned int RANDOM_SEED;
-
 struct BernoulliGenerator {
   std::bernoulli_distribution b;
   std::mt19937 _engine;
@@ -51,13 +49,12 @@ public:
   inline double getReal() { return _real(_engine); }
 
   template <typename T>
-  std::vector<int> chooseKUnique(std::vector<int> &population,
-                                 std::vector<T> &weights, int k) {
+  std::vector<int> chooseKUnique(std::vector<T> &weights, int k) {
     std::discrete_distribution<> d(weights.begin(), weights.end());
     std::vector<int> result;
     result.reserve(k);
     for (int i = 0; i < k; ++i) {
-      result.push_back(population[d(_engine)]);
+      result.push_back(d(_engine));
     }
     return result;
   }
