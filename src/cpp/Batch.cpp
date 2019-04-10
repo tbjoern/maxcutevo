@@ -12,7 +12,6 @@ using namespace std;
 namespace maxcut {
 
 void write_result_to_stream(const RunResult &result, ostream &stream) {
-  stream << "algorithm,run_number,iteration,cut_weight" << endl;
   int algorithm_id = result.algorithm_id;
   int run_nr = result.run_id;
   const auto &run_data = result.cut_sizes;
@@ -48,6 +47,8 @@ void batch(const vector<Run> &runs) {
 
   // vector<RunResult> results;
   std::mutex mutex;
+
+  cout << "algorithm,run_number,iteration,cut_weight" << endl;
 
 #pragma omp parallel
   for (const auto &run : runs) {
