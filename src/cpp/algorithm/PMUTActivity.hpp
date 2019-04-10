@@ -10,7 +10,9 @@ namespace maxcut {
  */
 class PMUTActivity : public ActivityAlgorithm {
 public:
-  PMUTActivity(const AdjList &adj_list, double power_law_param);
+  PMUTActivity(const AdjList &adj_list,
+               ActivityAlgorithm::Parameters parameters,
+               double power_law_param);
 
   void iteration() override;
 };

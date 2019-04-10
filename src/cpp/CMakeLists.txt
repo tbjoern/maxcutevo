@@ -13,6 +13,7 @@ set(sources
     algorithm/PMUT.cpp
     algorithm/PMUTActivity.cpp
     algorithm/Unif.cpp
+    algorithm/UnifSigmoid.cpp
 )
 
 set(includes
@@ -27,6 +28,7 @@ set(includes
     algorithm/PMUT.hpp
     algorithm/PMUTActivity.hpp
     algorithm/Unif.hpp
+    algorithm/UnifSigmoid.hpp
 )
 
 set(libraries

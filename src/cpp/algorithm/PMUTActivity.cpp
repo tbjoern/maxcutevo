@@ -2,8 +2,10 @@
 
 namespace maxcut {
 
-PMUTActivity::PMUTActivity(const AdjList &adj_list, double power_law_param)
-    : ActivityAlgorithm(adj_list) {
+PMUTActivity::PMUTActivity(const AdjList &adj_list,
+                           ActivityAlgorithm::Parameters parameters,
+                           double power_law_param)
+    : ActivityAlgorithm(adj_list, parameters) {
   helper.setPowerLawParam(power_law_param);
 }
 

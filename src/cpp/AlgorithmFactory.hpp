@@ -6,13 +6,14 @@
 
 namespace maxcut {
 
-enum class Algorithm_Type { UNIF, PMUT, PMUTACTIVITY, GREEDY };
+enum class Algorithm_Type { UNIF, PMUT, PMUTACTIVITY, GREEDY, UNIFSIGMOID };
 
 const std::unordered_map<std::string, Algorithm_Type> str_to_algorithm_type = {
     {"unif", Algorithm_Type::UNIF},
     {"pmut", Algorithm_Type::PMUT},
     {"pmutActivity", Algorithm_Type::PMUTACTIVITY},
-    {"greedy", Algorithm_Type::GREEDY}};
+    {"greedy", Algorithm_Type::GREEDY},
+    {"unifSigmoid", Algorithm_Type::UNIFSIGMOID}};
 
 class AlgorithmFactory {
 public:

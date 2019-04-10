@@ -1,6 +1,7 @@
 #pragma once
 #include "../types.hpp"
 #include "Algorithm.hpp"
+#include <functional>
 
 namespace {
 constexpr int REVERSE = -1, NORMAL = 1;
@@ -19,14 +20,18 @@ protected:
   void initActivity();
 
 public:
-  constexpr static int START_ACTIVITY = 100;
-  constexpr static int ACT_INC = 1;
-  constexpr static int ACT_DEC = 1;
-  constexpr static int ACT_MAX = 200;
-  constexpr static int ACT_MIN = 1;
-  constexpr static double DECAY_RATE = 0.95;
+  struct Parameters {
+    int START_ACTIVITY = 100;
+    int ACT_INC = 1;
+    int ACT_DEC = 1;
+    int ACT_MAX = 200;
+    int ACT_MIN = 1;
+    double DECAY_RATE = 0.95;
+  };
 
-  ActivityAlgorithm(const AdjList &adj_list);
+  Parameters parameters;
+
+  ActivityAlgorithm(const AdjList &adj_list, Parameters parameters);
 
   void updateActivity(const std::vector<int> &flipped_nodes);
 

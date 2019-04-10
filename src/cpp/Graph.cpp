@@ -4,7 +4,9 @@
 #include <iostream>
 #include <limits>
 #include <map>
+#include <set>
 #include <stdexcept>
+#include <unordered_map>
 
 #include "Batch.hpp"
 
@@ -30,10 +32,30 @@ public:
     input_file >> nodes >> edges;
     AdjList adj_list(nodes);
 
+    std::set<int> node_names;
     for (uint i = 0; i < edges; ++i) {
       int source, dest, weight;
       input_file >> source >> dest >> weight;
-      source--, dest--;
+      node_names.insert(source);
+      node_names.insert(dest);
+    }
+
+    std::unordered_map<int, int> node_alias;
+    int node_nr = 0;
+    for (auto node : node_names) {
+      node_alias[node] = node_nr++;
+    }
+
+    input_file.clear();
+    input_file.seekg(0);
+
+    input_file >> nodes >> edges;
+
+    for (uint i = 0; i < edges; ++i) {
+      int source, dest, weight;
+      input_file >> source >> dest >> weight;
+      source = node_alias[source];
+      dest = node_alias[dest];
       adj_list.out_edges[source].push_back({dest, weight});
       adj_list.in_edges[dest].push_back({source, weight});
     }

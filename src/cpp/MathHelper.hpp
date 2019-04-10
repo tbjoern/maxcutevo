@@ -1,7 +1,9 @@
 #pragma once
 #include <cassert>
 #include <cmath>
+#include <functional>
 #include <random>
+#include <unordered_map>
 #include <vector>
 
 namespace maxcut {
@@ -59,7 +61,9 @@ public:
     return result;
   }
 
-  double sigmoid(double x) { return (x / 8) / ((abs(x / 2) + 1)) + 1 / 4; }
+  double sigmoid(double x, double smoothness) {
+    return 2 / (1 + exp(-1 * smoothness * x));
+  }
 
   inline bool sampleProbability(double probabilty) {
     std::bernoulli_distribution b(probabilty);
