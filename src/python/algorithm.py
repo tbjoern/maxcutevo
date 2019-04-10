@@ -388,9 +388,8 @@ class greedyActivityReverse(ActivityAlgorithm):
         return super().iterate()
 
 
-class unifActivitySigmoid(ActivityAlgorithm):
-    def __init__(self, graph, power_law_beta, max=100, min=-100, sigmoid_smoothness = 0.05,**kwargs):
-        self.power_law_beta = power_law_beta
+class unifSigmoid(ActivityAlgorithm):
+    def __init__(self, graph, max=100, min=-100, sigmoid_smoothness = 0.05,**kwargs):
         self.node_list = list(graph.nodes)
         self.sigmoid_lower = 1 / (len(self.node_list)**2)
         self.sigmoid_center = 1 / (len(self.node_list))
@@ -401,7 +400,7 @@ class unifActivitySigmoid(ActivityAlgorithm):
         super().__init__(graph, max=max, min=min, start_activity=0, **kwargs)
 
     def __str__(self):
-        return "unifActivitySigmoid"
+        return "unifSigmoid"
 
     def decay_activity(self):
         for node, activity in self.activity.items():
