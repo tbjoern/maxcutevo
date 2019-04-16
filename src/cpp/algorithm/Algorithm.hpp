@@ -48,6 +48,9 @@ protected:
 
   bool flipNodesIfBetterCut(std::vector<int> &nodeIDs);
 
+  bool flipNodesIfAboveThreshold(std::vector<int> &nodeIDs,
+                                 double threshold_factor);
+
   int changeByFlip(int nodeID);
 
 public:

@@ -88,6 +88,17 @@ bool Algorithm::flipNodesIfBetterCut(std::vector<int> &nodeIDs) {
   return true;
 }
 
+bool Algorithm::flipNodesIfAboveThreshold(std::vector<int> &nodeIDs,
+                                          double threshold_factor) {
+  auto threshold_cut_weight = _max_cut_weight * threshold_factor;
+  flipNodes(nodeIDs);
+  if (threshold_cut_weight > _cut_weight) {
+    flipNodes(nodeIDs);
+    return false;
+  }
+  return true;
+}
+
 Cut Algorithm::calcCutSizes() {
   Cut cut{0, 0, _max_cut_weight};
   auto sizes = calculateCurrentCutSize();
