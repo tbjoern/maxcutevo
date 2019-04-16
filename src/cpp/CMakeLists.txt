@@ -12,6 +12,7 @@ set(sources
     algorithm/Greedy.cpp
     algorithm/PMUT.cpp
     algorithm/PMUTActivity.cpp
+    algorithm/Random.cpp
     algorithm/Unif.cpp
     algorithm/UnifSigmoid.cpp
 )
@@ -27,6 +28,7 @@ set(includes
     algorithm/Greedy.hpp
     algorithm/PMUT.hpp
     algorithm/PMUTActivity.hpp
+    algorithm/Random.hpp
     algorithm/Unif.hpp
     algorithm/UnifSigmoid.hpp
 )
