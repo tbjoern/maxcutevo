@@ -2,6 +2,7 @@
 #include "algorithm/Greedy.hpp"
 #include "algorithm/PMUT.hpp"
 #include "algorithm/PMUTActivity.hpp"
+#include "algorithm/Random.hpp"
 #include "algorithm/Unif.hpp"
 #include "algorithm/UnifSigmoid.hpp"
 
@@ -51,6 +52,8 @@ AlgorithmFactory::make(std::string algorithm_name, const AdjList &adj_list,
     power_law_beta = params["power_law_beta"];
     return make_shared<PMUTActivity>(adj_list, make_parameters(params),
                                      power_law_beta);
+  case Algorithm_Type::RANDOM:
+    return make_shared<Random>(adj_list);
   case Algorithm_Type::UNIF:
     return make_shared<Unif>(adj_list);
   case Algorithm_Type::UNIFSIGMOID:
