@@ -13,11 +13,9 @@ Unif::Unif(const AdjList &adj_list) : Algorithm(adj_list) {
 
 void Unif::iteration() {
   vector<int> nodes_to_flip;
-  while (nodes_to_flip.empty()) {
-    for (int node = 0; node < _node_count; ++node) {
-      if (helper.sampleProbability(_probability)) {
-        nodes_to_flip.push_back(node);
-      }
+  for (int node = 0; node < _node_count; ++node) {
+    if (helper.sampleProbability(_probability)) {
+      nodes_to_flip.push_back(node);
     }
   }
   flipNodesIfBetterCut(nodes_to_flip);
