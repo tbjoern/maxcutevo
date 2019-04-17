@@ -8,15 +8,26 @@ namespace maxcut {
 
 using maxcut::side;
 
-Algorithm::Algorithm(const AdjList &adj_list)
-    : _part(adj_list.node_count, int(NOT_CUT_SET)),
-      _change(adj_list.node_count, 0), _cut_weight(0), _max_cut_weight(0),
-      _node_count(adj_list.node_count), _adj_list(adj_list) {
+Algorithm::Algorithm(Parameters params)
+    : _part(params.adj_list.node_count, int(NOT_CUT_SET)),
+      _change(params.adj_list.node_count, 0), _cut_weight(0),
+      _max_cut_weight(0), _node_count(params.adj_list.node_count),
+      _adj_list(params.adj_list) {
 
-  for (int node = 0; node < _adj_list.node_count; ++node) {
+  for (int node = 0; node < _node_count; ++node) {
     for (const auto &edge : _adj_list.out_edges[node]) {
       _change[node] += edge.weight;
     }
+  }
+
+  if (params.use_start_assignment) {
+    assert(params.start_assignment.size() == _node_count);
+    for (int node = 0; node < _node_count; ++node) {
+      if (params.start_assignment[node] == CUT_SET) {
+        flipNode(node);
+      }
+    }
+    _max_cut_weight = _cut_weight;
   }
 }
 

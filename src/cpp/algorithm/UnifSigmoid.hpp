@@ -9,7 +9,8 @@ class UnifSigmoid : public ActivityAlgorithm {
   std::function<bool(int)> activity_sampler;
 
 public:
-  UnifSigmoid(const AdjList &adj_list, ActivityAlgorithm::Parameters parameters,
+  UnifSigmoid(Algorithm::Parameters params,
+              ActivityAlgorithm::Parameters parameters,
               double sigmoid_smoothness);
 
   std::function<bool(int)> build_activity_sigmoid_sampler();

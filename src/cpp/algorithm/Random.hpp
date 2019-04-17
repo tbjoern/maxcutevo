@@ -8,7 +8,7 @@ class Random : public Algorithm {
   BernoulliGenerator gen;
 
 public:
-  Random(const AdjList &adj_list);
+  Random(Algorithm::Parameters params);
 
   void iteration() override;
 };

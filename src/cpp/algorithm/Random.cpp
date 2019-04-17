@@ -5,7 +5,7 @@ using namespace std;
 
 namespace maxcut {
 
-Random::Random(const AdjList &adj_list) : Algorithm(adj_list) {
+Random::Random(Algorithm::Parameters params) : Algorithm(params) {
   gen = helper.probabilitySampler(0.5);
 }
 

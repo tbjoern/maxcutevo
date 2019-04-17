@@ -13,7 +13,7 @@ class PMUT : public Algorithm {
   double power_law_beta;
 
 public:
-  PMUT(const AdjList &adj_list, double power_law_beta);
+  PMUT(Algorithm::Parameters params, double power_law_beta);
 
   void iteration() override;
 };

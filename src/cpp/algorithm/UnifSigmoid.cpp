@@ -28,10 +28,10 @@ std::function<bool(int)> UnifSigmoid::build_activity_sigmoid_sampler() {
   };
 }
 
-UnifSigmoid::UnifSigmoid(const AdjList &adj_list,
+UnifSigmoid::UnifSigmoid(Algorithm::Parameters params,
                          ActivityAlgorithm::Parameters parameters,
                          double sigmoid_smoothness)
-    : ActivityAlgorithm(adj_list, parameters) {
+    : ActivityAlgorithm(params, parameters) {
   this->sigmoid_smoothness = sigmoid_smoothness;
   activity_sampler = build_activity_sigmoid_sampler();
 }

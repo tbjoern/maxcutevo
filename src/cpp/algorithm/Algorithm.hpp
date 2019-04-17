@@ -30,7 +30,8 @@ protected:
    * cut_weight if the node is flipped. _part keeps track of each nodes part (1
    * or -1)
    */
-  std::vector<int> _part, _change;
+  std::vector<char> _part;
+  std::vector<int> _change;
   // total current weight of the cut
   int _cut_weight, _max_cut_weight;
   int _node_count;
@@ -54,8 +55,13 @@ protected:
   int changeByFlip(int nodeID);
 
 public:
+  struct Parameters {
+    const AdjList &adj_list;
+    const bool use_start_assignment;
+    const std::vector<char> &start_assignment;
+  };
   // Algorithm() : {};
-  Algorithm(const AdjList &adj_list);
+  Algorithm(Parameters params);
   virtual ~Algorithm(){};
 
   virtual void iteration() = 0;

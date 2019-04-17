@@ -62,9 +62,9 @@ void ActivityAlgorithm::decayActivity() {
   }
 }
 
-ActivityAlgorithm::ActivityAlgorithm(const AdjList &adj_list,
+ActivityAlgorithm::ActivityAlgorithm(Algorithm::Parameters params,
                                      Parameters parameters)
-    : Algorithm(adj_list), _activity(_node_count, parameters.START_ACTIVITY),
+    : Algorithm(params), _activity(_node_count, parameters.START_ACTIVITY),
       parameters(parameters) {}
 
 } // namespace maxcut

@@ -9,7 +9,7 @@ namespace maxcut {
  */
 class Greedy : public virtual Algorithm {
 public:
-  Greedy(const AdjList &adj_list) : Algorithm(adj_list) {}
+  Greedy(Algorithm::Parameters params) : Algorithm(params) {}
 
   void iteration() override;
 };

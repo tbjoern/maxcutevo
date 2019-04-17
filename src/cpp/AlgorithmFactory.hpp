@@ -26,7 +26,7 @@ const std::unordered_map<std::string, Algorithm_Type> str_to_algorithm_type = {
 class AlgorithmFactory {
 public:
   static std::shared_ptr<Algorithm> make(std::string algorithm_name,
-                                         const AdjList &adj_list,
+                                         Algorithm::Parameters algo_params,
                                          const nlohmann::json &params);
 };
 

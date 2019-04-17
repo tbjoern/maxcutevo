@@ -53,12 +53,15 @@ struct AlgorithmConfig {
 struct RunConfig {
   int max_iterations;
   int run_count;
+  bool random_start;
   std::vector<AlgorithmConfig> algorithms;
 };
 
 struct Run {
   const AlgorithmConfig &algorithm_config;
   const AdjList &adj_list;
+  const std::vector<char> &start_assigment;
+  bool use_start_assigment;
   int run_id;
   int iterations;
 };

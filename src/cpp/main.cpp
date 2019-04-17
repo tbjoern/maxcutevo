@@ -1,5 +1,6 @@
 #include "Batch.hpp"
 #include "Graph.hpp"
+#include "MathHelper.hpp"
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
@@ -23,6 +24,7 @@ RunConfig read_config(string filename) {
 
   config.max_iterations = json_cfg["iterations"];
   config.run_count = json_cfg["run_count"];
+  config.random_start = json_cfg["random_start"];
 
   for (const auto &algorithm : json_cfg["algorithms"]) {
     AlgorithmConfig cfg;
@@ -40,6 +42,18 @@ RunConfig read_config(string filename) {
   return config;
 }
 
+vector<char> make_random_start(int node_count) {
+  vector<char> start_assignment(node_count, NOT_CUT_SET);
+  MathHelper helper;
+  auto random_gen = helper.probabilitySampler(0.5);
+  for (int node = 0; node < node_count; ++node) {
+    if (random_gen.get()) {
+      start_assignment[node] = CUT_SET;
+    }
+  }
+  return start_assignment;
+}
+
 int main(int argc, char *argv[]) {
   string filename;
   RunConfig config;
@@ -55,11 +69,16 @@ int main(int argc, char *argv[]) {
 
   const auto adj_list = read_graph(filename);
 
+  vector<char> start_assigment;
+  if (config.random_start) {
+    start_assigment = make_random_start(adj_list.node_count);
+  }
+
   vector<Run> runs;
   for (auto &algorithm_config : config.algorithms) {
     for (int run_id = 0; run_id < config.run_count; ++run_id) {
-      runs.push_back(
-          {algorithm_config, adj_list, run_id, config.max_iterations});
+      runs.push_back({algorithm_config, adj_list, start_assigment,
+                      config.random_start, run_id, config.max_iterations});
     }
   }
 

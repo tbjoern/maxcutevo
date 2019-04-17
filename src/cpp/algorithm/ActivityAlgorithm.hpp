@@ -31,7 +31,7 @@ public:
 
   Parameters parameters;
 
-  ActivityAlgorithm(const AdjList &adj_list, Parameters parameters);
+  ActivityAlgorithm(Algorithm::Parameters params, Parameters parameters);
 
   void updateActivity(const std::vector<int> &flipped_nodes);
 

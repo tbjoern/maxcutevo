@@ -5,8 +5,8 @@ using namespace std;
 
 namespace maxcut {
 
-PMUT::PMUT(const AdjList &adj_list, double power_law_beta)
-    : Algorithm(adj_list), power_law_beta(power_law_beta) {
+PMUT::PMUT(Algorithm::Parameters params, double power_law_beta)
+    : Algorithm(params), power_law_beta(power_law_beta) {
   _weights = vector<int>(_node_count, 1);
 
   helper.setPowerLawParam(power_law_beta);

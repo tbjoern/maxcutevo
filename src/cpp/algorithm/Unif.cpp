@@ -5,7 +5,7 @@ using namespace std;
 
 namespace maxcut {
 
-Unif::Unif(const AdjList &adj_list) : Algorithm(adj_list) {
+Unif::Unif(Algorithm::Parameters params) : Algorithm(params) {
   helper.setUniformRange(0, _node_count);
   helper.setRealRange(0, 1);
   _probability = 1.0 / _node_count;

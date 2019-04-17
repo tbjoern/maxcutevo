@@ -1,4 +1,6 @@
 #include "AlgorithmFactory.hpp"
+#include "MathHelper.hpp"
+#include "algorithm/Algorithm.hpp"
 #include "algorithm/Greedy.hpp"
 #include "algorithm/PMUT.hpp"
 #include "algorithm/PMUTActivity.hpp"
@@ -32,11 +34,13 @@ make_parameters(const nlohmann::json &config) {
   }
   return params;
 }
+
 } // namespace
 
 namespace maxcut {
 std::shared_ptr<Algorithm>
-AlgorithmFactory::make(std::string algorithm_name, const AdjList &adj_list,
+AlgorithmFactory::make(std::string algorithm_name,
+                       Algorithm::Parameters algo_params,
                        const nlohmann::json &params) {
   auto type = str_to_algorithm_type.at(algorithm_name);
 
@@ -44,21 +48,21 @@ AlgorithmFactory::make(std::string algorithm_name, const AdjList &adj_list,
   double sigmoid_smoothness;
   switch (type) {
   case Algorithm_Type::GREEDY:
-    return make_shared<Greedy>(adj_list);
+    return make_shared<Greedy>(algo_params);
   case Algorithm_Type::PMUT:
     power_law_beta = params["power_law_beta"];
-    return make_shared<PMUT>(adj_list, power_law_beta);
+    return make_shared<PMUT>(algo_params, power_law_beta);
   case Algorithm_Type::PMUTACTIVITY:
     power_law_beta = params["power_law_beta"];
-    return make_shared<PMUTActivity>(adj_list, make_parameters(params),
+    return make_shared<PMUTActivity>(algo_params, make_parameters(params),
                                      power_law_beta);
   case Algorithm_Type::RANDOM:
-    return make_shared<Random>(adj_list);
+    return make_shared<Random>(algo_params);
   case Algorithm_Type::UNIF:
-    return make_shared<Unif>(adj_list);
+    return make_shared<Unif>(algo_params);
   case Algorithm_Type::UNIFSIGMOID:
     sigmoid_smoothness = params["sigmoid_smoothness"];
-    return make_shared<UnifSigmoid>(adj_list, make_parameters(params),
+    return make_shared<UnifSigmoid>(algo_params, make_parameters(params),
                                     sigmoid_smoothness);
   }
 

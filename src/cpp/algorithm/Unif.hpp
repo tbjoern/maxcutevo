@@ -12,7 +12,7 @@ class Unif : public Algorithm {
   double _probability;
 
 public:
-  Unif(const AdjList &adj_list);
+  Unif(Algorithm::Parameters params);
 
   void iteration() override;
 };

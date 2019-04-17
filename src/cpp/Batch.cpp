@@ -27,8 +27,12 @@ RunResult execute(const Run &run) {
   result.run_id = run.run_id;
   result.cut_sizes.reserve(run.iterations);
 
-  auto algorithm = AlgorithmFactory::make(
-      run.algorithm_config.name, run.adj_list, run.algorithm_config.arguments);
+  auto algorithm_params = Algorithm::Parameters{
+      run.adj_list, run.use_start_assigment, run.start_assigment};
+
+  auto algorithm =
+      AlgorithmFactory::make(run.algorithm_config.name, algorithm_params,
+                             run.algorithm_config.arguments);
   auto start_time = chrono::high_resolution_clock::now();
 
   for (int iteration = 0; iteration < run.iterations; ++iteration) {
