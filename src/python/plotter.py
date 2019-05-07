@@ -94,7 +94,9 @@ class Plotter:
             color = self.colors[algo_id%len(self.colors)]
             fmt = '-'
             indices = np.arange(min_length)
-            plt.plot(indices, cut_weight_mean, fmt, label=labels[algo_id], color=color)
+            tp = nparray.transpose()
+            ind = np.array(indices).transpose()
+            plt.plot(ind, tp, fmt, color=color)
             plt.fill_between(indices, cut_weight_mean+sigma, cut_weight_mean-sigma, facecolor=color, alpha=0.5)
         plt.legend(loc='lower right', prop={'size': 6})
         plt.suptitle(file)
