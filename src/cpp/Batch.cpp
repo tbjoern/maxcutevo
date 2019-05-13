@@ -25,9 +25,11 @@ void write_result_to_stream(const RunResult &result, ostream &stream) {
   int algorithm_id = result.algorithm_id;
   int run_nr = result.run_id;
   const auto &run_data = result.cut_sizes;
-  for (int iteration = 0; iteration < run_data.size(); ++iteration) {
-    stream << run_nr << "," << algorithm_id << "," << iteration << ","
-           << run_data[iteration] << endl;
+  const auto &iteration_data = result.iterations;
+  assert(run_data.size() == iteration_data.size());
+  for (int it = 0; it < run_data.size(); ++it) {
+    stream << run_nr << "," << algorithm_id << "," << iteration_data[it] << ","
+           << run_data[it] << endl;
   }
 }
 
@@ -45,10 +47,11 @@ RunResult execute(const Run &run) {
                              run.algorithm_config.arguments);
   auto start_time = chrono::high_resolution_clock::now();
 
-  for (int iteration = 0; iteration < run.iterations; ++iteration) {
+  for (int iteration = 0; iteration <= run.iterations; ++iteration) {
     algorithm->iteration();
     if (record_iteration(iteration)) {
       result.cut_sizes.push_back(algorithm->getCutSize());
+      result.iterations.push_back(iteration);
     }
   }
 

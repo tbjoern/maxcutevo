@@ -34,6 +34,7 @@ struct Cut {
 
 struct RunResult {
   std::vector<int> cut_sizes;
+  std::vector<int> iterations;
   int run_id;
   int algorithm_id;
   double time;
