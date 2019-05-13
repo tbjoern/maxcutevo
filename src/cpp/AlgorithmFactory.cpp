@@ -1,6 +1,7 @@
 #include "AlgorithmFactory.hpp"
 #include "MathHelper.hpp"
 #include "algorithm/Algorithm.hpp"
+#include "algorithm/FMUT.hpp"
 #include "algorithm/Greedy.hpp"
 #include "algorithm/PMUT.hpp"
 #include "algorithm/PMUTActivity.hpp"
@@ -52,6 +53,9 @@ AlgorithmFactory::make(std::string algorithm_name,
   case Algorithm_Type::PMUT:
     power_law_beta = params["power_law_beta"];
     return make_shared<PMUT>(algo_params, power_law_beta);
+  case Algorithm_Type::FMUT:
+    power_law_beta = params["power_law_beta"];
+    return make_shared<FMUT>(algo_params, power_law_beta);
   case Algorithm_Type::PMUTACTIVITY:
     power_law_beta = params["power_law_beta"];
     return make_shared<PMUTActivity>(algo_params, make_parameters(params),

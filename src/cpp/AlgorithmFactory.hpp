@@ -9,6 +9,7 @@ namespace maxcut {
 enum class Algorithm_Type {
   UNIF,
   PMUT,
+  FMUT,
   PMUTACTIVITY,
   GREEDY,
   RANDOM,
@@ -18,6 +19,7 @@ enum class Algorithm_Type {
 const std::unordered_map<std::string, Algorithm_Type> str_to_algorithm_type = {
     {"unif", Algorithm_Type::UNIF},
     {"pmut", Algorithm_Type::PMUT},
+    {"fmut", Algorithm_Type::FMUT},
     {"pmutActivity", Algorithm_Type::PMUTACTIVITY},
     {"greedy", Algorithm_Type::GREEDY},
     {"random", Algorithm_Type::RANDOM},

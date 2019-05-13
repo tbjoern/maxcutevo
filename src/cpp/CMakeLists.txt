@@ -9,6 +9,7 @@ set(sources
     MathHelper.hpp
     algorithm/Algorithm.cpp
     algorithm/ActivityAlgorithm.cpp
+    algorithm/FMUT.cpp
     algorithm/Greedy.cpp
     algorithm/PMUT.cpp
     algorithm/PMUTActivity.cpp
@@ -25,6 +26,7 @@ set(includes
     MathHelper.hpp
     algorithm/Algorithm.hpp
     algorithm/ActivityAlgorithm.hpp
+    algorithm/FMUT.hpp
     algorithm/Greedy.hpp
     algorithm/PMUT.hpp
     algorithm/PMUTActivity.hpp
