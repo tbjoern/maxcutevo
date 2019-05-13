@@ -80,23 +80,28 @@ class Plotter:
         file = self.plot_data[self.figure]['file']
         for algo_id, runs in data.items():
             data_array = []
+            indices_array = []
             for run_nr, run_data in runs.items():
                 data_array.append(run_data['cut_weight'])
+                indices_array.append(run_data['iteration'])
             min_length = None
             for run_data in data_array:
                 if min_length is None or len(run_data) < min_length:
                     min_length = len(run_data)
             for i, run_data in enumerate(data_array):
                 data_array[i] = run_data[:min_length]
+            for i, indices in enumerate(indices_array):
+                indices_array[i] = indices[:min_length]
             nparray = np.array(data_array)
             cut_weight_mean = nparray.mean(axis=0)
             sigma = nparray.std(axis=0)
             color = self.colors[algo_id%len(self.colors)]
             fmt = '-'
-            indices = np.arange(min_length)
-            tp = nparray.transpose()
-            ind = np.array(indices).transpose()
-            plt.plot(ind, tp, fmt, color=color)
+            indices = np.array(indices_array[0])
+            # tp = nparray.transpose()
+            # ind = np.array(indices).transpose()
+            # plt.plot(ind, tp, fmt, color=color)
+            plt.plot(indices, cut_weight_mean, fmt, label=labels[algo_id], color=color)
             plt.fill_between(indices, cut_weight_mean+sigma, cut_weight_mean-sigma, facecolor=color, alpha=0.5)
         plt.legend(loc='lower right', prop={'size': 6})
         plt.suptitle(file)
