@@ -2,6 +2,7 @@ data
 *.csv
 *.log
 build
+run
 .vscode
 *.txt
 *.pyc
