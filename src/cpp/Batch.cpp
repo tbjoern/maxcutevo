@@ -9,6 +9,16 @@
 
 using namespace std;
 
+namespace {
+inline bool record_iteration(int it) {
+  if (it < 1000) {
+    return it % 10 == 0;
+  } else {
+    return it % 100 == 0;
+  }
+}
+} // namespace
+
 namespace maxcut {
 
 void write_result_to_stream(const RunResult &result, ostream &stream) {
@@ -37,7 +47,9 @@ RunResult execute(const Run &run) {
 
   for (int iteration = 0; iteration < run.iterations; ++iteration) {
     algorithm->iteration();
-    result.cut_sizes.push_back(algorithm->getCutSize());
+    if (record_iteration(iteration)) {
+      result.cut_sizes.push_back(algorithm->getCutSize());
+    }
   }
 
   auto stop_time = chrono::high_resolution_clock::now();
