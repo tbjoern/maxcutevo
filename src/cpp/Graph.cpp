@@ -15,8 +15,9 @@ namespace maxcut {
 enum FileExtension { EDGELIST, MTXREADER, CNFREADER, NXEDGELIST };
 
 static std::map<std::string, FileExtension> filename_map = {
-    {".mtx", MTXREADER}, {".rud", EDGELIST},  {".mc", EDGELIST},
-    {".txt", EDGELIST},  {".cnf", CNFREADER}, {".edgelist", NXEDGELIST}};
+    {".mtx", MTXREADER},   {".rud", EDGELIST},  {".mc", EDGELIST},
+    {".txt", EDGELIST},    {".cnf", CNFREADER}, {".edgelist", NXEDGELIST},
+    {".edges", NXEDGELIST}};
 
 class FileReader {
 public:
@@ -92,7 +93,12 @@ public:
     int edge_count = 0;
     while (input_file.peek() != EOF) {
       int node;
-      input_file >> node;
+      if (!(input_file >> node)) {
+        ++edge_count;
+        input_file.clear();
+        input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        continue;
+      }
       if (node > largest_node) {
         largest_node = node;
       }
@@ -110,7 +116,11 @@ public:
 
     for (uint i = 0; i < edge_count; ++i) {
       int source, dest;
-      input_file >> source >> dest;
+      if (!(input_file >> source >> dest)) {
+        input_file.clear();
+        input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        continue;
+      }
       adj_list.out_edges[source].push_back({dest, 1});
       adj_list.in_edges[dest].push_back({source, 1});
     }
