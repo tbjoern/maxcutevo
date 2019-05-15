@@ -69,7 +69,7 @@ algorithms = [
         ]
     ),
     Algorithm(
-        name = 'unifActivitySigmoid',
+        name = 'unifSigmoid',
         arguments=[
             ArgumentGroup(activity_arguments, unif_validator),
             Argument('sigmoid_smoothness', [ 0.5, 0.05, 0.005, 0.0005 ])
