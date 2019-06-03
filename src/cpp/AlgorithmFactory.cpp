@@ -3,6 +3,7 @@
 #include "algorithm/Algorithm.hpp"
 #include "algorithm/FMUT.hpp"
 #include "algorithm/Greedy.hpp"
+#include "algorithm/GreedyActivity.hpp"
 #include "algorithm/PMUT.hpp"
 #include "algorithm/PMUTActivity.hpp"
 #include "algorithm/Random.hpp"
@@ -68,6 +69,8 @@ AlgorithmFactory::make(std::string algorithm_name,
     sigmoid_smoothness = params["sigmoid_smoothness"];
     return make_shared<UnifSigmoid>(algo_params, make_parameters(params),
                                     sigmoid_smoothness);
+  case Algorithm_Type::GREEDYACTIVITY:
+    return make_shared<GreedyActivity>(algo_params, make_parameters(params));
   }
 
   throw runtime_error("Unknown algorithm name");

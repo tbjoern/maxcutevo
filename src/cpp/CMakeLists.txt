@@ -12,6 +12,7 @@ set(sources
     algorithm/ActivityAlgorithm.cpp
     algorithm/FMUT.cpp
     algorithm/Greedy.cpp
+    algorithm/GreedyActivity.cpp
     algorithm/PMUT.cpp
     algorithm/PMUTActivity.cpp
     algorithm/Random.cpp
@@ -30,6 +31,7 @@ set(includes
     algorithm/ActivityAlgorithm.hpp
     algorithm/FMUT.hpp
     algorithm/Greedy.hpp
+    algorithm/GreedyActivity.hpp
     algorithm/PMUT.hpp
     algorithm/PMUTActivity.hpp
     algorithm/Random.hpp
