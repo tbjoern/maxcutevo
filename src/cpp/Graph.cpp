@@ -57,8 +57,7 @@ public:
       input_file >> source >> dest >> weight;
       source = node_alias[source];
       dest = node_alias[dest];
-      adj_list.out_edges[source].push_back({dest, weight});
-      adj_list.in_edges[dest].push_back({source, weight});
+      adj_list.add_edge(source, dest, weight);
     }
     return adj_list;
   }
@@ -78,8 +77,7 @@ public:
     for (uint i = 0; i < edges; ++i) {
       int source, dest;
       input_file >> source >> dest;
-      adj_list.out_edges[source].push_back({dest, 1});
-      adj_list.in_edges[dest].push_back({source, 1});
+      adj_list.add_edge(source, dest, 1);
     }
     return adj_list;
   }
@@ -121,8 +119,7 @@ public:
         input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         continue;
       }
-      adj_list.out_edges[source].push_back({dest, 1});
-      adj_list.in_edges[dest].push_back({source, 1});
+      adj_list.add_edge(source, dest, 1);
     }
     return adj_list;
   }
@@ -157,8 +154,7 @@ public:
       if (dest < 0) {
         dest = dest * -1 + nodes;
       }
-      adj_list.out_edges[source].push_back({dest, 1});
-      adj_list.in_edges[dest].push_back({source, 1});
+      adj_list.add_edge(source, dest, weight);
     }
     return adj_list;
   }

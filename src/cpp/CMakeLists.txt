@@ -2,6 +2,7 @@
 set(target maxcut-benchmark)
 
 set(sources
+    AdjList.cpp
     AlgorithmFactory.cpp
     Batch.cpp
     Graph.cpp
@@ -19,6 +20,7 @@ set(sources
 )
 
 set(includes
+    AdjList.hpp
     AlgorithmFactory.hpp
     Batch.hpp
     Graph.hpp

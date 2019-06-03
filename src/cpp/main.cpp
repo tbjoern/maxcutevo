@@ -1,3 +1,4 @@
+#include "AdjList.hpp"
 #include "Batch.hpp"
 #include "Graph.hpp"
 #include "MathHelper.hpp"
@@ -25,6 +26,7 @@ RunConfig read_config(string filename) {
   config.max_iterations = json_cfg["iterations"];
   config.run_count = json_cfg["run_count"];
   config.random_start = json_cfg["random_start"];
+  maxcut::AdjList::undirected = json_cfg["undirected"];
 
   for (const auto &algorithm : json_cfg["algorithms"]) {
     AlgorithmConfig cfg;
