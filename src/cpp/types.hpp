@@ -16,9 +16,20 @@ struct Cut {
   int size, inverse_size, max_size;
 };
 
+struct NodeInfo {
+  double activity;
+  int in_degree;
+  int out_degree;
+};
+
+struct IterationInfo {
+  std::vector<NodeInfo> nodeInfo;
+};
+
 struct RunResult {
   std::vector<int> cut_sizes;
   std::vector<int> iterations;
+  std::unordered_map<int, IterationInfo> iteration_infos;
   int run_id;
   int algorithm_id;
   double time;
@@ -49,12 +60,6 @@ struct Run {
   bool use_start_assigment;
   int run_id;
   int iterations;
-};
-
-struct NodeInfo {
-  double activity;
-  int in_degree;
-  int out_degree;
 };
 
 } // namespace maxcut
