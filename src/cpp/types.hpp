@@ -51,4 +51,10 @@ struct Run {
   int iterations;
 };
 
+struct NodeInfo {
+  double activity;
+  int in_degree;
+  int out_degree;
+};
+
 } // namespace maxcut

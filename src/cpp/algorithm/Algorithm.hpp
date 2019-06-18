@@ -66,6 +66,8 @@ public:
 
   virtual void iteration() = 0;
 
+  virtual std::vector<NodeInfo> getNodeInfo();
+
   int getCutSize();
 
   Cut calcCutSizes();

@@ -67,4 +67,13 @@ ActivityAlgorithm::ActivityAlgorithm(Algorithm::Parameters params,
     : Algorithm(params), _activity(_node_count, parameters.START_ACTIVITY),
       parameters(parameters) {}
 
+std::vector<NodeInfo> ActivityAlgorithm::getNodeInfo() {
+  auto result = this->Algorithm::getNodeInfo();
+  for (int node = 0; node < _node_count; ++node) {
+    NodeInfo &info = result[node];
+    info.activity = _activity[node];
+  }
+  return result;
+}
+
 } // namespace maxcut

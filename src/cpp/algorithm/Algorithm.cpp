@@ -125,4 +125,14 @@ Cut Algorithm::calcCutSizes() {
 
 int Algorithm::getCutSize() { return _max_cut_weight; }
 
+std::vector<NodeInfo> Algorithm::getNodeInfo() {
+  std::vector<NodeInfo> result(_node_count);
+  for (int node = 0; node < _node_count; ++node) {
+    NodeInfo &info = result[node];
+    info.in_degree = _adj_list.in_edges[node].size();
+    info.out_degree = _adj_list.out_edges[node].size();
+  }
+  return result;
+}
+
 } // namespace maxcut

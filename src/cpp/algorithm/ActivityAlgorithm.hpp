@@ -36,6 +36,8 @@ public:
   void updateActivity(const std::vector<int> &flipped_nodes);
 
   void decayActivity();
+
+  std::vector<NodeInfo> getNodeInfo() override;
 };
 
 } // namespace maxcut
