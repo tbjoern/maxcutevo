@@ -10,26 +10,49 @@
 using namespace std;
 
 namespace {
-inline bool record_iteration(int it) {
+inline bool record_cut(int it) {
   if (it < 1000) {
     return it % 10 == 0;
   } else {
     return it % 100 == 0;
   }
 }
+
+inline bool record_info(int it) { return it % 1000 == 0; }
 } // namespace
 
 namespace maxcut {
 
-void write_result_to_stream(const RunResult &result, ostream &stream) {
+void write_header(ostream &stream, OutputType output_type) {
+  if (output_type == OutputType::CUT_WEIGHT) {
+    stream << "run_number,algorithm,iteration,cut_weight" << endl;
+  } else if (output_type == OutputType::ITERATION_INFO) {
+    stream << "iteration,node,in_degree,out_degree,activity" << endl;
+  }
+}
+
+void write_result_to_stream(const RunResult &result, ostream &stream,
+                            OutputType output_type) {
   int algorithm_id = result.algorithm_id;
   int run_nr = result.run_id;
   const auto &run_data = result.cut_sizes;
   const auto &iteration_data = result.iterations;
+  const auto &iteration_infos = result.iteration_infos;
   assert(run_data.size() == iteration_data.size());
-  for (int it = 0; it < run_data.size(); ++it) {
-    stream << run_nr << "," << algorithm_id << "," << iteration_data[it] << ","
-           << run_data[it] << endl;
+  if (output_type == OutputType::CUT_WEIGHT) {
+    for (int it = 0; it < run_data.size(); ++it) {
+      stream << run_nr << "," << algorithm_id << "," << iteration_data[it]
+             << "," << run_data[it] << endl;
+    }
+  } else if (output_type == OutputType::ITERATION_INFO) {
+    for (auto &pair : iteration_infos) {
+      const auto node_count = pair.second.nodeInfo.size();
+      for (int node = 0; node < node_count; ++node) {
+        const auto &nodeInfo = pair.second.nodeInfo[node];
+        stream << pair.first << "," << node << "," << nodeInfo.in_degree << ","
+               << nodeInfo.out_degree << "," << nodeInfo.activity << endl;
+      }
+    }
   }
 }
 
@@ -49,9 +72,13 @@ RunResult execute(const Run &run) {
 
   for (int iteration = 0; iteration <= run.iterations; ++iteration) {
     algorithm->iteration();
-    if (record_iteration(iteration)) {
+    if (record_cut(iteration)) {
       result.cut_sizes.push_back(algorithm->getCutSize());
       result.iterations.push_back(iteration);
+    }
+    if (record_info(iteration)) {
+      result.iteration_infos[iteration] =
+          IterationInfo{algorithm->getNodeInfo()};
     }
   }
 
@@ -62,19 +89,19 @@ RunResult execute(const Run &run) {
   return result;
 }
 
-void batch(const vector<Run> &runs) {
+void batch(const vector<Run> &runs, OutputType output_type) {
 
   // vector<RunResult> results;
   std::mutex mutex;
 
-  cout << "run_number,algorithm,iteration,cut_weight" << endl;
+  write_header(cout, output_type);
 
 #pragma omp parallel for
   for (auto it = runs.cbegin(); it < runs.cend(); ++it) {
     auto result = execute(*it);
     std::lock_guard<std::mutex> lock(mutex);
     // results.push_back(result);
-    write_result_to_stream(result, cout);
+    write_result_to_stream(result, cout, output_type);
   }
 
   // return results;

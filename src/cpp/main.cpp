@@ -59,14 +59,29 @@ vector<char> make_random_start(int node_count) {
 int main(int argc, char *argv[]) {
   string filename;
   RunConfig config;
+  OutputType output_type;
+  string print_mode;
   switch (argc) {
   case 3:
     config = read_config(argv[2]);
     filename = argv[1];
     break;
+  case 4:
+    config = read_config(argv[2]);
+    filename = argv[1];
+    print_mode = argv[3];
+    break;
   default:
-    cout << "Usage: maxcut-benchmark <graph_instance> <config_file>" << endl;
+    cout
+        << "Usage: maxcut-benchmark <graph_instance> <config_file> <print-mode>"
+        << endl;
     exit(1);
+  }
+
+  if (print_mode == "info") {
+    output_type = OutputType::ITERATION_INFO;
+  } else {
+    output_type == OutputType::CUT_WEIGHT;
   }
 
   const auto adj_list = read_graph(filename);
@@ -85,7 +100,7 @@ int main(int argc, char *argv[]) {
   }
 
   try {
-    batch(runs);
+    batch(runs, output_type);
   } catch (exception x) {
     cout << x.what() << endl;
   }

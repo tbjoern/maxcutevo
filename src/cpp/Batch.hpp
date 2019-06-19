@@ -7,10 +7,12 @@
 
 namespace maxcut {
 
+enum class OutputType { CUT_WEIGHT, ITERATION_INFO };
+
 /**
  *  runs a set of algorithms on a graph
- *  handles parralel processing
+ *  handles parallel processing
  */
-void batch(const std::vector<Run> &runs);
+void batch(const std::vector<Run> &runs, OutputType output_type);
 
 } // namespace maxcut
