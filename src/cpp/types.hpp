@@ -1,10 +1,10 @@
 #pragma once
 #include "AdjList.hpp"
 #include <iostream>
+#include <map>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -24,12 +24,13 @@ struct NodeInfo {
 
 struct IterationInfo {
   std::vector<NodeInfo> nodeInfo;
+  int flip_count;
 };
 
 struct RunResult {
   std::vector<int> cut_sizes;
   std::vector<int> iterations;
-  std::unordered_map<int, IterationInfo> iteration_infos;
+  std::map<int, IterationInfo> iteration_infos;
   int run_id;
   int algorithm_id;
   double time;

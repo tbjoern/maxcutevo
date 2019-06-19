@@ -7,7 +7,7 @@
 
 namespace maxcut {
 
-enum class OutputType { CUT_WEIGHT, ITERATION_INFO };
+enum class OutputType { CUT_WEIGHT, ITERATION_INFO, NODES_FLIPPED };
 
 /**
  *  runs a set of algorithms on a graph

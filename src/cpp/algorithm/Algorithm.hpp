@@ -35,6 +35,7 @@ protected:
   // total current weight of the cut
   int _cut_weight, _max_cut_weight;
   int _node_count;
+  int _nodes_flipped;
   const AdjList &_adj_list;
   MathHelper helper;
 
@@ -75,6 +76,10 @@ public:
   void setGraph(const AdjList &adj_list);
 
   virtual void parse_arguments(nlohmann::json) {}
+
+  int getNodesFlipped() const;
+
+  void clear_stats();
 };
 
 } // namespace maxcut

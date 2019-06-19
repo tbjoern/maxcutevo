@@ -15,17 +15,24 @@ if __name__ == "__main__":
     with open(args.csv, 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         group_by = input("Select field to group by: " + ", ".join(f"{field} {i}" for i,field in enumerate(reader.fieldnames)) + '\n--> ')
-        group_by = reader.fieldnames[int(group_by)]
+        if int(group_by) == -1:
+            group_by = None
+        else:
+            group_by = reader.fieldnames[int(group_by)]
         label_source = input("Select field for x axis: " + ", ".join(f"{field} {i}" for i,field in enumerate(reader.fieldnames)) + '\n--> ')
         label_source = reader.fieldnames[int(label_source)]
         data_source = input("Select field for y axis: " + ", ".join(f"{field} {i}" for i,field in enumerate(reader.fieldnames)) + '\n--> ')
         data_source = reader.fieldnames[int(data_source)]
         for row in reader:
-            group = row[group_by]
+            if group_by:
+                group = row[group_by]
+            else:
+                group = "default"
             if not group in data:
                 data[group] = []
-            data[group].append((row[label_source], row[data_source]))
+            data[group].append((int(row[label_source]), int(row[data_source])))
 
+    print(data)
 
     for key in sorted(data.keys()):
         d = data[key]
@@ -34,4 +41,4 @@ if __name__ == "__main__":
         plt.plot(x,y,'bo')
         plt.title(key)
         plt.show()
-            
+

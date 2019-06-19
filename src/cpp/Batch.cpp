@@ -18,7 +18,8 @@ inline bool record_cut(int it) {
   }
 }
 
-inline bool record_info(int it) { return it % 1000 == 0; }
+inline bool record_info(int it) { return record_cut(it); }
+
 } // namespace
 
 namespace maxcut {
@@ -28,6 +29,8 @@ void write_header(ostream &stream, OutputType output_type) {
     stream << "run_number,algorithm,iteration,cut_weight" << endl;
   } else if (output_type == OutputType::ITERATION_INFO) {
     stream << "iteration,node,in_degree,out_degree,activity" << endl;
+  } else if (output_type == OutputType::NODES_FLIPPED) {
+    stream << "iteration,flips" << endl;
   }
 }
 
@@ -52,6 +55,10 @@ void write_result_to_stream(const RunResult &result, ostream &stream,
         stream << pair.first << "," << node << "," << nodeInfo.in_degree << ","
                << nodeInfo.out_degree << "," << nodeInfo.activity << endl;
       }
+    }
+  } else if (output_type == OutputType::NODES_FLIPPED) {
+    for (auto &pair : iteration_infos) {
+      stream << pair.first << "," << pair.second.flip_count << endl;
     }
   }
 }
@@ -78,8 +85,9 @@ RunResult execute(const Run &run) {
     }
     if (record_info(iteration)) {
       result.iteration_infos[iteration] =
-          IterationInfo{algorithm->getNodeInfo()};
+          IterationInfo{algorithm->getNodeInfo(), algorithm->getNodesFlipped()};
     }
+    algorithm->clear_stats();
   }
 
   auto stop_time = chrono::high_resolution_clock::now();

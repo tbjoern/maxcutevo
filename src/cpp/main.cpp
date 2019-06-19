@@ -80,8 +80,10 @@ int main(int argc, char *argv[]) {
 
   if (print_mode == "info") {
     output_type = OutputType::ITERATION_INFO;
+  } else if (print_mode == "flips") {
+    output_type = OutputType::NODES_FLIPPED;
   } else {
-    output_type == OutputType::CUT_WEIGHT;
+    output_type = OutputType::CUT_WEIGHT;
   }
 
   const auto adj_list = read_graph(filename);

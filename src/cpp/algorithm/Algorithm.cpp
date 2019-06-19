@@ -12,7 +12,7 @@ Algorithm::Algorithm(Parameters params)
     : _part(params.adj_list.node_count, int(NOT_CUT_SET)),
       _change(params.adj_list.node_count, 0), _cut_weight(0),
       _max_cut_weight(0), _node_count(params.adj_list.node_count),
-      _adj_list(params.adj_list) {
+      _nodes_flipped(0), _adj_list(params.adj_list) {
 
   for (int node = 0; node < _node_count; ++node) {
     for (const auto &edge : _adj_list.out_edges[node]) {
@@ -81,6 +81,7 @@ void Algorithm::flipNode(int nodeID) {
   if (_cut_weight > _max_cut_weight) {
     _max_cut_weight = _cut_weight;
   }
+  ++_nodes_flipped;
 }
 
 void Algorithm::flipNodes(std::vector<int> &nodeIDs) {
@@ -135,4 +136,7 @@ std::vector<NodeInfo> Algorithm::getNodeInfo() {
   return result;
 }
 
+int Algorithm::getNodesFlipped() const { return _nodes_flipped; }
+
+void Algorithm::clear_stats() { _nodes_flipped = 0; }
 } // namespace maxcut
