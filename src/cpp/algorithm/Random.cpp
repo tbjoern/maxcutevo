@@ -17,6 +17,7 @@ void Random::iteration() {
     }
   }
   flipNodes(nodes_to_flip);
+  _max_cut_weight = _cut_weight;
 }
 
 } // namespace maxcut
