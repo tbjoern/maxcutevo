@@ -81,7 +81,7 @@ void Algorithm::flipNode(int nodeID) {
   if (_cut_weight > _max_cut_weight) {
     _max_cut_weight = _cut_weight;
   }
-  ++_nodes_flipped;
+  // ++_nodes_flipped;
 }
 
 void Algorithm::flipNodes(std::vector<int> &nodeIDs) {

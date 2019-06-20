@@ -83,11 +83,12 @@ RunResult execute(const Run &run) {
       result.cut_sizes.push_back(algorithm->getCutSize());
       result.iterations.push_back(iteration);
     }
-    if (record_info(iteration)) {
-      result.iteration_infos[iteration] =
-          IterationInfo{algorithm->getNodeInfo(), algorithm->getNodesFlipped()};
-    }
-    algorithm->clear_stats();
+    // if (record_info(iteration)) {
+    //   result.iteration_infos[iteration] =
+    //       IterationInfo{algorithm->getNodeInfo(),
+    //       algorithm->getNodesFlipped()};
+    // }
+    // algorithm->clear_stats();
   }
 
   auto stop_time = chrono::high_resolution_clock::now();
