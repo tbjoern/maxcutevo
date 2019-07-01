@@ -1,4 +1,5 @@
 #include "UnifSigmoid.hpp"
+#include <memory>
 #include <unordered_map>
 
 using namespace std;
@@ -6,7 +7,7 @@ using namespace std;
 namespace maxcut {
 
 std::function<bool(int)> UnifSigmoid::build_activity_sigmoid_sampler() {
-  unordered_map<int, BernoulliGenerator> act_to_sampler;
+  unordered_map<int, std::shared_ptr<BernoulliGenerator>> act_to_sampler;
   double max_p = 1.0 / 2, center_p = 1.0 / _node_count,
          min_p = 1.0 / (_node_count * _node_count);
   double upper_multiplier = max_p - center_p;
@@ -21,10 +22,11 @@ std::function<bool(int)> UnifSigmoid::build_activity_sigmoid_sampler() {
     } else {
       probability = lower_multiplier * sigmoid_value + min_p;
     }
-    act_to_sampler[activity] = helper.probabilitySampler(probability);
+    act_to_sampler[activity] =
+        std::move(helper.probabilitySampler(probability));
   }
   return [act_to_sampler](double activity) mutable {
-    return act_to_sampler.at(static_cast<int>(ceil(activity))).get();
+    return act_to_sampler.at(static_cast<int>(ceil(activity)))->get();
   };
 }
 

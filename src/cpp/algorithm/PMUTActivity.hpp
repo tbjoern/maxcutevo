@@ -9,6 +9,8 @@ namespace maxcut {
  * probability distribution
  */
 class PMUTActivity : public ActivityAlgorithm {
+  PowerLawGenerator plaw_gen;
+
 public:
   PMUTActivity(Algorithm::Parameters params,
                ActivityAlgorithm::Parameters parameters,

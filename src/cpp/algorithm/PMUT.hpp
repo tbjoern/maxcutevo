@@ -11,6 +11,7 @@ namespace maxcut {
 class PMUT : public Algorithm {
   std::vector<int> _weights;
   double power_law_beta;
+  PowerLawGenerator plaw_gen;
 
 public:
   PMUT(Algorithm::Parameters params, double power_law_beta);
