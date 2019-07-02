@@ -49,7 +49,7 @@ vector<char> make_random_start(int node_count) {
   MathHelper helper;
   auto random_gen = helper.probabilitySampler(0.5);
   for (int node = 0; node < node_count; ++node) {
-    if (random_gen.get()) {
+    if (random_gen->get()) {
       start_assignment[node] = CUT_SET;
     }
   }
