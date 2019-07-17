@@ -78,10 +78,8 @@ public:
 
   int getInt() { return _unif(_engine); }
 
-  int getIntFromPowerLawDistribution(int max) {
-    double rand = _exp(_engine);
-    rand = rand > max ? max : rand;
-    return ceil(rand);
+  PowerLawGenerator makePowerLawGenerator(int max_value, double beta) {
+    return PowerLawGenerator(max_value, beta, _engine);
   }
 
   inline double getReal() { return _real(_engine); }
