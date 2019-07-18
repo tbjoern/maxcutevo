@@ -16,6 +16,33 @@ using namespace std;
 
 using json = nlohmann::json;
 
+// thanks to
+// https://stackoverflow.com/questions/8520560/get-a-file-name-from-a-path
+std::string basename(std::string path) {
+  // Remove directory if present.
+  // Do this before extension removal incase directory has a period character.
+  const size_t last_slash_idx = path.find_last_of("\\/");
+  if (std::string::npos != last_slash_idx) {
+    path.erase(0, last_slash_idx + 1);
+  }
+
+  // Remove extension if present.
+  const size_t period_idx = path.rfind('.');
+  if (std::string::npos != period_idx) {
+    path.erase(period_idx);
+  }
+
+  return path;
+}
+
+std::string directory(std::string path) {
+  const size_t last_slash_idx = path.find_last_of("\\/");
+  if (std::string::npos != last_slash_idx) {
+    return path.substr(0, last_slash_idx + 1);
+  }
+  return path;
+}
+
 RunConfig read_config(string filename) {
   auto cfg_file = ifstream(filename);
   json json_cfg;
@@ -56,6 +83,28 @@ vector<char> make_random_start(int node_count) {
   return start_assignment;
 }
 
+vector<char> read_random_start(std::string filename) {
+  std::ifstream input_file(filename);
+  if (!input_file.good()) {
+    throw std::invalid_argument("File " + filename + " is not readable");
+  }
+
+  int node_count, node;
+  input_file >> node_count;
+
+  auto individual = vector<char>(node_count, NOT_CUT_SET);
+
+  while (input_file.peek() != EOF) {
+    input_file >> node;
+    if (!input_file.good()) {
+      break;
+    }
+    individual[node] = CUT_SET;
+  }
+
+  return individual;
+}
+
 int main(int argc, char *argv[]) {
   string filename;
   RunConfig config;
@@ -90,7 +139,8 @@ int main(int argc, char *argv[]) {
 
   vector<char> start_assigment;
   if (config.random_start) {
-    start_assigment = make_random_start(adj_list.node_count);
+    start_assigment = read_random_start(directory(filename) +
+                                        basename(filename) + ".assignment");
   }
 
   vector<Run> runs;
