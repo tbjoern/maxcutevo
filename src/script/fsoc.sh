@@ -1,3 +1,4 @@
+#! /bin/bash
 #SBATCH --job-name=maxcut-benchmark
 #SBATCH --ntasks-per-node=12
 #SBATCH --cpus-per-task=4
