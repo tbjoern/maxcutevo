@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #SBATCH --job-name=maxcut-benchmark
 #SBATCH --ntasks-per-node=12
 #SBATCH --cpus-per-task=4
@@ -18,7 +16,7 @@ install -d $result_dir
 mv $config_file $result_dir
 config_file="$result_dir/$config_file"
 
-for file in `find -L $instance_dir -type f | grep -v .git`
+for file in `find -L $instance_dir -type f | grep -v .git | grep -v .assignment`
 do
     ext=${file##*.}
     fname=`basename $file .$ext`
