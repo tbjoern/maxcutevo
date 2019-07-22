@@ -1,0 +1,42 @@
+{
+    "iterations": 1,
+    "run_count": 1,
+    "random_start": true,
+    "undirected": true,
+    "algorithms": [
+        {
+            "id": 1,
+            "name": "pmutActivity",
+            "arguments": {
+                "power_law_beta": 3.5,
+                "start_activity": 100,
+                "inc": 1,
+                "dec": 1,
+                "max": 200,
+                "min": 1
+            }
+        },
+        {
+            "id": 0,
+            "name": "greedy"
+        },
+        {
+            "id": 2,
+            "name": "pmut",
+            "arguments": {
+                "power_law_beta": 3.5
+            }
+        },
+        {
+            "id": 3,
+            "name": "fmut",
+            "arguments": {
+                "power_law_beta": 3.5
+            }
+        },
+	{
+            "id": 4,
+            "name": "unif"
+        }
+    ]
+}
