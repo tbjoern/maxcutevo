@@ -40,9 +40,12 @@ UnifSigmoid::UnifSigmoid(Algorithm::Parameters params,
 
 void UnifSigmoid::iteration() {
   vector<int> nodes_to_flip;
-  for (int node = 0; node < _node_count; ++node) {
-    if (activity_sampler(_activity[node])) {
-      nodes_to_flip.push_back(node);
+  int max_retries = 20;
+  while(nodes_to_flip.size() == 0 && max_retries-- > 0) {
+    for (int node = 0; node < _node_count; ++node) {
+      if (activity_sampler(_activity[node])) {
+        nodes_to_flip.push_back(node);
+      }
     }
   }
   bool flipped = flipNodesIfBetterCut(nodes_to_flip);
