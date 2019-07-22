@@ -30,10 +30,11 @@ struct IterationInfo {
 struct RunResult {
   std::vector<int> cut_sizes;
   std::vector<int> iterations;
+  std::vector<int> flips;
+  std::vector<double> time;
   std::map<int, IterationInfo> iteration_infos;
   int run_id;
   int algorithm_id;
-  double time;
 };
 
 struct AlgorithmResult {

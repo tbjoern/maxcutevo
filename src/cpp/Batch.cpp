@@ -11,7 +11,9 @@ using namespace std;
 
 namespace {
 inline bool record_cut(int it) {
-  if (it < 1000) {
+  if (it < 100) {
+    return true;
+  } else if (it < 1000) {
     return it % 10 == 0;
   } else {
     return it % 100 == 0;
@@ -26,7 +28,7 @@ namespace maxcut {
 
 void write_header(ostream &stream, OutputType output_type) {
   if (output_type == OutputType::CUT_WEIGHT) {
-    stream << "run_number,algorithm,iteration,cut_weight" << endl;
+    stream << "run_number,algorithm,iteration,cut_weight,time,flips" << endl;
   } else if (output_type == OutputType::ITERATION_INFO) {
     stream << "iteration,node,in_degree,out_degree,activity" << endl;
   } else if (output_type == OutputType::NODES_FLIPPED) {
@@ -41,11 +43,14 @@ void write_result_to_stream(const RunResult &result, ostream &stream,
   const auto &run_data = result.cut_sizes;
   const auto &iteration_data = result.iterations;
   const auto &iteration_infos = result.iteration_infos;
+  const auto &time = result.time;
+  const auto &flips = result.flips;
   assert(run_data.size() == iteration_data.size());
   if (output_type == OutputType::CUT_WEIGHT) {
     for (int it = 0; it < run_data.size(); ++it) {
       stream << run_nr << "," << algorithm_id << "," << iteration_data[it]
-             << "," << run_data[it] << endl;
+             << "," << run_data[it] << "," << time[it] << "," << flips[it]
+             << endl;
     }
   } else if (output_type == OutputType::ITERATION_INFO) {
     for (auto &pair : iteration_infos) {
@@ -80,9 +85,15 @@ RunResult execute(const Run &run) {
   for (int iteration = 0; iteration <= run.iterations; ++iteration) {
     algorithm->iteration();
     if (record_cut(iteration)) {
+      auto cur_time = chrono::high_resolution_clock::now();
+      result.time.push_back(
+          chrono::duration_cast<chrono::milliseconds>(cur_time - start_time)
+              .count());
       result.cut_sizes.push_back(algorithm->getCutSize());
       result.iterations.push_back(iteration);
+      result.flips.push_back(algorithm->getNodesFlipped());
     }
+    algorithm->clear_stats();
     // if (record_info(iteration)) {
     //   result.iteration_infos[iteration] =
     //       IterationInfo{algorithm->getNodeInfo(),
@@ -91,10 +102,6 @@ RunResult execute(const Run &run) {
     // algorithm->clear_stats();
   }
 
-  auto stop_time = chrono::high_resolution_clock::now();
-  result.time =
-      chrono::duration_cast<chrono::milliseconds>(stop_time - start_time)
-          .count();
   return result;
 }
 
