@@ -51,6 +51,7 @@ struct AlgorithmConfig {
 struct RunConfig {
   int max_iterations;
   int run_count;
+  int time_limit;
   bool random_start;
   std::vector<AlgorithmConfig> algorithms;
 };
@@ -62,6 +63,7 @@ struct Run {
   bool use_start_assigment;
   int run_id;
   int iterations;
+  int time_limit;
 };
 
 } // namespace maxcut

@@ -81,25 +81,24 @@ RunResult execute(const Run &run) {
       AlgorithmFactory::make(run.algorithm_config.name, algorithm_params,
                              run.algorithm_config.arguments);
   auto start_time = chrono::high_resolution_clock::now();
+  auto cur_time = chrono::high_resolution_clock::now();
+  auto time_elapsed = chrono::duration_cast<chrono::milliseconds>(cur_time - start_time)
+              .count();
+  auto time_limit_in_ms = run.time_limit * 60 * 1000;
 
-  for (int iteration = 0; iteration <= run.iterations; ++iteration) {
+  for (int iteration = 0; iteration <= run.iterations && time_elapsed < time_limit_in_ms ; ++iteration) {
     algorithm->iteration();
+    cur_time = chrono::high_resolution_clock::now();
+    time_elapsed = chrono::duration_cast<chrono::milliseconds>(cur_time - start_time)
+              .count();
     if (record_cut(iteration)) {
-      auto cur_time = chrono::high_resolution_clock::now();
-      result.time.push_back(
-          chrono::duration_cast<chrono::milliseconds>(cur_time - start_time)
-              .count());
+      result.time.push_back(time_elapsed
+          );
       result.cut_sizes.push_back(algorithm->getCutSize());
       result.iterations.push_back(iteration);
       result.flips.push_back(algorithm->getNodesFlipped());
     }
     algorithm->clear_stats();
-    // if (record_info(iteration)) {
-    //   result.iteration_infos[iteration] =
-    //       IterationInfo{algorithm->getNodeInfo(),
-    //       algorithm->getNodesFlipped()};
-    // }
-    // algorithm->clear_stats();
   }
 
   return result;

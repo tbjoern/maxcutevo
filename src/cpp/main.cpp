@@ -53,6 +53,7 @@ RunConfig read_config(string filename) {
   config.max_iterations = json_cfg["iterations"];
   config.run_count = json_cfg["run_count"];
   config.random_start = json_cfg["random_start"];
+  config.time_limit = json_cfg["time_limit"];
   maxcut::AdjList::undirected = json_cfg["undirected"];
 
   for (const auto &algorithm : json_cfg["algorithms"]) {
@@ -147,7 +148,7 @@ int main(int argc, char *argv[]) {
   for (auto &algorithm_config : config.algorithms) {
     for (int run_id = 0; run_id < config.run_count; ++run_id) {
       runs.push_back({algorithm_config, adj_list, start_assigment,
-                      config.random_start, run_id, config.max_iterations});
+                      config.random_start, run_id, config.max_iterations, config.time_limit});
     }
   }
 
