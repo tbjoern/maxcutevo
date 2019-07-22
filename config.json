@@ -3,6 +3,7 @@
     "run_count": 1,
     "random_start": true,
     "undirected": true,
+    "time_limit": 1,
     "algorithms": [
         {
             "id": 1,
