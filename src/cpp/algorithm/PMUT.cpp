@@ -14,7 +14,7 @@ PMUT::PMUT(Algorithm::Parameters params, double power_law_beta)
 }
 
 void PMUT::iteration() {
-  auto k = plaw_gen.get();
+  auto k = plaw_gen.get() + 1;
   auto nodes_to_flip = helper.chooseKUnique(_weights, k);
   flipNodesIfBetterCut(nodes_to_flip);
 }

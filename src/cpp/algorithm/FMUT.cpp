@@ -13,7 +13,7 @@ FMUT::FMUT(Algorithm::Parameters params, double power_law_beta)
 
 void FMUT::iteration() {
   vector<int> nodes_to_flip;
-  auto k = plaw_gen.get();
+  auto k = plaw_gen.get() + 1;
   auto sampler =
       helper.probabilitySampler(static_cast<double>(k) / _node_count);
   for (int node = 0; node < _node_count; ++node) {

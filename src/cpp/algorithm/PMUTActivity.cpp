@@ -11,7 +11,7 @@ PMUTActivity::PMUTActivity(Algorithm::Parameters params,
 }
 
 void PMUTActivity::iteration() {
-  auto k = plaw_gen.get();
+  auto k = plaw_gen.get() + 1;
   auto nodes_to_flip = helper.chooseKUnique(_activity, k);
   bool flipped = flipNodesIfBetterCut(nodes_to_flip);
 
