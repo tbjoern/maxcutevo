@@ -28,7 +28,7 @@ namespace maxcut {
 
 void write_header(ostream &stream, OutputType output_type) {
   if (output_type == OutputType::CUT_WEIGHT) {
-    stream << "id,run,generation,fitness,time,flips" << endl;
+    stream << "id,run,generation,fitness,total_time,flips" << endl;
   } else if (output_type == OutputType::ITERATION_INFO) {
     stream << "iteration,node,in_degree,out_degree,activity" << endl;
   } else if (output_type == OutputType::NODES_FLIPPED) {
