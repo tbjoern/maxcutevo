@@ -28,7 +28,7 @@ namespace maxcut {
 
 void write_header(ostream &stream, OutputType output_type) {
   if (output_type == OutputType::CUT_WEIGHT) {
-    stream << "run_number,algorithm,iteration,cut_weight,time,flips" << endl;
+    stream << "id,run,generation,fitness,time,flips" << endl;
   } else if (output_type == OutputType::ITERATION_INFO) {
     stream << "iteration,node,in_degree,out_degree,activity" << endl;
   } else if (output_type == OutputType::NODES_FLIPPED) {
@@ -40,16 +40,16 @@ void write_result_to_stream(const RunResult &result, ostream &stream,
                             OutputType output_type) {
   int algorithm_id = result.algorithm_id;
   int run_nr = result.run_id;
-  const auto &run_data = result.cut_sizes;
-  const auto &iteration_data = result.iterations;
+  const auto &fitness = result.cut_sizes;
+  const auto &generation = result.iterations;
   const auto &iteration_infos = result.iteration_infos;
   const auto &time = result.time;
   const auto &flips = result.flips;
-  assert(run_data.size() == iteration_data.size());
+  assert(fitness.size() == generation.size());
   if (output_type == OutputType::CUT_WEIGHT) {
-    for (int it = 0; it < run_data.size(); ++it) {
-      stream << run_nr << "," << algorithm_id << "," << iteration_data[it]
-             << "," << run_data[it] << "," << time[it] << "," << flips[it]
+    for (int it = 0; it < fitness.size(); ++it) {
+      stream <<  algorithm_id << "," << run_nr << "," << generation[it]
+             << "," << fitness[it] << "," << time[it] << "," << flips[it]
              << endl;
     }
   } else if (output_type == OutputType::ITERATION_INFO) {
