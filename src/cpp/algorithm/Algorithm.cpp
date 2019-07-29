@@ -97,6 +97,7 @@ bool Algorithm::flipNodesIfBetterCut(std::vector<int> &nodeIDs) {
     flipNodes(nodeIDs);
     return false;
   }
+  _max_cut_weight = _cut_weight;
   return true;
 }
 
