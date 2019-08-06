@@ -64,12 +64,12 @@ class Plotter:
         with open(csv_name, "r") as f:
             csvreader = csv.DictReader(f, delimiter=',')
             for row in csvreader:
-                algo_id = int(row["algorithm"])
-                run_nr = int(row["run_number"])
+                algo_id = int(row["id"])
+                run_nr = int(row["run"])
                 if not run_nr in data[algo_id]:
                     data[algo_id][run_nr] = { 'iteration':[], 'cut_weight':[] }
-                data[algo_id][run_nr]['iteration'].append(int(row['iteration']))
-                data[algo_id][run_nr]['cut_weight'].append(int(row['cut_weight']))
+                data[algo_id][run_nr]['iteration'].append(int(row['generation']))
+                data[algo_id][run_nr]['cut_weight'].append(int(row['fitness']))
         self.plot_data[self.figure]['is_loaded'] = True
 
     def plot_current_figure(self):
