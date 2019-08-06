@@ -109,7 +109,6 @@ RunResult execute(const Run &run) {
 
 void batch(const vector<Run> &runs, OutputType output_type) {
 
-  // vector<RunResult> results;
   std::mutex mutex;
 
   write_header(cout, output_type);
@@ -118,7 +117,6 @@ void batch(const vector<Run> &runs, OutputType output_type) {
   for (auto it = runs.cbegin(); it < runs.cend(); ++it) {
     auto result = execute(*it);
     std::lock_guard<std::mutex> lock(mutex);
-    // results.push_back(result);
     write_result_to_stream(result, cout, output_type);
   }
 

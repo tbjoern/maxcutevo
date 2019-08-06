@@ -138,18 +138,23 @@ int main(int argc, char *argv[]) {
 
   const auto adj_list = read_graph(filename);
 
-  vector<char> start_assigment;
-  if (config.random_start) {
-    start_assigment = read_random_start(directory(filename) +
-                                        basename(filename) + ".assignment");
+  vector<char> start_assignment;
+  switch (config.random_start) {
+  case START_TYPE::RANDOM:
+    start_assignment = read_random_start(directory(filename) +
+                                         basename(filename) + ".assignment");
+    break;
+  case START_TYPE::FULL:
+    start_assignment = vector<char>(adj_list.node_count, CUT_SET);
+    break;
   }
 
   vector<Run> runs;
   for (auto &algorithm_config : config.algorithms) {
     for (int run_id = 0; run_id < config.run_count; ++run_id) {
-      runs.push_back({algorithm_config, adj_list, start_assigment,
-                      config.random_start, run_id, config.max_iterations,
-                      config.time_limit});
+      runs.push_back({algorithm_config, adj_list, start_assignment,
+                      config.random_start != START_TYPE::EMPTY, run_id,
+                      config.max_iterations, config.time_limit});
     }
   }
 

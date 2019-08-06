@@ -12,6 +12,8 @@ namespace maxcut {
 
 class Algorithm;
 
+enum class START_TYPE { EMPTY = 0, RANDOM = 1, FULL = 2 };
+
 struct Cut {
   int size, inverse_size, max_size;
 };
@@ -52,7 +54,7 @@ struct RunConfig {
   int max_iterations;
   int run_count;
   int time_limit;
-  bool random_start;
+  START_TYPE random_start;
   std::vector<AlgorithmConfig> algorithms;
 };
 
