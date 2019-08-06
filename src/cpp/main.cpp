@@ -50,7 +50,7 @@ RunConfig read_config(string filename) {
 
   auto config = RunConfig();
 
-  config.max_iterations = json_cfg["generation_count"];
+  config.max_iterations = json_cfg["generations"];
   config.run_count = json_cfg["run_count"];
   config.random_start = json_cfg["start_type"];
   config.time_limit = json_cfg["time_limit"];
