@@ -8,5 +8,5 @@ nodes=$4
 name=`basename $config .json`
 ((tasks = fsoc_processor_count / cpus))
 
-sbatch --exclusive --nodes $nodes --cpus-per-task $cpus --job-name mx-$name --ntasks-per-node $tasks ../src/script/fsoc.sh $instance_dir $config
+sbatch --nodes $nodes --cpus-per-task $cpus --job-name mx-$name --ntasks-per-node $tasks ../src/script/fsoc.sh $instance_dir $config
 

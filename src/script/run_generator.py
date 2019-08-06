@@ -31,12 +31,12 @@ def unif_validator(start_activity, max, min, inc, dec, decay_rate):
     )
 
 activity_arguments = [
-    Argument('start_activity', [0, 50, 500]),
-    Argument('max', [100, 1000]),
-    Argument('min', [-1000, -100, 1]),
-    Argument('inc', [1,10]),
-    Argument('dec', [1,10]),
-    Argument('decay_rate', [0.95, 0.8, 0.5, 0.3])
+    Argument('start_activity', [0, 500]),
+    Argument('max', [1000]),
+    Argument('min', [-1000, 1]),
+    Argument('inc', [10]),
+    Argument('dec', [10]),
+    Argument('decay_rate', [0.95, 0.8])
 ]
 
 
@@ -72,7 +72,7 @@ algorithms = [
         name = 'unifSigmoid',
         arguments=[
             ArgumentGroup(activity_arguments, unif_validator),
-            Argument('sigmoid_smoothness', [ 0.5, 0.05, 0.005, 0.0005 ])
+            Argument('sigmoid_smoothness', [ 0.005 ])
         ]
     )
 ]
@@ -96,9 +96,11 @@ def generate_arguments(arguments):
 
 id = 0
 run_config = {
-    "iterations": 1000,
+    "generations": 1000,
     "run_count": 10,
-    "random_start": False,
+    "start_type": 0,
+    "time_limit": 10,
+    "undirected": False,
     "algorithms": [],
 }
 for algorithm in algorithms:

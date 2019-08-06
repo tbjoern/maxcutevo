@@ -50,9 +50,9 @@ RunConfig read_config(string filename) {
 
   auto config = RunConfig();
 
-  config.max_iterations = json_cfg["iterations"];
+  config.max_iterations = json_cfg["generation_count"];
   config.run_count = json_cfg["run_count"];
-  config.random_start = json_cfg["random_start"];
+  config.random_start = json_cfg["start_type"];
   config.time_limit = json_cfg["time_limit"];
   maxcut::AdjList::undirected = json_cfg["undirected"];
 
