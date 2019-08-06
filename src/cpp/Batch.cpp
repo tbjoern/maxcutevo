@@ -48,9 +48,8 @@ void write_result_to_stream(const RunResult &result, ostream &stream,
   assert(fitness.size() == generation.size());
   if (output_type == OutputType::CUT_WEIGHT) {
     for (int it = 0; it < fitness.size(); ++it) {
-      stream <<  algorithm_id << "," << run_nr << "," << generation[it]
-             << "," << fitness[it] << "," << time[it] << "," << flips[it]
-             << endl;
+      stream << algorithm_id << "," << run_nr << "," << generation[it] << ","
+             << fitness[it] << "," << time[it] << "," << flips[it] << endl;
     }
   } else if (output_type == OutputType::ITERATION_INFO) {
     for (auto &pair : iteration_infos) {
