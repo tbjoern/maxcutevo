@@ -63,7 +63,7 @@ def id_name_map_from_configs(configs):
                 id_name_map[id] = get_algorithm_name(algorithm)
     return id_name_map
 
-def read_instance_data(instance):
+def read_instance_data(instance, time_limit=None):
     logging.info(f"reading {instance}")
     data = {}
     with open(instance, 'r') as f:
@@ -81,6 +81,8 @@ def read_instance_data(instance):
             fitness = int(float(row['fitness']))
             generation = int(row['generation'])
             time = int(float(row['total_time']))
+            if time_limit is not None and time > time_limit:
+                continue
             if data[algorithm][run] is None or data[algorithm][run]['fitness'] < fitness:
                 data[algorithm][run] = {
                         'fitness': fitness,
@@ -89,7 +91,7 @@ def read_instance_data(instance):
                 }
     return (instance,data)
 
-def walk_result_dir(result_dir, debug=False):
+def walk_result_dir(result_dir, debug=False, time_limit=None):
     all_files = []
     for path, subdirs, files in os.walk(result_dir):
         for f in files:
@@ -97,7 +99,7 @@ def walk_result_dir(result_dir, debug=False):
                 all_files.append(os.path.join(path,f))
     result_data = {}
     with mp.Pool(4) as p:
-        pool_data = p.map(read_instance_data, all_files)
+        pool_data = p.map(read_instance_data, all_files, time_limit)
     result_data = {os.path.basename(filename):data for filename, data in (d for d in pool_data if d is not None)}
     return result_data
         
@@ -108,13 +110,14 @@ def main():
 
     parser.add_argument('result_dir')
     parser.add_argument('--debug', action='store_true')
+    parser.add_argument('--timelimit', type=int)
 
     args = parser.parse_args()
 
     if args.debug:
         logging.basicConfig(filename='summarize.log', level=logging.DEBUG)
 
-    result_data = walk_result_dir(args.result_dir, debug=args.debug)
+    result_data = walk_result_dir(args.result_dir, debug=args.debug, time_limit=args.timelimit)
 
     json.dump(result_data, sys.stdout)
 
