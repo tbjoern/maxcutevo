@@ -52,8 +52,8 @@ void UnifSigmoid::iteration() {
 
   if (flipped) {
     updateActivity(nodes_to_flip);
-    decayActivity();
   }
+  decayActivity();
 }
 
 } // namespace maxcut
