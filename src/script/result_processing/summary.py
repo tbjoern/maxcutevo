@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import json
@@ -28,11 +28,11 @@ def merge_summary(*args):
     for d in args[1:]:
         for filename, algo_data in d.items():
             if filename not in merged:
-                logging.error(f"{k} not in merged")
+                logging.error(str(k) +" not in merged")
                 exit(1)
             for algo, gen_info in algo_data.items():
                 if algo in merged[filename]:
-                    logging.error(f"{algo} exists twice")
+                    logging.error(str(algo) + " exists twice")
                 merged[filename][algo] = gen_info
     return merged
 
@@ -64,7 +64,7 @@ def id_name_map_from_configs(configs):
     return id_name_map
 
 def read_instance_data(instance, time_limit=None):
-    logging.info(f"reading {instance}")
+    logging.info("reading " + instance)
     data = {}
     with open(instance, 'r') as f:
         reader = csv.DictReader(f)
@@ -98,7 +98,7 @@ def walk_result_dir(result_dir, debug=False, time_limit=None):
             if '.csv' in f:
                 all_files.append(os.path.join(path,f))
     result_data = {}
-    with mp.Pool(4) as p:
+    with mp.Pool(2) as p:
         pool_data = p.map(read_instance_data, all_files, time_limit)
     result_data = {os.path.basename(filename):data for filename, data in (d for d in pool_data if d is not None)}
     return result_data
