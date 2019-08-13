@@ -3,10 +3,18 @@
 import matplotlib.pyplot as plt
 import json
 
+def to_percentages(iterable):
+    max_value = None
+    for i in iterable:
+        if max_value is None or i > max_value:
+            max_value = i
+    return {value:value/max_value for value in iterable}
+
 def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('avg_fitness_json')
+    parser.add_argument('--image')
     args = parser.parse_args()
 
     with open(args.avg_fitness_json, 'r') as f:
@@ -34,21 +42,24 @@ def main():
 
     for instance in x_axis:
         algo_data = avg_fitness[instance]
+        percentage_map = to_percentages([int(x) for x in algo_data.values()])
         for id, fitness in algo_data.items():
             id = int(id)
-            fitness = int(fitness)
+            fitness = percentage_map[int(fitness)]
             y_axes[id].append(fitness)
 
-
-    f = plt.figure()
+    f = plt.figure(figsize=(20,6), dpi=80)
     subplt = f.add_subplot(111)
     subplt.tick_params(axis='x', labelrotation=90)
     for y_axis, label, fmt in zip(y_axes, labels, fmt):
         subplt.plot(x_axis, y_axis, fmt, label=label)
 
-    subplt.legend()
+    subplt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
     plt.tight_layout()
-    plt.show()
+    if args.image is not None:
+        plt.savefig(args.image)
+    else:
+        plt.show()
 
 if __name__ == '__main__':
     main()
