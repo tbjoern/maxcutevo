@@ -1,8 +1,8 @@
 {
-    "iterations": 1,
+    "generations": 100,
     "run_count": 1,
-    "random_start": true,
-    "undirected": true,
+    "start_type": 0,
+    "undirected": false,
     "time_limit": 1,
     "algorithms": [
         {
