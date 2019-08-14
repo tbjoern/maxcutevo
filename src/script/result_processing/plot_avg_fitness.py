@@ -3,6 +3,9 @@
 import matplotlib.pyplot as plt
 import json
 
+fmts = ['x', 'o', 's', '^', 'D', '.']
+colors = ['red', 'black', 'orange', 'deepskyblue', 'limegreen', 'blueviolet']
+
 def to_percentages(iterable):
     max_value = None
     for i in iterable:
@@ -28,17 +31,20 @@ def main():
     y_axes = [[] for _ in range(max_id + 1)]
     labels = [p[1] for p in sorted(id_name_map.items(), key=lambda x: int(x[0]))]
     fmt = []
+    color = []
+    last_prefix = "greedy"
+    color_i = 0
+    fmt_i = 0 
     for label in labels:
-        label_fmt = 'x'
-        if 'pmut_' in label:
-            label_fmt = 'o'
-        if 'fmut_' in label:
-            label_fmt = 's'
-        if 'pmutActivity_' in label:
-            label_fmt = '^'
-        if 'unifSigmoid_' in label:
-            label_fmt = 'D'
-        fmt.append(label_fmt)
+        prefix = label.split('_')[0]
+        if prefix != last_prefix:
+            color_i += 1
+            fmt_i = 0
+            last_prefix = prefix
+        else:
+            fmt_i += 1
+        fmt.append(fmts[fmt_i])
+        color.append(colors[color_i])
 
     for instance in x_axis:
         algo_data = avg_fitness[instance]
@@ -50,9 +56,11 @@ def main():
 
     f = plt.figure(figsize=(20,6), dpi=80)
     subplt = f.add_subplot(111)
-    subplt.tick_params(axis='x', labelrotation=90)
-    for y_axis, label, fmt in zip(y_axes, labels, fmt):
-        subplt.plot(x_axis, y_axis, fmt, label=label)
+    #subplt.tick_params(axis='x', labelrotation=90)
+    for y_axis, label, fmt, color in zip(y_axes, labels, fmt, color):
+        subplt.plot(x_axis, y_axis, fmt, label=label, color=color)
+
+    subplt.set_xticklabels([])
 
     subplt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
     plt.tight_layout()

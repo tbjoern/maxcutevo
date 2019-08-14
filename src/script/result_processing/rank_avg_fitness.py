@@ -36,7 +36,7 @@ def main():
 
     sorted_average_ranks = sorted(average_ranks.items(), key=lambda x: x[1])
     for name, rank in sorted_average_ranks:
-        print(f"{name}: {rank:.2f}")
+        print(f"{name}:{rank:.2f}")
     
 
 if __name__ == '__main__':
