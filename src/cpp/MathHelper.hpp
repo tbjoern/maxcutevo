@@ -14,10 +14,9 @@ struct BernoulliGenerator {
   std::bernoulli_distribution b;
   std::mt19937 &_engine;
 
-  BernoulliGenerator(std::bernoulli_distribution _b, std::mt19937 &engine)
-      : b(_b), _engine(engine) {}
+  BernoulliGenerator(std::bernoulli_distribution _b, std::mt19937 &engine);
 
-  bool get() { return b(_engine); }
+  bool get();
 };
 
 struct PowerLawGenerator {
@@ -26,63 +25,33 @@ struct PowerLawGenerator {
   std::mt19937 &_engine;
   std::uniform_real_distribution<double> dist;
 
-  PowerLawGenerator(int variables, double beta, std::mt19937 &engine)
-      : _engine(engine) {
-    VWeights.resize(variables);
-    double VSum = 0;
+  PowerLawGenerator(int variables, double beta, std::mt19937 &engine);
 
-    // calculating the exponents for power-law weights
-    double betaNorm = 1 / (beta - 1);
-
-    // mapping variables to weights and creating a 'cumulative distribution'
-    for (int i = 0; i < variables; ++i) {
-      VWeights[i] = pow((variables / (i + 1)), betaNorm);
-      VSum += VWeights[i];
-      TV[VSum] = i;
-    }
-
-    dist = std::uniform_real_distribution<double>(0.0, VSum);
-  }
-
-  int get() {
-    double v = dist(_engine);
-    auto var = TV.lower_bound(v)->second;
-    return var;
-  }
+  int get();
 };
 
 class MathHelper {
 public:
-  // static MathHelper& getInstance()
-  // {
-  //     static MathHelper instance;
-  //     return instance;
-  // }
+  static int SEED;
 
-  MathHelper() : _engine(std::random_device{}()), _exp(1), _unif() {}
+  static int get_seed();
+
+  MathHelper();
 
   MathHelper(MathHelper const &) = delete;
   void operator=(MathHelper const &) = delete;
 
-  void setPowerLawParam(double lambda) {
-    _exp.param(std::exponential_distribution<>::param_type(lambda));
-  }
+  void setPowerLawParam(double lambda);
 
-  void setUniformRange(int a, int b) {
-    _unif.param(std::uniform_int_distribution<>::param_type(a, b));
-  }
+  void setUniformRange(int a, int b);
 
-  void setRealRange(double a, double b) {
-    _real.param(std::uniform_real_distribution<>::param_type(a, b));
-  }
+  void setRealRange(double a, double b);
 
-  int getInt() { return _unif(_engine); }
+  int getInt();
 
-  PowerLawGenerator makePowerLawGenerator(int max_value, double beta) {
-    return PowerLawGenerator(max_value, beta, _engine);
-  }
+  PowerLawGenerator makePowerLawGenerator(int max_value, double beta);
 
-  inline double getReal() { return _real(_engine); }
+  inline double getReal();
 
   template <typename T>
   std::vector<int> chooseKUnique(std::vector<T> &weights, int k) {
@@ -95,21 +64,16 @@ public:
     return result;
   }
 
-  double sigmoid(double x, double smoothness) {
-    return 2 / (1 + exp(-1 * smoothness * x));
-  }
+  double sigmoid(double x, double smoothness);
 
   inline bool sampleProbability(double probabilty) {
     std::bernoulli_distribution b(probabilty);
     return b(_engine);
   }
 
-  std::shared_ptr<BernoulliGenerator> probabilitySampler(double probability) {
-    return std::make_unique<BernoulliGenerator>(
-        std::bernoulli_distribution(probability), _engine);
-  }
+  std::shared_ptr<BernoulliGenerator> probabilitySampler(double probability);
 
-  std::mt19937 &getEngine() { return _engine; }
+  std::mt19937 &getEngine();
 
 private:
   std::mt19937 _engine;

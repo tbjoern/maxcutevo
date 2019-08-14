@@ -7,7 +7,7 @@ set(sources
     Batch.cpp
     Graph.cpp
     main.cpp
-    MathHelper.hpp
+    MathHelper.cpp
     algorithm/Algorithm.cpp
     algorithm/ActivityAlgorithm.cpp
     algorithm/FMUT.cpp

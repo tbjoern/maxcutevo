@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
   case 4:
     config = read_config(argv[2]);
     filename = argv[1];
-    print_mode = argv[3];
+    maxcut::MathHelper::SEED = atoi(argv[3]);
     break;
   default:
     cout
@@ -128,13 +128,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  if (print_mode == "info") {
-    output_type = OutputType::ITERATION_INFO;
-  } else if (print_mode == "flips") {
-    output_type = OutputType::NODES_FLIPPED;
-  } else {
-    output_type = OutputType::CUT_WEIGHT;
-  }
+  output_type = OutputType::CUT_WEIGHT;
 
   const auto adj_list = read_graph(filename);
 
