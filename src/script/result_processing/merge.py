@@ -12,7 +12,7 @@ def main():
     args = parser.parse_args()
 
     data = []
-    for f in files:
+    for f in args.files:
         with open(f, 'r') as f:
             data.append(json.load(f))
 

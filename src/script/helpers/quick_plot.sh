@@ -1,5 +1,7 @@
 #!/bin/bash
+set -e
 
-name=`basename $1 .json`
+exec_dir=${0%/*}
 
-./script/result_processing/plot_avg_fitness.py --image $name.png $1
+$exec_dir/../result_processing/plot_avg_fitness.py --image ${1%.*}.png $1
+

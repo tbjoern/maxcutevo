@@ -100,7 +100,7 @@ def walk_result_dir(result_dir, debug=False, time_limit=None):
     result_data = {}
     with mp.Pool(2) as p:
         pool_data = p.map(read_instance_data, all_files, time_limit)
-    result_data = {os.path.basename(filename):data for filename, data in (d for d in pool_data if d is not None)}
+    result_data = {os.path.splitext(filename)[0]:data for filename, data in (d for d in pool_data if d is not None)}
     return result_data
         
 def main():

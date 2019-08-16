@@ -1,5 +1,7 @@
 #!/bin/bash
+set -e
 
-name=`basename $1 .json`
+exec_dir=${0%/*}
 
-./script/result_processing/rank_avg_fitness.py $1 | ./kv_to_latex_table.sh > ${name}_rank.tex
+$exec_dir/../result_processing/rank_avg_fitness.py $1 | $exec_dir/kv_to_latex_table.sh > ${1%.*}_rank.tex
+
