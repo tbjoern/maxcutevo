@@ -11,7 +11,7 @@ def avg_fitness(summary):
             avg_fitness = 0
             data_points = 0
             for run, data in runs.items():
-                avg_fitness += data['fitness']
+                avg_fitness += data[0]
                 data_points += 1
             avg_fitness /= data_points
             summary_avg_fitness[instance][id] = avg_fitness
