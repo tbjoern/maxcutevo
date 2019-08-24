@@ -23,13 +23,21 @@ def get_algorithm_name(algorithm):
     raw_name = algorithm['name']
     return add_params_of_type(algorithm, raw_name)
 
+def make_subset(to_trim, superset):
+    trimm_keys = []
+    for key in to_trim:
+        if key not in superset:
+            logging.info("removing" + str(key))
+            trimm_keys.append(key)
+    for key in trimm_keys:
+        to_trim.pop(key)
+
 def merge_summary(*args):
     merged = args[0]
     for d in args[1:]:
+        make_subset(d, merged)
+        make_subset(merged, d)
         for filename, algo_data in d.items():
-            if filename not in merged:
-                logging.error(str(k) +" not in merged")
-                exit(1)
             for algo, gen_info in algo_data.items():
                 if algo in merged[filename]:
                     logging.error(str(algo) + " exists twice")
@@ -41,7 +49,7 @@ def get_summaries_and_configs(dirs):
     configs = []
     for d in dirs:
         config_path = os.path.join(d, d + '.json')
-        summary_path = os.path.join(d, 'summary_clean.json')
+        summary_path = os.path.join(d, 'summary_converted.json')
         with open(config_path, 'r') as c:
             config = json.load(c)
         with open(summary_path, 'r') as s:

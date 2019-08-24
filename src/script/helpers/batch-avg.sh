@@ -1,6 +1,6 @@
 #!/bin/bash
 
-folder_groups="dir_empty dir_full dir_random undir_empty undir_full undir_random"
+folder_groups="undir_empty undir_full undir_random"
 select=$*
 
 for i in ${select[@]}

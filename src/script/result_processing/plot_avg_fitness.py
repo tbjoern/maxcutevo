@@ -3,8 +3,8 @@
 import matplotlib.pyplot as plt
 import json
 
-fmts = ['x', 'o', 's', '^', 'D', '.']
-colors = ['red', 'black', 'orange', 'deepskyblue', 'limegreen', 'blueviolet']
+fmts = ['s', 'o', 'x', '^', 'D', '.']
+colors = ['red', 'black', 'orange', 'deepskyblue', 'limegreen', 'blueviolet', 'blue']
 
 def to_percentages(iterable):
     max_value = None
@@ -18,14 +18,25 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('avg_fitness_json')
     parser.add_argument('--image')
+    parser.add_argument('--opt')
     args = parser.parse_args()
 
     with open(args.avg_fitness_json, 'r') as f:
         input = json.load(f)
 
+    if args.opt:
+        with open(args.opt, 'r') as f:
+            opt = json.load(f)
+
     avg_fitness = input["avg_fitness"]
     id_name_map = input["id_name_map"]
     max_id = max([int(x) for x in id_name_map.keys()])
+
+    if opt is not None:
+        max_id += 1
+        for instance in avg_fitness:
+            avg_fitness[instance][max_id] = opt[instance]
+        id_name_map[str(max_id)] = "Optimal solution"
 
     x_axis = sorted(avg_fitness.keys())
     y_axes = [[] for _ in range(max_id + 1)]
@@ -47,9 +58,9 @@ def main():
         color.append(colors[color_i])
 
     for instance in x_axis:
-        algo_data = avg_fitness[instance]
-        percentage_map = to_percentages([int(x) for x in algo_data.values()])
-        for id, fitness in algo_data.items():
+        algo_data = list(avg_fitness[instance].values())
+        percentage_map = to_percentages([int(x) for x in algo_data])
+        for id, fitness in avg_fitness[instance].items():
             id = int(id)
             fitness = percentage_map[int(fitness)]
             y_axes[id].append(fitness)
