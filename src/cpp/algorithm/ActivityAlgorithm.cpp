@@ -57,8 +57,9 @@ void ActivityAlgorithm::updateActivity(const std::vector<int> &flipped_nodes) {
 }
 
 void ActivityAlgorithm::decayActivity() {
-  for (auto &weight : _activity) {
-    weight = weight * parameters.DECAY_RATE;
+  for (auto &activity : _activity) {
+    activity = (activity - parameters.START_ACTIVITY) * parameters.DECAY_RATE +
+               parameters.START_ACTIVITY;
   }
 }
 
