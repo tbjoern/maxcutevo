@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import json
+from fmt_conversion import inst_to_algo
 
 fmts = ['s', 'o', 'x', '^', 'D', '.']
 colors = ['red', 'black', 'orange', 'deepskyblue', 'limegreen', 'blueviolet', 'blue']

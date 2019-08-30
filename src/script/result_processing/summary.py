@@ -49,7 +49,7 @@ def get_summaries_and_configs(dirs):
     configs = []
     for d in dirs:
         config_path = os.path.join(d, d + '.json')
-        summary_path = os.path.join(d, 'summary_converted.json')
+        summary_path = os.path.join(d, 'summary.json')
         with open(config_path, 'r') as c:
             config = json.load(c)
         with open(summary_path, 'r') as s:
