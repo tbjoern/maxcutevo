@@ -16,7 +16,7 @@ def read_config(filename):
     return data
 
 def make_config(slurmid, config):
-    cfgid = floor(slurmid / count(config))
+    cfgid = floor(slurmid % count(config))
     algo_id = floor(cfgid / run_count(config))
     run_nr = cfgid % run_count(config)
 
