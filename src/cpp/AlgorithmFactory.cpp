@@ -69,6 +69,10 @@ AlgorithmFactory::make(std::string algorithm_name,
     sigmoid_smoothness = params["sigmoid_smoothness"];
     return make_shared<UnifSigmoid>(algo_params, make_parameters(params),
                                     sigmoid_smoothness);
+  case Algorithm_Type::GREEDYSIGMOID:
+    sigmoid_smoothness = params["sigmoid_smoothness"];
+    return make_shared<GreedySigmoid>(algo_params, make_parameters(params),
+                                    sigmoid_smoothness);
   case Algorithm_Type::GREEDYACTIVITY:
     return make_shared<GreedyActivity>(algo_params, make_parameters(params));
   }

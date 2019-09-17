@@ -14,7 +14,8 @@ enum class Algorithm_Type {
   GREEDY,
   RANDOM,
   UNIFSIGMOID,
-  GREEDYACTIVITY
+  GREEDYACTIVITY,
+  GREEDYSIGMOID
 };
 
 const std::unordered_map<std::string, Algorithm_Type> str_to_algorithm_type = {
@@ -25,7 +26,9 @@ const std::unordered_map<std::string, Algorithm_Type> str_to_algorithm_type = {
     {"greedy", Algorithm_Type::GREEDY},
     {"random", Algorithm_Type::RANDOM},
     {"unifSigmoid", Algorithm_Type::UNIFSIGMOID},
-    {"greedyActivity", Algorithm_Type::GREEDYACTIVITY}};
+    {"greedyActivity", Algorithm_Type::GREEDYACTIVITY},
+    {"greedySigmoid", Algorithm_Type::GREEDYSIGMOID}
+};
 
 class AlgorithmFactory {
 public:
