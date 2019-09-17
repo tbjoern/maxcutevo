@@ -11,8 +11,8 @@ class GreedySigmoid : public ActivityAlgorithm {
 
 public:
   GreedySigmoid(Algorithm::Parameters params,
-              ActivityAlgorithm::Parameters parameters,
-              double sigmoid_smoothness);
+                ActivityAlgorithm::Parameters parameters,
+                double sigmoid_smoothness);
 
   std::function<bool(int)> build_activity_sigmoid_sampler();
 

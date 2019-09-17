@@ -27,8 +27,7 @@ const std::unordered_map<std::string, Algorithm_Type> str_to_algorithm_type = {
     {"random", Algorithm_Type::RANDOM},
     {"unifSigmoid", Algorithm_Type::UNIFSIGMOID},
     {"greedyActivity", Algorithm_Type::GREEDYACTIVITY},
-    {"greedySigmoid", Algorithm_Type::GREEDYSIGMOID}
-};
+    {"greedySigmoid", Algorithm_Type::GREEDYSIGMOID}};
 
 class AlgorithmFactory {
 public:

@@ -18,6 +18,7 @@ set(sources
     algorithm/Random.cpp
     algorithm/Unif.cpp
     algorithm/UnifSigmoid.cpp
+    algorithm/GreedySigmoid.cpp
 )
 
 set(includes
@@ -37,6 +38,7 @@ set(includes
     algorithm/Random.hpp
     algorithm/Unif.hpp
     algorithm/UnifSigmoid.hpp
+    algorithm/GreedySigmoid.hpp
 )
 
 set(libraries

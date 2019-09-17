@@ -4,6 +4,7 @@
 #include "algorithm/FMUT.hpp"
 #include "algorithm/Greedy.hpp"
 #include "algorithm/GreedyActivity.hpp"
+#include "algorithm/GreedySigmoid.hpp"
 #include "algorithm/PMUT.hpp"
 #include "algorithm/PMUTActivity.hpp"
 #include "algorithm/Random.hpp"
@@ -72,7 +73,7 @@ AlgorithmFactory::make(std::string algorithm_name,
   case Algorithm_Type::GREEDYSIGMOID:
     sigmoid_smoothness = params["sigmoid_smoothness"];
     return make_shared<GreedySigmoid>(algo_params, make_parameters(params),
-                                    sigmoid_smoothness);
+                                      sigmoid_smoothness);
   case Algorithm_Type::GREEDYACTIVITY:
     return make_shared<GreedyActivity>(algo_params, make_parameters(params));
   }

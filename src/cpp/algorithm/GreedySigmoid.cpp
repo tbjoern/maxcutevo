@@ -31,44 +31,41 @@ std::function<bool(int)> GreedySigmoid::build_activity_sigmoid_sampler() {
 }
 
 GreedySigmoid::GreedySigmoid(Algorithm::Parameters params,
-                         ActivityAlgorithm::Parameters parameters,
-                         double sigmoid_smoothness)
+                             ActivityAlgorithm::Parameters parameters,
+                             double sigmoid_smoothness)
     : ActivityAlgorithm(params, parameters), generations(0) {
   this->sigmoid_smoothness = sigmoid_smoothness;
   activity_sampler = build_activity_sigmoid_sampler();
 }
 
 void GreedySigmoid::iteration() {
-  if(generations < 1000) 
-  {
-      vector<int> nodes_to_flip;
-      int max_retries = 20;
-      while (nodes_to_flip.size() == 0 && max_retries-- > 0) {
-        for (int node = 0; node < _node_count; ++node) {
-          if (activity_sampler(_activity[node])) {
-            nodes_to_flip.push_back(node);
-          }
+  if (generations < 1000) {
+    vector<int> nodes_to_flip;
+    int max_retries = 20;
+    while (nodes_to_flip.size() == 0 && max_retries-- > 0) {
+      for (int node = 0; node < _node_count; ++node) {
+        if (activity_sampler(_activity[node])) {
+          nodes_to_flip.push_back(node);
         }
       }
-      bool flipped = flipNodesIfBetterCut(nodes_to_flip);
+    }
+    bool flipped = flipNodesIfBetterCut(nodes_to_flip);
 
-      if (flipped) {
-        updateActivity(nodes_to_flip);
+    if (flipped) {
+      updateActivity(nodes_to_flip);
+    }
+    decayActivity();
+  } else {
+    int best_node = -1, improvement = 0;
+    for (int node = 0; node < _adj_list.node_count; ++node) {
+      if (_change[node] > improvement) {
+        best_node = node;
+        improvement = _change[node];
       }
-      decayActivity();
-  }
-  else 
-  {
-      int best_node = -1, improvement = 0;
-      for (int node = 0; node < _adj_list.node_count; ++node) {
-        if (_change[node] > improvement) {
-          best_node = node;
-          improvement = _change[node];
-        }
-      }
-      if (best_node > -1) {
-        flipNode(best_node);
-      }
+    }
+    if (best_node > -1) {
+      flipNode(best_node);
+    }
   }
 }
 
