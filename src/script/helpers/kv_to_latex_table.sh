@@ -4,7 +4,7 @@ function latexify {
     IFS=_ read name subscripts <<< "$1"
     if [ $subscripts ]
     then
-        echo "\$\\text{$name}_{${subscripts//_/ }}\$"
+        echo "\$\\text{$name}_{${subscripts//_/, }}\$"
     else
         echo "\$\\text{$name}\$"
     fi
