@@ -11,8 +11,8 @@ function latexify {
 }
 
 
-echo "\\begin{tabular}{c | c}"
-echo "    algorithm & rank \\\\"
+echo "\\begin{tabular}{ l  r }"
+echo "    algorithm & average rank \\\\"
 echo "    \\hline"
 while IFS=: read instance rank
 do
