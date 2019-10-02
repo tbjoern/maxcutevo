@@ -67,6 +67,7 @@ void GreedySigmoid::iteration() {
       flipNode(best_node);
     }
   }
+  generations++;
 }
 
 } // namespace maxcut
