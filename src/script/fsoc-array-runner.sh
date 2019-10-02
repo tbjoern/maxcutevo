@@ -3,7 +3,9 @@
 instancedir=$1
 outputdir=$2
 configfile=$3
-slurmoutput=slurm-output
+slurmoutput="${outputdir}-slurm"
+
+shift 3 || exit 1
 
 if [ -d $slurmoutput ]
 then
