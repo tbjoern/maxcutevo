@@ -25,4 +25,5 @@ cd run
 ln -s ../build/maxcut-framework
 cp ../config.json .
 ./maxcut-framework ~/instance.rud config.json
+```
 
