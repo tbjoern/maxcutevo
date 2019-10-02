@@ -11,9 +11,9 @@ using namespace std;
 
 namespace {
 inline bool record_cut(int it) {
-  if (it < 100) {
+  if (it < 1000) {
     return true;
-  } else if (it < 1000) {
+  } else if (it < 2000) {
     return it % 10 == 0;
   } else {
     return it % 100 == 0;
