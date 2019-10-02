@@ -1,9 +1,28 @@
-# Max Cut (1+1) EA
+# Maxcut Setting Framework
 
-This framework tests different mutation operators for the (1+1) Evolutionary Algorithm.
+This framework was used in my Master's Thesis, where it is referred to as the maxcut-setting.
 
-Supported operators:
-    pmut
-    fmut
-    pmut with activity
+## Building
+
+The repository uses submodules for dependencies, so run `git submodule init %% git submodule update` before the first build.
+
+From top level folder:
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+```
+
+## Running the example configuration
+
+Assuming you have an instance file in a supported file format under `~/instance.rud`
+
+From top level folder:
+```bash
+mkdir run
+cd run
+ln -s ../build/maxcut-framework
+cp ../config.json .
+./maxcut-framework ~/instance.rud config.json
 

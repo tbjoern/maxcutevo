@@ -35,9 +35,21 @@
                 "power_law_beta": 3.5
             }
         },
-	{
+        {
             "id": 4,
             "name": "unif"
+        },
+        {
+            "id": 5,
+            "name": "unifSigmoid",
+            "arguments": {
+                "start_activity": 100,
+                "inc": 1,
+                "dec": 1,
+                "max": 200,
+                "min": 1,
+                "sigmoid_smoothness": 0.005
+            }
         }
     ]
 }
